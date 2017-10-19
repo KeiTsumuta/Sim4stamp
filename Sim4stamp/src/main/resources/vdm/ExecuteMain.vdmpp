@@ -1,0 +1,65 @@
+class ExecuteMain
+--
+--   sim4stamp - The simulation tool for STAMP/STPA
+--   Copyright (C) 2017  Keiichi Tsumuta
+--
+--   This program is free software: you can redistribute it and/or modify
+--   it under the terms of the GNU General Public License as published by
+--   the Free Software Foundation, either version 3 of the License, or
+--   (at your option) any later version.
+--
+--   This program is distributed in the hope that it will be useful,
+--   but WITHOUT ANY WARRANTY; without even the implied warranty of
+--   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+--   GNU General Public License for more details.
+--
+--   You should have received a copy of the GNU General Public License
+--   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+--
+
+types
+
+values
+	
+instance variables
+	
+	public iシステム要素 : seq of 『作用素』 :=
+		[$1];
+
+operations
+	
+	public execute : () ==> ()
+	execute() ==
+	(dcl 評価リスト : seq of 『作用素』 := [],
+		ctl : ovt_ctl_lib_CtlTool := new ovt_ctl_lib_CtlTool(),
+		順序 : seq of seq of char,
+		status : bool,
+		カウンタ : int := 1;
+		
+		status := ctl.init();
+		順序 := ctl.getElementOrder();
+		for id in 順序 do
+		(
+			for 要素 in iシステム要素 do
+			(
+			if 要素.i要素ID = id then
+			(
+				評価リスト := 評価リスト ^ [要素];
+				IO`print("++ ");IO`print(id);IO`print(":");IO`println(要素);
+				);
+			);
+		);
+
+		while ctl.isLoop() do
+		(
+			IO`print("--- loop ---:");IO`println(カウンタ);
+			for element : 『作用素』 in 評価リスト do
+			(
+				element.func();
+				IO`print("計算実行：");IO`println(element.i要素ID);
+			);
+			カウンタ := カウンタ + 1;
+		);
+	);
+
+end ExecuteMain

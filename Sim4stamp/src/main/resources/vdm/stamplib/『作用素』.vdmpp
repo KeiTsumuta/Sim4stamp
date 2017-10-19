@@ -1,0 +1,64 @@
+class 『作用素』
+
+--
+--   sim4stamp - The simulation tool for STAMP/STPA
+--   Copyright (C) 2017  Keiichi Tsumuta
+--
+--   This program is free software: you can redistribute it and/or modify
+--   it under the terms of the GNU General Public License as published by
+--   the Free Software Foundation, either version 3 of the License, or
+--   (at your option) any later version.
+--
+--   This program is distributed in the hope that it will be useful,
+--   but WITHOUT ANY WARRANTY; without even the implied warranty of
+--   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+--   GNU General Public License for more details.
+--
+--   You should have received a copy of the GNU General Public License
+--   along with this program.  If not, see <http:--www.gnu.org/licenses/>.
+--
+
+types
+	public 「構成種別」 = <コントローラ> | <アクチュエータ> | <制御対象> | <センサ> | <外部パラメータ>;
+
+values
+
+instance variables
+	public i要素ID : seq of char;
+	public i構成種別 : 「構成種別」;
+	public iCtl : ovt_ctl_lib_CtlTool;
+
+operations
+	public init : seq of char * 「構成種別」 ==> ()
+	init(id,ctl) ==
+	(
+		i要素ID := id;
+		i構成種別 := ctl;
+		iCtl := new ovt_ctl_lib_CtlTool();
+	);
+	
+	public getData : seq of char ==> real
+	getData(key) ==
+	(dcl val : real := iCtl.getInputValue(i要素ID, key);
+		--IO`print("getData:");IO`print(key);IO`print(":");IO`println(val);
+		return val;
+	);
+		
+	public setData : seq of char * real ==> ()
+	setData(key, data) ==
+	(dcl 値 : real := data;
+		--IO`print("setData:");IO`print(i構成種別);IO`print(":");IO`print(key);IO`print(",");IO`println(値);
+		return iCtl.setValue(i要素ID, key, 値);
+	);
+		
+	public func : () ==> ()
+	func() ==
+		is subclass responsibility;
+
+	public toString : () ==> seq of char
+	toString() ==
+		return i要素ID;
+
+functions
+
+end 『作用素』

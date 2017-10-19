@@ -1,0 +1,55 @@
+class ovt_ctl_lib_CtlTool
+
+--
+--   sim4stamp - The simulation tool for STAMP/STPA
+--   Copyright (C) 2017  Keiichi Tsumuta
+--
+--   This program is free software: you can redistribute it and/or modify
+--   it under the terms of the GNU General Public License as published by
+--   the Free Software Foundation, either version 3 of the License, or
+--   (at your option) any later version.
+--
+--   This program is distributed in the hope that it will be useful,
+--   but WITHOUT ANY WARRANTY; without even the implied warranty of
+--   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+--   GNU General Public License for more details.
+--
+--   You should have received a copy of the GNU General Public License
+--   along with this program.  If not, see <http:--www.gnu.org/licenses/>.
+--
+
+types
+
+values
+
+instance variables
+
+operations
+
+	public init : () ==> bool
+	init() ==
+		is not yet specified;
+
+	public isLoop : () ==> bool
+	isLoop() ==
+		is not yet specified;
+		
+	public getElementOrder : () ==> seq of seq of char
+	getElementOrder() ==
+		is not yet specified;
+
+	public getCtlId : () ==> seq of char
+	getCtlId() ==
+		is not yet specified;
+		
+	public getInputValue : seq of char * seq of char ==> real
+	getInputValue(elementId, dataId) ==
+		is not yet specified;
+		
+	public setValue : seq of char * seq of char * real ==> ()
+	setValue(elementId, dataId, value) ==
+		is not yet specified;
+		
+functions
+
+end ovt_ctl_lib_CtlTool

@@ -1,0 +1,30 @@
+class 『$1』 is subclass of 『作用素』
+types
+
+values
+
+instance variables
+	
+operations
+
+	public 『$1』 :() ==> 『$1』
+	『$1』() ==
+	(
+		init("$1",<$2>);
+	);
+
+	public func : () ==> ()
+	func() ==
+		let
+			$3
+		in
+		(
+			$4
+		);
+	
+		
+functions
+
+traces
+
+end 『$1』

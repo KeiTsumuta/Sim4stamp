@@ -1,0 +1,15 @@
+{"siminfos": {
+  "overture": {
+    "commandline": "",
+    "home": ""
+  },
+  "projects": [
+  ],
+  "currentProject": "",
+  "deviationParams": {
+    "providingLess": 0.5,
+    "deviationTooEarly": 2,
+    "deviationTooLate": 2,
+    "providingMore": 2
+  }
+}}

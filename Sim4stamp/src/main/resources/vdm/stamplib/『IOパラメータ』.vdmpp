@@ -1,0 +1,86 @@
+class 『IOパラメータ』
+
+--
+--   sim4stamp - The simulation tool for STAMP/STPA
+--   Copyright (C) 2017  Keiichi Tsumuta
+--
+--   This program is free software: you can redistribute it and/or modify
+--   it under the terms of the GNU General Public License as published by
+--   the Free Software Foundation, either version 3 of the License, or
+--   (at your option) any later version.
+--
+--   This program is distributed in the hope that it will be useful,
+--   but WITHOUT ANY WARRANTY; without even the implied warranty of
+--   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+--   GNU General Public License for more details.
+--
+--   You should have received a copy of the GNU General Public License
+--   along with this program.  If not, see <http:--www.gnu.org/licenses/>.
+--
+
+types
+
+values
+
+instance variables
+	public static IOパラメータ : [『IOパラメータ』] := nil;
+
+	private iKeys : seq of seq of char := [];
+	public iParams : map seq of char to real := { |-> };
+	
+	
+operations
+
+	public static getInstance : () ==> 『IOパラメータ』
+	getInstance() ==
+	(
+		if IOパラメータ = nil then
+		(
+			IOパラメータ := new 『IOパラメータ』();
+		);
+		return IOパラメータ;
+	);
+    
+	public init : () ==> ()
+	init() ==
+	(
+		iParams := { |-> };
+		for key in iKeys do
+		(
+			iParams := iParams munion {key |-> 0.0};
+		);
+	);
+
+	public setKeys : seq of seq of char ==> ()
+	setKeys(keys) ==
+	(
+		iKeys := keys;
+		for key in keys do
+		(
+			iParams := iParams munion {key |-> 0.0};
+		);
+	);
+    
+	public setData : 『作用素』`「構成種別」 * seq of char * real ==> ()
+	setData(kind, key, value) ==
+	(
+		iParams(key) := value;
+	);
+
+	public getData : 『作用素』`「構成種別」 * seq of char ==> real
+	getData(kind, key) ==
+	(
+		return iParams(key);
+	);
+
+	public print : () ==> ()
+	print() ==
+	(
+		for key in iKeys do
+		(
+			IO`print("(");IO`print(key);IO`printf(":%1$2.1s)",[iParams(key)]);
+		);
+		IO`println(";");
+	);
+	
+end 『IOパラメータ』

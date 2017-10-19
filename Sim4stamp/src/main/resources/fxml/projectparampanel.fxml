@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="442.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tmu.fs.sim4stamp.gui.ProjectSelectionPanel">
+    <children>
+        <BorderPane layoutX="14.0" layoutY="14.0" prefHeight="411.0" prefWidth="576.0">
+            <top>
+                <Label prefHeight="38.0" prefWidth="467.0" text="sim4stamp プロジェクト選択" BorderPane.alignment="CENTER">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Label>
+            </top>
+            <center>
+
+                <TabPane prefHeight="300.0" prefWidth="576.0" tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                        <Tab text="プロジェクト選択">
+                            <content>
+                                <AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="270.0" prefWidth="576.0">
+                                    <children>
+                                        <ComboBox fx:id="projectSelectBox" layoutX="123.0" layoutY="19.0" onAction="#projectSelectBoxChangeAction" prefHeight="25.0" prefWidth="288.0" />
+                                        <Label layoutX="27.0" layoutY="23.0" text="プロジェクト選択" />
+                                        <Label layoutX="58.0" layoutY="74.0" text="プロジェクト名" />
+                                        <TextField fx:id="selectProject" editable="false" layoutX="140.0" layoutY="70.0" prefHeight="25.0" prefWidth="204.0" />
+                                        <Label layoutX="44.0" layoutY="119.0" text="プロジェクトホーム" />
+                                        <TextField fx:id="selectPjHome" layoutX="141.0" layoutY="115.0" prefHeight="25.0" prefWidth="404.0" />
+                                        <TextField fx:id="selectParam" layoutX="140.0" layoutY="162.0" />
+                                        <Label layoutX="45.0" layoutY="166.0" text="パラメータファイル" />
+                              <Button layoutX="214.0" layoutY="219.0" mnemonicParsing="false" onAction="#deleteSelectedProjectAction" text="削除" />
+                                    <Button layoutX="116.0" layoutY="219.0" mnemonicParsing="false" onAction="#currentProjectSelectAction" text="読込" />
+                                    </children>
+                                </AnchorPane>
+                            </content>
+                        </Tab>
+                        <Tab text="新規プロジェクト設定">
+                            <content>
+                                <AnchorPane minHeight="-Infinity" minWidth="-Infinity">
+                                    <children>
+                                        <Button fx:id="createProjectButton" layoutX="75.0" layoutY="195.0" mnemonicParsing="false" onAction="#createProjectAction" text="登録" />
+                                        <Button fx:id="projectHomeButton" layoutX="503.0" layoutY="93.0" mnemonicParsing="false" onAction="#projectHomeAction" text="参照" />
+                              <Label layoutX="56.0" layoutY="57.0" text="プロジェクト名" />
+                              <TextField fx:id="createProjectId" editable="false" layoutX="144.0" layoutY="53.0" prefHeight="25.0" prefWidth="204.0" />
+                              <Label layoutX="42.0" layoutY="97.0" text="プロジェクトホーム" />
+                              <TextField fx:id="createPjHome" layoutX="144.0" layoutY="93.0" prefHeight="25.0" prefWidth="350.0" />
+                              <Label layoutX="43.0" layoutY="137.0" text="パラメータファイル" />
+                              <TextField fx:id="createPjParam" layoutX="144.0" layoutY="133.0" />
+                                    </children>
+                                </AnchorPane>
+                            </content>
+                        </Tab>
+                    </tabs>
+                </TabPane>
+
+            </center>
+            <bottom>
+                <FlowPane prefHeight="21.0" prefWidth="576.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <Button mnemonicParsing="false" onAction="#cancelAction" text="戻り">
+                            <FlowPane.margin>
+                                <Insets left="20.0" />
+                            </FlowPane.margin>
+                        </Button>
+                    </children>
+               <BorderPane.margin>
+                  <Insets top="12.0" />
+               </BorderPane.margin>
+                </FlowPane>
+            </bottom>
+        </BorderPane>
+    </children>
+</AnchorPane>

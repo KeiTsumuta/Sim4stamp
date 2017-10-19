@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tmu.fs.sim4stamp.gui.FXMLController">
+    <children>
+        <BorderPane layoutX="4.0" layoutY="-1.0" prefHeight="700.0" prefWidth="993.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-1.0">
+            <top>
+                <FlowPane prefHeight="24.0" prefWidth="993.0">
+                    <children>
+                        <MenuBar layoutY="2.0">
+                            <menus>
+                                <Menu mnemonicParsing="false" text="ファイル">
+                                    <items>
+                                        <MenuItem fx:id="settings" mnemonicParsing="false" onAction="#sim4StampSettingsAction" text="環境設定" />
+                                        <MenuItem fx:id="projectSettings" mnemonicParsing="false" onAction="#projectSettingsAction" text="プロジェクト選択" />
+                                        <MenuItem mnemonicParsing="false" onAction="#deviationPanelAction" text="偏差定数設定" />
+                                        <SeparatorMenuItem mnemonicParsing="false" />
+                                        <MenuItem fx:id="conditionSave" mnemonicParsing="false" onAction="#conditionSaveActin" text="状況保存" />
+                                        <SeparatorMenuItem mnemonicParsing="false" />
+                                        <MenuItem mnemonicParsing="false" onAction="#appExitAction" text="終了" />
+                                    </items>
+                                </Menu>
+                                <Menu mnemonicParsing="false" text="編集">
+                                    <items>
+                                        <MenuItem mnemonicParsing="false" onAction="#initResultAction" text="結果クリア" />
+                                        <MenuItem mnemonicParsing="false" onAction="#initSecondResultAction" text="結果クリア（2回目以降）" />
+                                        <SeparatorMenuItem mnemonicParsing="false" />
+                                        <MenuItem mnemonicParsing="false" onAction="#vdmppCreateAction" text="VDM++生成" />
+                                    </items>
+                                </Menu>
+                                <Menu mnemonicParsing="false" text="実行">
+                                    <items>
+                                        <MenuItem mnemonicParsing="false" onAction="#overtureExecuteAction" text="VDM++コマンドライン実行" />
+                                    </items>
+                                </Menu>
+                                <Menu mnemonicParsing="false" text="ヘルプ">
+                                    <items>
+                                        <MenuItem mnemonicParsing="false" onAction="#aboutAction" text="About" />
+                                    </items>
+                                </Menu>
+                            </menus>
+                        </MenuBar>
+                        <Label layoutX="184.0" layoutY="6.0" text="プロジェクト名：">
+                            <FlowPane.margin>
+                                <Insets left="30.0" />
+                            </FlowPane.margin>
+                        </Label>
+                        <Label fx:id="selectedProjectName" layoutX="261.0" layoutY="6.0" text="Project" />
+                    </children>
+                </FlowPane>
+            </top>
+            <center>
+                <TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+                    <tabs>
+                        <Tab text="モデリング">
+                            <content>
+                                <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                    <children>
+                                        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <children>
+                                                <HBox prefHeight="24.0" prefWidth="989.0">
+                                                    <children>
+                                                        <CheckBox fx:id="modelDitailDisplayCheckbox" mnemonicParsing="false" text="詳細表示">
+                                                            <HBox.margin>
+                                                                <Insets top="4.0" />
+                                                            </HBox.margin>
+                                                        </CheckBox>
+                                                        <CheckBox fx:id="connectorJointDisplayCheckbox" mnemonicParsing="false" text="ジョイント表示">
+                                                            <HBox.margin>
+                                                                <Insets left="20.0" top="4.0" />
+                                                            </HBox.margin>
+                                                        </CheckBox>
+                                                        <Button mnemonicParsing="false" onAction="#modelInfoUpdateAction" text="データ更新">
+                                                            <HBox.margin>
+                                                                <Insets left="20.0" />
+                                                            </HBox.margin>
+                                                        </Button>
+                                                    </children>
+                                                    <VBox.margin>
+                                                        <Insets bottom="4.0" left="8.0" top="4.0" />
+                                                    </VBox.margin>
+                                                </HBox>
+                                                <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="615.0" prefWidth="993.0">
+                                                    <children>
+                                                        <Canvas fx:id="modelCanvas" height="604.0" nodeOrientation="INHERIT" width="984.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="9.0" AnchorPane.topAnchor="0.0" />
+                                        
+                                                    </children>
+                                                </AnchorPane>
+                                            </children> 
+                                        </VBox>
+                                    </children>
+                                </AnchorPane>
+                            </content>
+                        </Tab>
+                        <Tab text="条件設定">
+                            <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                    <children>
+                                        <SplitPane dividerPositions="0.4462809917355372" layoutX="3.0" layoutY="1.0" prefHeight="604.0" prefWidth="970.0" AnchorPane.bottomAnchor="39.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="1.0">
+                                            <items>
+                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                                    <children>
+                                                        <Label layoutX="14.0" layoutY="4.0" text="シミュレーション条件設定データ">
+                                                            <font>
+                                                                <Font size="14.0" />
+                                                            </font>
+                                                        </Label>
+                                                        <Button fx:id="conditionSetButton" layoutX="333.0" layoutY="31.0" mnemonicParsing="false" text="設定" />
+                                                        <Label layoutX="33.0" layoutY="67.0" text="データ数" />
+                                                        <TextField fx:id="simInitSeqSize" alignment="CENTER_RIGHT" layoutX="85.0" layoutY="63.0" prefHeight="25.0" prefWidth="69.0" />
+                                                        <Label layoutX="27.0" layoutY="100.0" text="構成要素パラメータ" />
+                                                        <TableView fx:id="itemParamTable" layoutX="20.0" layoutY="132.0" prefHeight="188.0" prefWidth="302.0">
+                                                        </TableView>
+                                                        <Label layoutX="27.0" layoutY="345.0" text="コネクタパラメータ" />
+                                                        <TableView fx:id="connectorParamTable" layoutX="20.0" layoutY="399.0" prefHeight="203.0" prefWidth="384.0" />
+                                                        <Label layoutX="31.0" layoutY="374.0" text="偏差投入種別" />
+                                                        <Label layoutX="33.0" layoutY="35.0" text="タイトル" />
+                                                        <TextField fx:id="sceneTitle" layoutX="85.0" layoutY="31.0" />
+                                                        <ComboBox fx:id="deviationSelectBox" layoutX="107.0" layoutY="370.0" prefWidth="150.0" />
+                                                        <Label layoutX="270.0" layoutY="374.0" text="投入開始位置" />
+                                                        <TextField fx:id="deviationStartIndex" alignment="CENTER_RIGHT" layoutX="346.0" layoutY="370.0" prefHeight="25.0" prefWidth="58.0" />
+                                                    </children>
+                                                </AnchorPane>
+                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                                    <children>
+                                                        <TableView fx:id="initDataTable" layoutX="42.0" layoutY="52.0" prefHeight="532.0" prefWidth="341.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="32.0">
+                                                        </TableView>
+                                                    </children>
+                                                </AnchorPane>
+                                            </items>
+                                        </SplitPane>
+                                    </children>
+                                </AnchorPane>
+                            </content>
+                        </Tab>
+                        <Tab text="実行ログ">
+                            <content>
+                            </content>
+                            <content>
+                                <BorderPane prefHeight="200.0" prefWidth="200.0">
+                                    <top>
+                                        <HBox prefHeight="30.0" prefWidth="993.0" BorderPane.alignment="CENTER">
+                                            <children>
+                                                <Button fx:id="clearButton" mnemonicParsing="false" text="ログクリア">
+                                                    <HBox.margin>
+                                                        <Insets left="20.0" top="6.0" />
+                                                    </HBox.margin>
+                                                </Button>
+                                            </children>
+                                        </HBox>
+                                    </top>
+                                    <center>
+                                        <TextArea fx:id="executeLog" prefHeight="617.0" prefWidth="973.0" BorderPane.alignment="CENTER">
+                                            <BorderPane.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                            </BorderPane.margin>
+                                        </TextArea>
+                                    </center>
+                                </BorderPane>
+                            </content>
+                        </Tab>
+                        <Tab fx:id="result_panel" text="分析結果">
+                            <content>
+                                <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                    <children>
+                                        <SplitPane dividerPositions="0.4221183800623053" orientation="VERTICAL" prefHeight="642.0" prefWidth="993.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <items>
+                                                <VBox prefHeight="266.0" prefWidth="991.0">
+                                                    <children>
+                                                        <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="272.0" prefWidth="991.0">
+                                                            <columnConstraints>
+                                                                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" percentWidth="50.0" />
+                                                                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" />
+                                                            </columnConstraints>
+                                                            <rowConstraints>
+                                                                <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+                                                                <RowConstraints maxHeight="509.0" minHeight="10.0" prefHeight="238.0" vgrow="SOMETIMES" />
+                                                            </rowConstraints>
+                                                            <children>
+                                                                <FlowPane prefHeight="200.0" prefWidth="200.0" GridPane.valignment="CENTER">
+                                                                    <children>
+                                                                        <ChoiceBox fx:id="resultChoice" prefHeight="25.0" prefWidth="184.0">
+                                                                            <FlowPane.margin>
+                                                                                <Insets left="10.0" top="4.0" />
+                                                                            </FlowPane.margin>
+                                                                        </ChoiceBox>
+                                                                        <ChoiceBox fx:id="graph1ChoiseBox" prefWidth="150.0">
+                                                                            <FlowPane.margin>
+                                                                                <Insets left="40.0" top="4.0" />
+                                                                            </FlowPane.margin>
+                                                                        </ChoiceBox>
+                                                                    </children>
+                                                                </FlowPane>
+                                                                <ChoiceBox fx:id="graph2ChoiseBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.valignment="CENTER" />
+                                                                <LineChart fx:id="lineChart1" animated="false" prefHeight="227.0" prefWidth="447.0" titleSide="BOTTOM" GridPane.rowIndex="1">
+                                                                    <xAxis>
+                                                                        <NumberAxis prefHeight="25.0" prefWidth="432.0" side="BOTTOM" />
+                                                                    </xAxis>
+                                                                    <yAxis>
+                                                                        <NumberAxis prefHeight="162.0" prefWidth="28.0" side="LEFT" />
+                                                                    </yAxis>
+                                                                </LineChart>
+                                                                <LineChart fx:id="lineChart2" animated="false" prefHeight="180.0" prefWidth="501.0" titleSide="BOTTOM" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                                    <xAxis>
+                                                                        <NumberAxis side="BOTTOM" />
+                                                                    </xAxis>
+                                                                    <yAxis>
+                                                                        <NumberAxis side="LEFT" />
+                                                                    </yAxis>
+                                                                </LineChart>
+                                                            </children>
+                                                        </GridPane>
+                                                    </children>
+                                                </VBox>
+                                                <TableView fx:id="resultTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="369.0" prefWidth="991.0">
+                                      
+                                                </TableView>
+                                            </items>
+                                        </SplitPane>
+                                    </children>
+                                </AnchorPane>
+                            </content>
+                        </Tab>
+                    </tabs>
+                </TabPane>
+            </center>
+        </BorderPane>
+    </children>
+</AnchorPane>
