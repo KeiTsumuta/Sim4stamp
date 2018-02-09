@@ -60,6 +60,15 @@ public class Sensor extends Element {
         }
     }
 
+    @Override
+    public Sensor clone() {
+        Sensor s = new Sensor(nodeId, title);
+        s.setOrder(getOrder());
+        s.setAppendParams(getAppendParams());
+        return s;
+    }
+
+    @Override
     public String toString() {
         return super.toString();
     }

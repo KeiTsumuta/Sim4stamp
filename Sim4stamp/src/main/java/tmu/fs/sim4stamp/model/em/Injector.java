@@ -61,6 +61,15 @@ public class Injector extends Element {
         }
     }
 
+    @Override
+    public Injector clone() {
+        Injector i = new Injector(nodeId, title);
+        i.setOrder(getOrder());
+        i.setAppendParams(getAppendParams());
+        return i;
+    }
+
+    @Override
     public String toString() {
         return super.toString();
     }

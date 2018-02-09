@@ -60,6 +60,15 @@ public class Controller extends Element {
         }
     }
 
+    @Override
+    public Controller clone() {
+        Controller c = new Controller(nodeId, title);
+        c.setOrder(getOrder());
+        c.setAppendParams(getAppendParams());
+        return c;
+    }
+
+    @Override
     public String toString() {
         return super.toString();
     }

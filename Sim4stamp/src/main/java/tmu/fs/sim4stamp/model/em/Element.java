@@ -45,6 +45,7 @@ public abstract class Element implements JSONConvert, DisplayLevel {
 
     protected static final Color SELECTED_COLOR = Color.RED;
     private static final Color STROKE_COLOR = Color.BROWN;
+    private static final Color STROKE_INIT_COLOR = Color.DARKGREEN;
     private static final Color STROKE2_COLOR = Color.SEASHELL;
 
     protected EType etype;
@@ -197,7 +198,11 @@ public abstract class Element implements JSONConvert, DisplayLevel {
                 double width = getFontWidth(gc, id);
                 gc.setFill(STROKE2_COLOR);
                 gc.fillRect(ax - 2, (ay - height + 4) + height * i, width + 2, height + 2);
-                gc.setFill(STROKE_COLOR);
+                if (ioParam.isInitData()) {
+                    gc.setFill(STROKE_INIT_COLOR);
+                } else {
+                    gc.setFill(STROKE_COLOR);
+                }
                 gc.fillText(id, ax, ay + height * i);
                 i++;
             }

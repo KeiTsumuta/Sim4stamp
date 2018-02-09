@@ -50,6 +50,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import tmu.fs.sim4stamp.PanelManager;
 import tmu.fs.sim4stamp.SimService;
 import tmu.fs.sim4stamp.model.IOParamManager;
 import tmu.fs.sim4stamp.model.em.Element;
@@ -59,7 +60,7 @@ import tmu.fs.sim4stamp.model.iop.IOParam;
 import tmu.fs.sim4stamp.model.iop.IOScene;
 
 /**
- * 計算条件を設定するパネル
+ * シミュレーションに関する計算パラメータの条件設定を行うパネル
  *
  * @author Keiichi Tsumuta
  */
@@ -75,13 +76,13 @@ public class ConditionPanel implements Initializable {
     private final TextField sceneTitle;
     private final TableView simItemParamView; // 構成要素パラメータテーブル
 
-    private final TableView simConnectorView; // コネクタパラメータテーブル
+    //private final TableView simConnectorView; // コネクタパラメータテーブル
     private Map<String, RadioButton> radioMap;
 
     private final TextField simInitSeqSize;  // 時系列数
     private final TableView initDataTable;  // 初期値設定テーブル
-    private final Button conditionSetButton;
-    private final ComboBox deviationSelectBox;  // 偏差投入種別
+    private final Button conditionSetButton; // 設定ボタン（条件データ初期値テーブル反映）
+    //private final ComboBox deviationSelectBox;  // 偏差投入種別
     private final TextField deviationStartIndex;  // 偏差投入開始インデックス
 
     private Deviation selectedConnectorDeviation = Deviation.NORMAL;
@@ -89,9 +90,9 @@ public class ConditionPanel implements Initializable {
     public ConditionPanel(Control[] controls) {
         this.sceneTitle = (TextField) controls[0];
         this.simItemParamView = (TableView) controls[1];
-        this.simConnectorView = (TableView) controls[2];
+        //this.simConnectorView = (TableView) controls[2];
         this.simInitSeqSize = (TextField) controls[3];
-        this.deviationSelectBox = (ComboBox) controls[4];
+        //this.deviationSelectBox = (ComboBox) controls[4];
         this.deviationStartIndex = (TextField) controls[5];
         this.conditionSetButton = (Button) controls[6];
         this.initDataTable = (TableView) controls[7];
@@ -104,18 +105,13 @@ public class ConditionPanel implements Initializable {
         sceneTitle.setText(ioScene.getScene());
         simInitSeqSize.setText(Integer.toString(ioScene.getSize()));
         setItemTableView();
-        setConnectorTableView();
+        //setConnectorTableView();
         this.conditionSetButton.setOnAction((ActionEvent event) -> {
             setInitTable();
+            PanelManager.get().updateCondition();
         });
         ObservableList<Deviation> list = FXCollections.observableArrayList(CONNECTOR_DEVIATIONS);
-        deviationSelectBox.getItems().addAll(list);
-        deviationSelectBox.setOnAction((Event ev) -> {
-            Deviation deviation = (Deviation) deviationSelectBox.getSelectionModel().getSelectedItem();
-            //System.out.println("select deviation :" + deviation);
-            selectedConnectorDeviation = deviation;
-            SimService.getInstance().getIoParamManager().getCurrentScene().setDeviation(deviation);
-        });
+
         deviationStartIndex.setText(Integer.toString(ioScene.getDeviationStartIndex()));
     }
 
@@ -172,7 +168,7 @@ public class ConditionPanel implements Initializable {
                     });
             return new SimpleObjectProperty<RadioButton>(radioButton);
         });
-        simConnectorView.getColumns().setAll(fromColumn, toColumn, paramColumn, selColumn);
+        //simConnectorView.getColumns().setAll(fromColumn, toColumn, paramColumn, selColumn);
     }
 
     private void selectDeviationConnection(ConnectorItem conn) {
@@ -185,20 +181,8 @@ public class ConditionPanel implements Initializable {
         sceneTitle.setText(ioScene.getScene());
         simInitSeqSize.setText(Integer.toString(ioScene.getSize()));
         setItemTableView();
-        setConnectorTableView();
-        SingleSelectionModel model = deviationSelectBox.getSelectionModel();
-        selectedConnectorDeviation = ioScene.getDeviation();
-        int selectNo = 0;
-        if (selectedConnectorDeviation != null) {
-            for (int i = 0; i < CONNECTOR_DEVIATIONS.length; i++) {
-                if (CONNECTOR_DEVIATIONS[i].getId() == selectedConnectorDeviation.getId()) {
-                    selectNo = i;
-                    //System.out.println("init sel:" + i + ", " + selectedConnectorDeviation);
-                    break;
-                }
-            }
-        }
-        model.select(selectNo);
+        //setConnectorTableView();
+
         setItemDisplay();
         setInitTable();
     }
@@ -208,20 +192,21 @@ public class ConditionPanel implements Initializable {
             try {
                 List<Element.EType> etypes = new ArrayList<>();
                 List<String> colParents = new ArrayList<>();
-                List<List<String>> colTitles = new ArrayList<>();
+                List<List<IOParam>> colTitles = new ArrayList<>();
 
-                List<Element> elments = SimService.getInstance().getElementManger().getElements();
-                elments.forEach((elem) -> {
+                List<Element> elements = SimService.getInstance().getElementManger().getElements();
+                elements.sort((a, b) -> b.getOrder() - a.getOrder());
+                elements.forEach((elem) -> {
                     AppendParams ap = elem.getAppendParams();
                     if (!(ap == null)) {
                         String nodeId = elem.getNodeId();
-                        List<String> colChildren = new ArrayList<>();
+                        List<IOParam> colChildren = new ArrayList<>();
                         etypes.add(elem.getType());
                         colParents.add(nodeId);
                         List<IOParam> ios = ap.getParams();
                         for (IOParam ip : ios) {
                             if (ip.getParamType() == AppendParams.ParamType.Element) {
-                                colChildren.add(ip.getId());
+                                colChildren.add(ip);
                             }
                         }
                         colTitles.add(colChildren);
@@ -236,7 +221,7 @@ public class ConditionPanel implements Initializable {
         });
     }
 
-    private void setItems(List<Element.EType> etypes, List<String> elements, List<List<String>> elementParams) {
+    private void setItems(List<Element.EType> etypes, List<String> elements, List<List<IOParam>> elementParams) {
         ObservableList<ElementItem> eis = FXCollections.observableArrayList();
         int n = 0;
         for (int i = 0; i < elements.size(); i++) {
@@ -262,7 +247,6 @@ public class ConditionPanel implements Initializable {
         List<String[]> nfntList = iom.getNfNtList();
         List<List<IOParam>> connParams = iom.getConnectorParams();
         ToggleGroup toggleGroup = new ToggleGroup();
-        radioMap = new HashMap<>();
         for (int i = 0; i < nfntList.size(); i++) {
             String nf = nfntList.get(i)[0];
             String nt = nfntList.get(i)[1];
@@ -279,7 +263,7 @@ public class ConditionPanel implements Initializable {
                 radioMap.put(id, rb);
             }
         }
-        simConnectorView.setItems(eis);
+        //simConnectorView.setItems(eis);
     }
 
     public void setInitTable() {
@@ -287,9 +271,11 @@ public class ConditionPanel implements Initializable {
             try {
                 List<ElementItem> initList = new ArrayList<>();
                 ObservableList<ElementItem> eis = simItemParamView.getItems();
-                eis.stream().filter((ei) -> (ei.isSelected())).forEachOrdered((ei) -> {
-                    initList.add(ei);
-                });
+                eis.stream()
+                        .filter((ei) -> (ei.isSelected()))
+                        .forEachOrdered((ei) -> {
+                            initList.add(ei);
+                        });
                 List<String> hs = new ArrayList<>();
                 hs.add("No.");
                 for (ElementItem e : initList) {
@@ -406,11 +392,18 @@ public class ConditionPanel implements Initializable {
         private SimpleStringProperty elementId;
         private SimpleStringProperty paramId;
         private SimpleBooleanProperty selected;
+        private IOParam ioparam;
 
-        public ElementItem(String elemId, String paramId, boolean select) {
+        public ElementItem(String elemId, IOParam param, boolean select) {
             this.elementId = new SimpleStringProperty(elemId);
-            this.paramId = new SimpleStringProperty(paramId);
+            this.ioparam = param;
+            this.paramId = new SimpleStringProperty(param.getId());
             this.selected = new SimpleBooleanProperty(select);
+            this.ioparam.setInitData(select);
+        }
+
+        public IOParam getIOParam() {
+            return ioparam;
         }
 
         /**
@@ -451,6 +444,7 @@ public class ConditionPanel implements Initializable {
          */
         public void setSelected(boolean select) {
             this.selected.set(select);
+            ioparam.setInitData(select);
         }
     }
 

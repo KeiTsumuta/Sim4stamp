@@ -49,6 +49,7 @@ public class IOParamManager implements JSONConvert {
 
     // Element param
     private List<String> elementIds;
+    private List<Element> series = new ArrayList<>();
 
     // Connector param
     private List<List<IOParam>> connectorParams;
@@ -90,6 +91,7 @@ public class IOParamManager implements JSONConvert {
         setConnectors();
         ElementTree elementTree = new ElementTree();
         elementTree.setTree(em.getElements(), cm.getConnectors());
+        series = elementTree.getSeries();
         if (currentScene != null) {
             currentScene.remake(nodeParamMap, nfntList);
         }
@@ -163,6 +165,13 @@ public class IOParamManager implements JSONConvert {
 
     public List<String[]> getNfNtList() {
         return nfntList;
+    }
+
+    public List<Element> getSeries() {
+        if (series != null) {
+            return series;
+        }
+        return new ArrayList<>();
     }
 
     /**

@@ -12,6 +12,7 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
@@ -29,7 +30,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tmu.fs.sim4stamp.gui.FXMLController">
+<AnchorPane id="AnchorPane" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tmu.fs.sim4stamp.gui.FXMLController">
     <children>
         <BorderPane layoutX="4.0" layoutY="-1.0" prefHeight="700.0" prefWidth="993.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-1.0">
             <top>
@@ -84,7 +85,7 @@
                             <content>
                                 <AnchorPane prefHeight="200.0" prefWidth="200.0">
                                     <children>
-                                        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                        <VBox AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <children>
                                                 <HBox prefHeight="24.0" prefWidth="989.0">
                                                     <children>
@@ -108,7 +109,7 @@
                                                         <Insets bottom="4.0" left="8.0" top="4.0" />
                                                     </VBox.margin>
                                                 </HBox>
-                                                <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="615.0" prefWidth="993.0">
+                                                <AnchorPane prefHeight="615.0" prefWidth="993.0">
                                                     <children>
                                                         <Canvas fx:id="modelCanvas" height="604.0" nodeOrientation="INHERIT" width="984.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="9.0" AnchorPane.topAnchor="0.0" />
                                         
@@ -136,17 +137,15 @@
                                                         <Button fx:id="conditionSetButton" layoutX="333.0" layoutY="31.0" mnemonicParsing="false" text="設定" />
                                                         <Label layoutX="33.0" layoutY="67.0" text="データ数" />
                                                         <TextField fx:id="simInitSeqSize" alignment="CENTER_RIGHT" layoutX="85.0" layoutY="63.0" prefHeight="25.0" prefWidth="69.0" />
-                                                        <Label layoutX="27.0" layoutY="100.0" text="構成要素パラメータ" />
-                                                        <TableView fx:id="itemParamTable" layoutX="20.0" layoutY="132.0" prefHeight="188.0" prefWidth="302.0">
+                                                        <Label layoutX="33.0" layoutY="105.0" text="投入開始位置" />
+                                                        <TextField fx:id="deviationStartIndex" alignment="CENTER_RIGHT" layoutX="118.0" layoutY="101.0" prefHeight="25.0" prefWidth="58.0" />
+                                                        
+                                                        <Label layoutX="26.0" layoutY="193.0" text="構成要素パラメータ" />
+                                                        <TableView fx:id="itemParamTable" layoutX="28.0" layoutY="222.0" prefHeight="362.0" prefWidth="302.0">
                                                         </TableView>
-                                                        <Label layoutX="27.0" layoutY="345.0" text="コネクタパラメータ" />
-                                                        <TableView fx:id="connectorParamTable" layoutX="20.0" layoutY="399.0" prefHeight="203.0" prefWidth="384.0" />
-                                                        <Label layoutX="31.0" layoutY="374.0" text="偏差投入種別" />
                                                         <Label layoutX="33.0" layoutY="35.0" text="タイトル" />
                                                         <TextField fx:id="sceneTitle" layoutX="85.0" layoutY="31.0" />
-                                                        <ComboBox fx:id="deviationSelectBox" layoutX="107.0" layoutY="370.0" prefWidth="150.0" />
-                                                        <Label layoutX="270.0" layoutY="374.0" text="投入開始位置" />
-                                                        <TextField fx:id="deviationStartIndex" alignment="CENTER_RIGHT" layoutX="346.0" layoutY="370.0" prefHeight="25.0" prefWidth="58.0" />
+                                                        
                                                     </children>
                                                 </AnchorPane>
                                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
@@ -161,9 +160,46 @@
                                 </AnchorPane>
                             </content>
                         </Tab>
-                        <Tab text="実行ログ">
+                        <Tab text="偏差投入">
                             <content>
+                                <AnchorPane>
+                                    <children>
+                                        <VBox AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <children>
+                                                <HBox prefHeight="24.0" prefWidth="989.0">
+                                                    <children>
+                                                      <Button fx:id="executeSimButton" mnemonicParsing="false" text="実行">
+                                                          <HBox.margin>
+                                                              <Insets left="20.0" />
+                                                          </HBox.margin>
+                                                      </Button>
+                                                        <Label text="偏差投入種別">
+                                             <HBox.margin>
+                                                <Insets left="20.0" right="4.0" top="4.0" />
+                                             </HBox.margin>
+                                                        </Label>
+                                                        <ComboBox fx:id="deviationSelectionByType" layoutX="107.0" layoutY="370.0" prefWidth="150.0" />
+                                                    </children>
+                                       <VBox.margin>
+                                          <Insets bottom="4.0" top="4.0" />
+                                       </VBox.margin>
+                                                </HBox>
+                                                <AnchorPane>
+                                                    <children>
+                                                        <ScrollPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                            <content>
+                                                                <Canvas fx:id="deviationCanvas" height="604.0" nodeOrientation="INHERIT" width="984.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />                                    
+                                                            </content>
+                                                        </ScrollPane>
+                                                    </children>
+                                                </AnchorPane>
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </AnchorPane>
                             </content>
+                        </Tab>
+                        <Tab text="実行ログ">
                             <content>
                                 <BorderPane prefHeight="200.0" prefWidth="200.0">
                                     <top>
@@ -220,7 +256,7 @@
                                                                     </children>
                                                                 </FlowPane>
                                                                 <ChoiceBox fx:id="graph2ChoiseBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.valignment="CENTER" />
-                                                                <LineChart fx:id="lineChart1" animated="false" prefHeight="227.0" prefWidth="447.0" titleSide="BOTTOM" GridPane.rowIndex="1">
+                                                                <LineChart fx:id="lineChart1" animated="false" prefHeight="180.0" prefWidth="447.0" titleSide="BOTTOM" GridPane.rowIndex="1">
                                                                     <xAxis>
                                                                         <NumberAxis prefHeight="25.0" prefWidth="432.0" side="BOTTOM" />
                                                                     </xAxis>

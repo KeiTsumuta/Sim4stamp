@@ -112,7 +112,7 @@ public class ResultPanel implements Initializable {
                     String[] tk = newValue.split(" ");
                     if (tk.length > 1) {
                         selectResultIndex = getInt(tk[0]);
-                        System.out.println("sel index:" + selectResultIndex);
+                        //System.out.println("sel index:" + selectResultIndex);
                         if (selectResultIndex > 0) {
                             List<IOScene> resultScenes = SimService.getInstance().getIoParamManager().getResultScenes();
                             displayResultTable(resultScenes.get(selectResultIndex - 1));

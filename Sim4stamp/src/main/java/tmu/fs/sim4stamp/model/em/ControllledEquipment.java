@@ -61,6 +61,14 @@ public class ControllledEquipment extends Element {
         }
     }
 
+    @Override
+    public ControllledEquipment clone() {
+        ControllledEquipment c = new ControllledEquipment(nodeId, title);
+        c.setOrder(getOrder());
+        c.setAppendParams(getAppendParams());
+        return c;
+    }
+
     public String toString() {
         return super.toString();
     }

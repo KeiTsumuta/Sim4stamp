@@ -65,6 +65,9 @@ public class FXMLController implements Initializable {
     private Canvas modelCanvas;
 
     @FXML
+    private Canvas deviationCanvas;
+
+    @FXML
     private ChoiceBox graph1ChoiseBox;
     @FXML
     private LineChart lineChart1;
@@ -76,8 +79,8 @@ public class FXMLController implements Initializable {
 
     @FXML
     private TableView itemParamTable;
-    @FXML
-    private TableView connectorParamTable;
+    //@FXML
+    //private TableView connectorParamTable;
     @FXML
     private TextField sceneTitle;
     @FXML
@@ -87,10 +90,13 @@ public class FXMLController implements Initializable {
     @FXML
     private TableView initDataTable;
 
-    @FXML
-    private ComboBox deviationSelectBox;
+    // @FXML
+    // private ComboBox deviationSelectBox;
     @FXML
     private TextField deviationStartIndex;
+
+    @FXML
+    private ComboBox deviationSelectionByType;
 
     @FXML
     private ChoiceBox resultChoice;
@@ -113,6 +119,9 @@ public class FXMLController implements Initializable {
     private TextArea executeLog;
 
     @FXML
+    private Button executeSimButton;
+
+    @FXML
     private void handleButtonAction(ActionEvent event) {
 
     }
@@ -129,11 +138,16 @@ public class FXMLController implements Initializable {
         pm.setModelPanel(modelPanel);
 
         Control[] conditonPanelControls = new Control[]{sceneTitle,
-            itemParamTable, connectorParamTable, simInitSeqSize,
-            deviationSelectBox, deviationStartIndex, conditionSetButton, initDataTable};
+            itemParamTable, null, simInitSeqSize,
+            null, deviationStartIndex, conditionSetButton, initDataTable};
         ConditionPanel conditionPanel = new ConditionPanel(conditonPanelControls);
         conditionPanel.initialize(url, rb);
         pm.setConditionPanel(conditionPanel);
+
+        Control[] devMapPanelControls = new Control[]{deviationSelectionByType, executeSimButton};
+        DeviationMapPanel devMapPanel = new DeviationMapPanel(deviationCanvas, devMapPanelControls);
+        devMapPanel.initialize(url, rb);
+        pm.setDeviationMapPanel(devMapPanel);
 
         ExecuteLogPanel executeLogPanel = new ExecuteLogPanel(clearButton, executeLog);
         executeLogPanel.initialize(url, rb);

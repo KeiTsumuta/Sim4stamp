@@ -531,4 +531,20 @@ public class IOScene implements JSONConvert {
         this.deviationStartIndex = deviationStartIndex;
     }
 
+    public boolean isDeviationConnector(Connector c) {
+        try {
+            if (deviationConnParamFromId.equals(c.getNodeFromId()) && deviationConnParamToId.equals(c.getNodeToId())) {
+                AppendParams ap = c.getAppendParams();
+                List<IOParam> aps = ap.getParams();
+                if (aps.size() > 0) {
+                    if (deviationConnParamId.equals(aps.get(0).getId())) {
+                        return true;
+                    }
+                }
+            }
+        } catch (Exception e) {
+
+        }
+        return false;
+    }
 }

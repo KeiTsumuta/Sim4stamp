@@ -38,6 +38,7 @@ public class ElementTree {
     private List<Connector> connectors;
     private Tree root;
     private volatile boolean[] flags = null;
+    private List<Element> series = null;
 
     public ElementTree() {
 
@@ -78,6 +79,12 @@ public class ElementTree {
             findChildren(root);
             setTreeOrder(root, 1);
             log.info("tree make:" + root.toString());
+            series = new ArrayList<>();
+            List<Tree> rootChildren = root.getChildren();
+            for (Tree tree : rootChildren) {
+                series.add(root.getElement());
+                tree.getSeries(series);
+            }
         }
     }
 
@@ -133,6 +140,10 @@ public class ElementTree {
         }
     }
 
+    public List<Element> getSeries() {
+        return series;
+    }
+
     class Tree {
 
         private Element element;
@@ -164,6 +175,13 @@ public class ElementTree {
             return children;
         }
 
+        public void getSeries(List<Element> elementList) {
+            elementList.add(element);
+            for (Tree child : children) {
+                child.getSeries(elementList);
+            }
+        }
+
         public String toString() {
             StringBuilder sb = new StringBuilder();
             sb.append(element.getNodeId()).append("(").append(element.getOrder()).append(")");
@@ -172,7 +190,5 @@ public class ElementTree {
             }
             return sb.toString();
         }
-
     }
-
 }

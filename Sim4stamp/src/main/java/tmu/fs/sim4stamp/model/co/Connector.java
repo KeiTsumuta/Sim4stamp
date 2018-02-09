@@ -17,7 +17,6 @@
  */
 package tmu.fs.sim4stamp.model.co;
 
-import com.sun.javafx.tk.Toolkit;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,8 +44,9 @@ public class Connector implements JSONConvert, DisplayLevel {
 
     private static final double ARROW_LENGTH = 20.0;
     private static final double DISTANCE_CLOSED = 10.0;
-    private static final Color STROKE_COLOR = Color.BROWN;
+    private static final Color STROKE_COLOR = Color.BLUE;
     private static final Color STROKE2_COLOR = Color.SEASHELL;
+    private static final Color MARKED_COLOR = Color.RED;
 
     private String nodeFromId;
     private String nodeToId;
@@ -56,6 +56,9 @@ public class Connector implements JSONConvert, DisplayLevel {
     private volatile double pointYDelta = 0L;
     private volatile int selectedIndex = -1;
     private volatile boolean jointDisplay = false;
+    private volatile boolean pointed = false;
+    private volatile boolean marked = false;
+    private volatile String markedComment = null;
 
     private Level displayLevel = Level.Base;
 
@@ -101,6 +104,20 @@ public class Connector implements JSONConvert, DisplayLevel {
         this.jointDisplay = jointDisplay;
     }
 
+    /**
+     * @return the pointed
+     */
+    public boolean isPointed() {
+        return pointed;
+    }
+
+    /**
+     * @param pointed the pointed to set
+     */
+    public void setPointed(boolean pointed) {
+        this.pointed = pointed;
+    }
+
     public void draw(GraphicsContext gc) {
         if (points == null) {
             return;
@@ -109,7 +126,9 @@ public class Connector implements JSONConvert, DisplayLevel {
             return;
         }
         gc.setLineWidth(2.0);
-        if (nodeFromId != null && nodeFromId.length() > 0 && nodeToId != null && nodeToId.length() > 0) {
+        if (pointed) {
+            gc.setStroke(Color.RED);
+        } else if (nodeFromId != null && nodeFromId.length() > 0 && nodeToId != null && nodeToId.length() > 0) {
             gc.setStroke(Color.BLACK);
         } else {
             gc.setStroke(Color.GOLD);
@@ -233,11 +252,19 @@ public class Connector implements JSONConvert, DisplayLevel {
             int i = 0;
             for (IOParam ioParam : ioParams) {
                 String id = ioParam.getId();
+                Color color = STROKE_COLOR;
+                if (marked) {
+                    id = "★★ " + id + " ★★";
+                    color = MARKED_COLOR;
+                }
                 double width = getFontWidth(gc, id);
                 gc.setFill(STROKE2_COLOR);
                 gc.fillRect(xp - 2 - width / 2, yp - height, width + 2, height);
-                gc.setFill(STROKE_COLOR);
+                gc.setFill(color);
                 gc.fillText(id, xp - width / 2, yp + height * i - 2);
+                if (marked) {
+                    gc.fillText(markedComment, xp - width / 2, yp + height * (i + 1));
+                }
                 i++;
             }
         }
@@ -449,6 +476,28 @@ public class Connector implements JSONConvert, DisplayLevel {
     @Override
     public Level getLevel() {
         return displayLevel;
+    }
+
+    @Override
+    public Connector clone() {
+        Connector co = new Connector(nodeFromId, nodeToId);
+        co.setAppendParams(appendParams);
+        return co;
+    }
+
+    /**
+     * @return the marked
+     */
+    public boolean isMarked() {
+        return marked;
+    }
+
+    /**
+     * @param marked the marked to set
+     */
+    public void setMarked(boolean marked, String comment) {
+        this.marked = marked;
+        this.markedComment = comment;
     }
 
 }

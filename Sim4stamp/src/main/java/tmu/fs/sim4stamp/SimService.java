@@ -38,7 +38,6 @@ import tmu.fs.sim4stamp.model.ElementManager;
 import tmu.fs.sim4stamp.model.iop.IOScene;
 import tmu.fs.sim4stamp.state.OvertureExecManager;
 import tmu.fs.sim4stamp.tcp.SimServer;
-import tmu.fs.sim4stamp.util.ElementTree;
 import tmu.fs.sim4stamp.util.ResourceFileIO;
 
 /**
@@ -69,7 +68,6 @@ public class SimService extends ResourceFileIO implements java.io.Serializable {
     private IOParamManager ioParamManager;
     private List<List<IOParamManager>> timeLines;
 
-    private ElementTree elementTree;
     private SimServer simServer;
 
     private SimService() {
@@ -412,13 +410,6 @@ public class SimService extends ResourceFileIO implements java.io.Serializable {
      */
     public void setCurrentProjectId(String currentProjectId) {
         this.currentProjectId = currentProjectId;
-    }
-
-    /**
-     * @return the elementTree
-     */
-    public ElementTree getElementTree() {
-        return elementTree;
     }
 
     public ElementManager getElementManger() {

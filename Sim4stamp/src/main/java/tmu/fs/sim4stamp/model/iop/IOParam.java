@@ -35,12 +35,14 @@ public class IOParam implements JSONConvert {
     private final String[] parentId; // pTypeがConnectorのみ有意（Elementは「null」）
     private final String id;
     private final ValueType vType;
+    private boolean initData;
 
     public IOParam(AppendParams.ParamType ptype, String[] parentId, String id, ValueType type) {
         this.pType = ptype;
         this.parentId = parentId;
         this.id = id;
         this.vType = type;
+        this.initData = false;
     }
 
     public AppendParams.ParamType getParamType() {
@@ -75,6 +77,20 @@ public class IOParam implements JSONConvert {
         return s;
     }
 
+    /**
+     * @return the initData
+     */
+    public boolean isInitData() {
+        return initData;
+    }
+
+    /**
+     * @param initData the initData to set
+     */
+    public void setInitData(boolean initData) {
+        this.initData = initData;
+    }
+
     @Override
     public void parseJson(JSONObject sj) {
 
@@ -96,4 +112,5 @@ public class IOParam implements JSONConvert {
     public String toString() {
         return parentId + "," + id + "," + getTypeToString();
     }
+
 }

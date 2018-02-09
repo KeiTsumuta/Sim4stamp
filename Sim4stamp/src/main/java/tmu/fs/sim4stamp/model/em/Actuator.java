@@ -61,6 +61,15 @@ public class Actuator extends Element {
         }
     }
 
+    @Override
+    public Actuator clone() {
+        Actuator a = new Actuator(nodeId, title);
+        a.setOrder(getOrder());
+        a.setAppendParams(getAppendParams());
+        return a;
+    }
+
+    @Override
     public String toString() {
         return super.toString();
     }

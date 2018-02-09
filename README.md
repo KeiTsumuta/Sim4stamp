@@ -4,6 +4,10 @@ The simulation tool for STAMP/STPA
 
 「Sim4stamp」はSTAMP/STPA手法を支援するシミュレーションツールです。
 
+## 履歴
+
+2018/2/10 偏差投入の設定画面を新たに追加し、ビジュアル化する。
+
 
 ## 使用方法
 

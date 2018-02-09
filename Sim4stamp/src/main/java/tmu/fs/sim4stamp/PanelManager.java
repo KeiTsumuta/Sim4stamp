@@ -20,6 +20,7 @@ package tmu.fs.sim4stamp;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
 import tmu.fs.sim4stamp.gui.ConditionPanel;
+import tmu.fs.sim4stamp.gui.DeviationMapPanel;
 import tmu.fs.sim4stamp.gui.ExecuteLogPanel;
 import tmu.fs.sim4stamp.gui.ModelPanel;
 import tmu.fs.sim4stamp.gui.ResultPanel;
@@ -36,6 +37,7 @@ public class PanelManager {
 
     private ModelPanel modelPanel;
     private ConditionPanel conditionPanel;
+    private DeviationMapPanel deviationMapPanel;
     private ExecuteLogPanel executeLogPanel;
     private ResultPanel resutPanel;
 
@@ -81,6 +83,20 @@ public class PanelManager {
      */
     public void setConditionPanel(ConditionPanel conditionPanel) {
         this.conditionPanel = conditionPanel;
+    }
+
+    /**
+     * @return the deviationMapPanel
+     */
+    public DeviationMapPanel getDeviationMapPanel() {
+        return deviationMapPanel;
+    }
+
+    /**
+     * @param deviationMapPanel the deviationMapPanel to set
+     */
+    public void setDeviationMapPanel(DeviationMapPanel deviationMapPanel) {
+        this.deviationMapPanel = deviationMapPanel;
     }
 
     /**
@@ -135,7 +151,20 @@ public class PanelManager {
                 if (selectedProjectName != null) {
                     selectedProjectName.setText(ss.getCurrentProjectId());
                 }
+                getDeviationMapPanel().initDisplayPanel();
                 getResutPanel().initDisplay();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
+    public void updateCondition() {
+        Platform.runLater(() -> {
+            try {
+                SimService ss = SimService.getInstance();
+                getModelPanel().drawCanvasPanel();
+                getDeviationMapPanel().initDisplayPanel();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -164,8 +193,8 @@ public class PanelManager {
             }
         });
     }
-    
-     public void resetSecondResult() {
+
+    public void resetSecondResult() {
         Platform.runLater(() -> {
             try {
                 IOParamManager iom = SimService.getInstance().getIoParamManager();
@@ -177,5 +206,5 @@ public class PanelManager {
             }
         });
     }
-    
+
 }
