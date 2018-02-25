@@ -277,8 +277,8 @@ public class ConditionPanel implements Initializable {
                             initList.add(ei);
                         });
                 List<String> hs = new ArrayList<>();
-                hs.add("No.");
-                for (ElementItem e : initList) {
+                hs.add("No."); // No列
+                for (ElementItem e : initList) { // 初期値設置列
                     hs.add(e.getElementId() + "_" + e.getParamId());
                 }
                 ObservableList<String> headers = FXCollections.observableArrayList();
@@ -288,15 +288,24 @@ public class ConditionPanel implements Initializable {
                 List<TableColumn<ObservableList, String>> columnList = new ArrayList<>();
                 for (String header : headers) {
                     final int idx = colIndex;
-                    TableColumn<ObservableList, String> column = new TableColumn<>(header);
-                    column.setStyle("-fx-alignment: CENTER-RIGHT;");
-                    column.setCellValueFactory(
-                            (CellDataFeatures<ObservableList, String> param)
-                            -> {
-                        return new SimpleStringProperty(param.getValue().get(idx).toString());
-                    });
-                    if (colIndex > 0) {
-                        column.setCellFactory(TextFieldTableCell.forTableColumn());
+                    if (idx == 0) { // No列
+                        TableColumn<ObservableList, String> column = new TableColumn<>(header);
+                        column.setStyle("-fx-alignment: CENTER-RIGHT;");
+                        column.setCellValueFactory(
+                                (CellDataFeatures<ObservableList, String> param)
+                                -> {
+                            return new SimpleStringProperty(param.getValue().get(idx).toString());
+                        });
+                        columnList.add(column);
+                    } else {   // 初期値設置列
+                        TableColumn<ObservableList, String> column = new TableColumn<>(header);
+                        column.setStyle("-fx-alignment: CENTER-RIGHT;");
+                        column.setCellValueFactory(
+                                (CellDataFeatures<ObservableList, String> param)
+                                -> {
+                            return new SimpleStringProperty(param.getValue().get(idx).toString());
+                        });
+                        column.setCellFactory(TextFieldTableCell.<ObservableList>forTableColumn());
                         column.setOnEditCommit(
                                 new EventHandler<CellEditEvent<ObservableList, String>>() {
                             @Override
@@ -304,11 +313,9 @@ public class ConditionPanel implements Initializable {
                                 int row = event.getTablePosition().getRow();
                                 String tableId = event.getTableColumn().getText();
                                 String[] idel = tableId.split("_");
-                                IOParamManager iom = SimService.getInstance().getIoParamManager();
-                                IOScene ioScene = iom.getCurrentScene();
-                                double newValue = getDouble(event.getNewValue());
+                                IOScene ioScene = SimService.getInstance().getIoParamManager().getCurrentScene();
                                 double[] d = ioScene.getData(idel[0], idel[1]);
-                                d[row] = newValue;
+                                d[row] = getDouble(event.getNewValue());
                                 ObservableList<String> list = event.getTableView().getItems().get(row);
                                 list.set(idx, FORMAT.format(d[row]));
                                 if ((row + 1) < d.length) {
@@ -318,8 +325,8 @@ public class ConditionPanel implements Initializable {
                             }
                         });
                         column.setEditable(true);
+                        columnList.add(column);
                     }
-                    columnList.add(column);
                     colIndex++;
                 }
                 IOParamManager iom = SimService.getInstance().getIoParamManager();
@@ -330,29 +337,28 @@ public class ConditionPanel implements Initializable {
                 initDataTable.getColumns().setAll(columnList);
                 int startIndex = getInt(deviationStartIndex.getText());
                 ioScene.setDeviationStartIndex(startIndex);
-                int devIdx = startIndex - 1;
-                if (devIdx < 0) {
-                    devIdx = 0;
-                }
-                ObservableList<ObservableList> initDataVals = FXCollections.observableArrayList();
+                int devIdx = Math.max(startIndex - 1, 0);
+                ObservableList<ObservableList> initDataVals = FXCollections.<ObservableList>observableArrayList();
                 int size = getInt(simInitSeqSize.getText());
                 ioScene.setSize(size);
                 for (int i = 0; i < size; i++) {
-                    ObservableList<String> rows = FXCollections.observableArrayList();
+                    ObservableList<String> rows = FXCollections.<String>observableArrayList();
+                    // No列の行データ設定
+                    StringBuilder sb = new StringBuilder();
                     if (i == devIdx) {
-                        rows.add("# " + Integer.toString(i + 1));
+                        sb.append("# ").append(i + 1);
                     } else {
-                        rows.add(Integer.toString(i + 1));
+                        sb.append(i + 1);
                     }
+                    rows.add(sb.toString());
+                    // 初期値設置列の行データ設定
                     for (int k = 0; k < headers.size() - 1; k++) {
                         ElementItem ei = initList.get(k);
-                        ioScene.initDataSelect(ei.getElementId(), ei.getParamId());
-                        double[] d = ioScene.getData(ei.getElementId(), ei.getParamId());
-                        if (d != null && d.length > i) {
-                            rows.add(FORMAT.format(d[i]));
-                        } else {
-                            rows.add(FORMAT.format(0.0));
+                        if (i == 0) {
+                            ioScene.initDataSelect(ei.getElementId(), ei.getParamId());
                         }
+                        double[] d = ioScene.getData(ei.getElementId(), ei.getParamId());
+                        rows.add(FORMAT.format(d[i]));
                     }
                     initDataVals.add(rows);
                 }

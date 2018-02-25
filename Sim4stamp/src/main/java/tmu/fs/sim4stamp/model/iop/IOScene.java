@@ -49,6 +49,7 @@ public class IOScene implements JSONConvert {
     private int size = 0;
     private Map<String, List<IOParam>> nodeParamMap;
     private Map<String, List<IOValue>> nodeValues;
+    private Map<String, IOValue> nodeValueMap;
     private List<String[]> nfntList;
     private String deviationConector = null;
     private Deviation deviation = Deviation.NORMAL;
@@ -68,11 +69,14 @@ public class IOScene implements JSONConvert {
         this.size = size;
         this.nfntList = nfnt;
         nodeValues = new HashMap<>();
+        nodeValueMap = new HashMap<>();
         for (String nodeId : mp.keySet()) {
             List<IOParam> list = nodeParamMap.get(nodeId);
             List<IOValue> iovs = new ArrayList<>();
             for (IOParam p : list) {
-                iovs.add(new IOValue(p.getParamType(), p, size));
+                IOValue iov = new IOValue(p.getParamType(), p, size);
+                iovs.add(iov);
+                nodeValueMap.put(nodeId + "_" + p.getId(), iov);
             }
             nodeValues.put(nodeId, iovs);
         }
@@ -97,7 +101,9 @@ public class IOScene implements JSONConvert {
             if (valList == null) {
                 List<IOValue> iovs = new ArrayList<>();
                 for (IOParam p : list) {
-                    iovs.add(new IOValue(p.getParamType(), p, size));
+                    IOValue iov = new IOValue(p.getParamType(), p, size);
+                    iovs.add(iov);
+                    nodeValueMap.put(nodeId + "_" + p.getId(), iov);
                 }
                 nodeValues.put(nodeId, iovs);
             } else {
@@ -112,7 +118,9 @@ public class IOScene implements JSONConvert {
                         }
                     }
                     if (!f) {
-                        valList.add(new IOValue(p.getParamType(), p, size));
+                        IOValue iov = new IOValue(p.getParamType(), p, size);
+                        valList.add(iov);
+                        nodeValueMap.put(nodeId + "_" + p.getId(), iov);
                     }
                 }
             }
@@ -182,25 +190,17 @@ public class IOScene implements JSONConvert {
 
     private void setSimple(String elementId, String paramId, int index, double value) {
         //System.out.println("set:" + elementId + "," + paramId + "," + index + "," + value);
-        List<IOValue> list = nodeValues.get(elementId);
-        for (IOValue val : list) {
-            if (paramId.equals(val.getId())) {
-                val.set(index, value);
-                break;
-            }
-        }
+        IOValue val = nodeValueMap.get(elementId + "_" + paramId);
+        val.set(index, value);
     }
 
     public void setData(String elementId, String paramId, int index, double value) {
         //System.out.println("set:" + elementId + "," + paramId + "," + index + "," + value);
-        List<IOValue> list = nodeValues.get(elementId);
-        for (IOValue val : list) {
-            if (paramId.equals(val.getId())) {
-                val.set(index, value);
-                if (val.getParamType() == AppendParams.ParamType.Connector) {
-                    copyNfNt(elementId, val.getParentId()[1], paramId, index, value);
-                }
-                break;
+        IOValue val = nodeValueMap.get(elementId + "_" + paramId);
+        if (val != null) {
+            val.set(index, value);
+            if (val.getParamType() == AppendParams.ParamType.Connector) {
+                copyNfNt(elementId, val.getParentId()[1], paramId, index, value);
             }
         }
     }
@@ -235,21 +235,16 @@ public class IOScene implements JSONConvert {
     }
 
     public void initDataSelect(String elementId, String paramId) {
-        List<IOValue> list = nodeValues.get(elementId);
-        for (IOValue val : list) {
-            if (paramId.equals(val.getId())) {
-                val.setInitFlag(true);
-                break;
-            }
+        IOValue val = nodeValueMap.get(elementId + "_" + paramId);
+        if (val != null) {
+            val.setInitFlag(true);
         }
     }
 
     public boolean isInitDataSelected(String elementId, String paramId) {
-        List<IOValue> list = nodeValues.get(elementId);
-        for (IOValue val : list) {
-            if (paramId.equals(val.getId())) {
-                return val.isInitFlag();
-            }
+        IOValue val = nodeValueMap.get(elementId + "_" + paramId);
+        if (val != null) {
+            return val.isInitFlag();
         }
         return false;
     }
@@ -307,13 +302,9 @@ public class IOScene implements JSONConvert {
 
     public double[] getData(String elementId, String paramId) {
         if (nodeValues != null) {
-            List<IOValue> list = nodeValues.get(elementId);
-            if (list != null) {
-                for (IOValue iv : list) {
-                    if (paramId.equals(iv.getId())) {
-                        return iv.getDoubleValues();
-                    }
-                }
+            IOValue iv = nodeValueMap.get(elementId + "_" + paramId);
+            if (iv != null) {
+                return iv.getDoubleValues();
             }
         }
         return new double[size];
