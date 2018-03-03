@@ -31,6 +31,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import tmu.fs.sim4stamp.SimService;
+import tmu.fs.sim4stamp.gui.util.GuiUtil;
 import tmu.fs.sim4stamp.model.iop.IOScene;
 
 /**
@@ -56,9 +57,16 @@ public class DeviationSettingPanel implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         providingMoreSetting.setText(Double.toString(IOScene.getProvidingMoreParam()));
+        providingMoreSetting.setTextFormatter(GuiUtil.getDecimalTextFormater());
+
         providingLessConst.setText(Double.toString(IOScene.getProvidingLessParam()));
+        providingLessConst.setTextFormatter(GuiUtil.getDecimalTextFormater());
+
         tooEarlyConst.setText(Integer.toString(IOScene.getDeviationTooEarly()));
+        tooEarlyConst.setTextFormatter(GuiUtil.getIntTextFormater());
+
         tooLateConst.setText(Integer.toString(IOScene.getDeviationTooLate()));
+        tooLateConst.setTextFormatter(GuiUtil.getIntTextFormater());
     }
 
     public void show(ActionEvent event) throws IOException {

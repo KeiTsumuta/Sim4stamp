@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.regex.Pattern;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -35,6 +36,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -47,11 +49,13 @@ import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import tmu.fs.sim4stamp.PanelManager;
 import tmu.fs.sim4stamp.SimService;
+import tmu.fs.sim4stamp.gui.util.GuiUtil;
 import tmu.fs.sim4stamp.model.IOParamManager;
 import tmu.fs.sim4stamp.model.em.Element;
 import tmu.fs.sim4stamp.model.iop.AppendParams;
@@ -104,6 +108,7 @@ public class ConditionPanel implements Initializable {
         IOScene ioScene = SimService.getInstance().getIoParamManager().getCurrentScene();
         sceneTitle.setText(ioScene.getScene());
         simInitSeqSize.setText(Integer.toString(ioScene.getSize()));
+        simInitSeqSize.setTextFormatter(GuiUtil.getIntTextFormater());
         setItemTableView();
         //setConnectorTableView();
         this.conditionSetButton.setOnAction((ActionEvent event) -> {
@@ -113,6 +118,7 @@ public class ConditionPanel implements Initializable {
         ObservableList<Deviation> list = FXCollections.observableArrayList(CONNECTOR_DEVIATIONS);
 
         deviationStartIndex.setText(Integer.toString(ioScene.getDeviationStartIndex()));
+        deviationStartIndex.setTextFormatter(GuiUtil.getIntTextFormater());
     }
 
     private void setItemTableView() {
