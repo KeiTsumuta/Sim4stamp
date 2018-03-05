@@ -45,7 +45,7 @@ public class CommandLineExecute implements Runnable {
                 "-c", "UTF-8", "-e", "\"new ExecuteMain().execute()\""};
     private static final String VDM_LIB = "lib";
     private static final String STAMP_LIB = "stamplib";
-    private static final String SIM4STAMP_TCP_LIB = "CtlLib-1.0.jar";
+    private static final String SIM4STAMP_TCP_LIB = "CtlLib-1.1.jar";
     private static final String VDMJ = "org.overture.interpreter.VDMJ";
     private static volatile boolean runStatus = false;
     private static LogQueue logQue;

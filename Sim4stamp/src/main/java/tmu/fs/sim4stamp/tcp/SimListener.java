@@ -17,6 +17,7 @@
  */
 package tmu.fs.sim4stamp.tcp;
 
+import java.io.EOFException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -43,14 +44,27 @@ public class SimListener implements Runnable {
                 ObjectInputStream oi = new ObjectInputStream(fromClient);
                 OutputStream toClient = client.getOutputStream();
                 ObjectOutputStream oo = new ObjectOutputStream(toClient);) {
-
-            TransObject inObj = (TransObject) oi.readObject();
-            String id = inObj.getId();
-            //System.out.println("TCP-IP read id:" + id);
-            TransObject sendObj = getReply(id, inObj);
-            oo.writeObject(sendObj);
-            oo.flush();
-
+            boolean loop = true;
+            while (loop) {
+                TransObject inObj = (TransObject) oi.readObject();
+                String id = inObj.getId();
+                //System.out.println("TCP-IP read id:" + id);
+                if (id == null) {
+                    break;
+                }
+                TransObject sendObj = null;
+                if (id.equals("finish")) {
+                    loop = false;
+                    sendObj = new TransObject("finish");
+                } else {
+                    sendObj = getReply(id, inObj);
+                }
+                //System.out.println("send obj");
+                oo.writeObject(sendObj);
+                oo.flush();
+            }
+        } catch (EOFException eoe) {
+            //System.out.println("conection close!!");
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -59,6 +73,7 @@ public class SimListener implements Runnable {
         } catch (Exception ex) {
 
         }
+        //System.out.println("conection out");
     }
 
     private static TransObject getReply(String id, TransObject inObj) {

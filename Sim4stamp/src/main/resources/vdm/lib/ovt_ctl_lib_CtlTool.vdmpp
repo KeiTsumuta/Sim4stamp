@@ -29,7 +29,11 @@ operations
 	public init : () ==> bool
 	init() ==
 		is not yet specified;
-
+		
+	public finish : () ==> bool
+	finish() ==
+		is not yet specified;
+		
 	public isLoop : () ==> bool
 	isLoop() ==
 		is not yet specified;

@@ -47,9 +47,73 @@ public class CtlTool {
     private static final int TCP_PORT_NO = 8001;
     private final String encoding = System.getProperty("file.encoding");
 
+    private static Socket socket = null;
+    private static ObjectOutputStream objOutStream = null;
+    private static ObjectInputStream objInStream = null;
+
+    private void openConnection() {
+        closeConnection();
+        try {
+            socket = new Socket("localhost", TCP_PORT_NO);
+            OutputStream out = socket.getOutputStream();
+            objOutStream = new ObjectOutputStream(out);
+            InputStream in = socket.getInputStream();
+            objInStream = new ObjectInputStream(in);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void closeConnection() {
+        try {
+            if (objInStream != null) {
+                objInStream.close();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        objInStream = null;
+        try {
+            if (objOutStream != null) {
+                objOutStream.close();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        objOutStream = null;
+        try {
+            if (socket != null) {
+                socket.close();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        socket = null;
+    }
+
+    private TransObject sendObject(TransObject sendObj) {
+        TransObject receive = null;
+        try {
+            objOutStream.writeObject(sendObj);
+            objOutStream.flush();
+            receive = (TransObject) objInStream.readObject();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return receive;
+    }
+
     public Value init() throws ValueException {
+        openConnection();
         TransObject sObj = new TransObject("init_start");
         TransObject rObj = sendObject(sObj);
+        return new BooleanValue(true);
+    }
+
+    public Value finish() throws ValueException {
+        TransObject sObj = new TransObject("finish");
+        TransObject rObj = sendObject(sObj);
+        closeConnection();
         return new BooleanValue(true);
     }
 
@@ -111,22 +175,6 @@ public class CtlTool {
         sObj.addDValue(value.realValue(null));
         TransObject rObj = sendObject(sObj);
         return new VoidValue();
-    }
-
-    private TransObject sendObject(TransObject sendObj) {
-        TransObject receive = null;
-        try (Socket socket = new Socket("localhost", TCP_PORT_NO);
-                OutputStream out = socket.getOutputStream();
-                ObjectOutputStream oo = new ObjectOutputStream(out);
-                InputStream in = socket.getInputStream();
-                ObjectInputStream obIn = new ObjectInputStream(in);) {
-            oo.writeObject(sendObj);
-            oo.flush();
-            receive = (TransObject) obIn.readObject();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return receive;
     }
 
     private void print(String s) {

@@ -60,6 +60,7 @@ operations
 			);
 			カウンタ := カウンタ + 1;
 		);
+		status := ctl.finish();
 	);
 
 end ExecuteMain
