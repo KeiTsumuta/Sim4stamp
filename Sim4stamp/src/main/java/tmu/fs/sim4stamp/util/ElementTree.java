@@ -72,18 +72,38 @@ public class ElementTree {
         }
 
         root = getRoot();
-        if (root != null) {
-            root.getElement().setOrder(1);
-            flags = new boolean[connectors.size()];
-            root.element.setTempFlag(true);
-            findChildren(root);
-            setTreeOrder(root, 1);
-            log.info("tree make:" + root.toString());
-            series = new ArrayList<>();
-            List<Tree> rootChildren = root.getChildren();
-            for (Tree tree : rootChildren) {
-                series.add(root.getElement());
-                tree.getSeries(series);
+        if (root == null) {
+            return;
+        }
+        root.getElement().setOrder(1);
+        flags = new boolean[connectors.size()];
+        root.element.setTempFlag(true);
+        findChildren(root);
+        log.info("tree make:" + root.toString());
+        series = new ArrayList<>();
+        List<Element> temp = new ArrayList<>();
+        List<Tree> rootChildren = root.getChildren();
+        for (Tree tree : rootChildren) {
+            temp.add(root.getElement());
+            tree.getSeries(temp);
+        }
+        int order = 1;
+        for (Element el : temp) {
+            if (el.getType() == Element.EType.CONTROLLED_EQUIPMENT) {
+                el.setOrder(order++);
+                series.add(el);
+            }
+        }
+        for (Element el : temp) {
+            if (el.getType() != Element.EType.CONTROLLED_EQUIPMENT && el.getType() != Element.EType.INJECTOR) {
+                el.setOrder(order++);
+                series.add(el);
+            }
+        }
+        for (Element el : temp) {
+            if (el.getType() == Element.EType.INJECTOR) {
+                el.setOrder(order++);
+                series.add(el);
             }
         }
     }
@@ -91,6 +111,7 @@ public class ElementTree {
     private void findChildren(Tree tree) {
         String id = tree.element.getNodeId();
         int order = tree.element.getOrder();
+        //System.out.println("tree:" + id + "(" + order + ")");
         for (int i = 0; i < connectors.size(); i++) {
             if (flags[i]) {
                 continue;
@@ -98,20 +119,23 @@ public class ElementTree {
             Connector con = connectors.get(i);
             String fromId = con.getNodeFromId();
             String toId = con.getNodeToId();
-            if (fromId == null || toId == null) {
-                continue;
-            }
             if (id.equals(toId)) {
                 Element el = map.get(fromId);
-                if (el.isTempFlag()) {
+                if (el.isTempFlag() && el.getType() == Element.EType.CONTROLLED_EQUIPMENT) {
                     continue;
                 }
                 el.setOrder(order + 1);
                 flags[i] = true;
                 Tree child = new Tree(el);
                 tree.addChild(child);
-                findChildren(child);
             }
+        }
+        tree.sortChildren();
+        //for (Tree child : tree.children) {
+        //    System.out.println("tree child:" + child.getElement().getNodeId());
+        //}
+        for (Tree child : tree.children) {
+            findChildren(child);
         }
     }
 
@@ -126,23 +150,13 @@ public class ElementTree {
         return root;
     }
 
-    private void setTreeOrder(Tree tree, int order) {
-        Element el = tree.getElement();
-        el.setOrder(order);
-        List<Tree> children = tree.getChildren();
-        for (Tree child : children) {
-            int next = order + 1;
-            int childOrder = child.getElement().getOrder();
-            if (next < childOrder) {
-                next = childOrder;
-            }
-            setTreeOrder(child, next);
-        }
-    }
-
     public List<Element> getSeries() {
         return series;
     }
+
+    private static final Element.EType[] ETYPE_ORDERS
+            = {Element.EType.INJECTOR, Element.EType.SENSOR, Element.EType.CONTROLLER,
+                Element.EType.ACTUATOR, Element.EType.CONTROLLED_EQUIPMENT};
 
     class Tree {
 
@@ -180,6 +194,18 @@ public class ElementTree {
             for (Tree child : children) {
                 child.getSeries(elementList);
             }
+        }
+
+        public void sortChildren() {
+            List<Tree> newList = new ArrayList<>();
+            for (Element.EType etype : ETYPE_ORDERS) {
+                for (Tree t : children) {
+                    if (t.element.getType() == etype) {
+                        newList.add(t);
+                    }
+                }
+            }
+            children = newList;
         }
 
         public String toString() {
