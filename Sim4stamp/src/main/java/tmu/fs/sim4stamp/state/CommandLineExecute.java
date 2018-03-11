@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 import tmu.fs.sim4stamp.PanelManager;
 import tmu.fs.sim4stamp.SimService;
 import tmu.fs.sim4stamp.gui.ExecuteLogPanel;
+import tmu.fs.sim4stamp.vdm.VdmCodeMaker;
 
 /**
  *
@@ -45,7 +46,7 @@ public class CommandLineExecute implements Runnable {
                 "-c", "UTF-8", "-e", "\"new ExecuteMain().execute()\""};
     private static final String VDM_LIB = "lib";
     private static final String STAMP_LIB = "stamplib";
-    private static final String SIM4STAMP_TCP_LIB = "CtlLib-1.1.jar";
+    private static final String SIM4STAMP_TCP_LIB = VdmCodeMaker.CTLIB;
     private static final String VDMJ = "org.overture.interpreter.VDMJ";
     private static volatile boolean runStatus = false;
     private static LogQueue logQue;

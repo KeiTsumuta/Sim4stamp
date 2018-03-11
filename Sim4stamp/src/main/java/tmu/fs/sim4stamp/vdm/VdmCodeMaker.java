@@ -56,7 +56,7 @@ public class VdmCodeMaker extends ResourceFileIO {
     private static final String ELEM_SLIB = "『作用素』.vdmpp";
     private static final String STAMP_CTL_LIB = "ovt_ctl_lib_CtlTool.vdmpp";
 
-    private static final String CTLIB = "CtlLib-1.0.jar";
+    public static final String CTLIB = "CtlLib-1.1.jar";
 
     private final SimService simService;
     private final ElementManager elemMgr;
