@@ -36,8 +36,8 @@ import javafx.scene.control.TableView;
 public class ResultTablePanel implements Initializable {
 
     private TableView resultTable;
-    private ObservableList<String> headers = FXCollections.observableArrayList();
-    private ObservableList<ObservableList> dataVals = FXCollections.observableArrayList();
+    private ObservableList<String> headers;
+    private ObservableList<ObservableList> dataVals;
     private static DecimalFormat format = new DecimalFormat("#0.00");
 
     public ResultTablePanel(TableView resultTable) {
@@ -46,7 +46,7 @@ public class ResultTablePanel implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        initData();
     }
 
     public void initData() {

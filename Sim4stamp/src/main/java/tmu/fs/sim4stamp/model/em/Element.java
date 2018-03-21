@@ -18,7 +18,6 @@
 package tmu.fs.sim4stamp.model.em;
 
 import javafx.scene.canvas.GraphicsContext;
-import com.sun.javafx.tk.Toolkit;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 import java.util.logging.Logger;
@@ -29,6 +28,7 @@ import org.json.JSONObject;
 import tmu.fs.sim4stamp.model.iop.AppendParams;
 import tmu.fs.sim4stamp.model.iop.IOParam;
 import tmu.fs.sim4stamp.util.DisplayLevel;
+import tmu.fs.sim4stamp.util.DisplayValues;
 import tmu.fs.sim4stamp.util.JSONConvert;
 
 /**
@@ -179,7 +179,7 @@ public abstract class Element implements JSONConvert, DisplayLevel {
     }
 
     /**
-     * @param appendParams the appendParams to set
+     * @param appendParams the appendParams to inject
      */
     public void setAppendParams(AppendParams appendParams) {
         this.appendParams = appendParams;
@@ -195,6 +195,9 @@ public abstract class Element implements JSONConvert, DisplayLevel {
                     continue;
                 }
                 String id = ioParam.getId();
+                if (displayLevel == Level.PROGRESS) {
+                    id += DisplayValues.getInstance().getDisplayData(nodeId, id);
+                }
                 double width = getFontWidth(gc, id);
                 gc.setFill(STROKE2_COLOR);
                 gc.fillRect(ax - 2, (ay - height + 4) + height * i, width + 2, height + 2);
@@ -274,7 +277,7 @@ public abstract class Element implements JSONConvert, DisplayLevel {
     }
 
     /**
-     * @param tempFlag the tempFlag to set
+     * @param tempFlag the tempFlag to inject
      */
     public void setTempFlag(boolean tempFlag) {
         this.tempFlag = tempFlag;
@@ -288,7 +291,7 @@ public abstract class Element implements JSONConvert, DisplayLevel {
     }
 
     /**
-     * @param order the order to set
+     * @param order the order to inject
      */
     public void setOrder(int order) {
         this.order = order;

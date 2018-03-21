@@ -18,6 +18,7 @@
 package tmu.fs.sim4stamp.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -141,11 +142,15 @@ public class ElementTree {
 
     private Tree getRoot() {
         Tree root = null;
+        List<Element> ceList = new ArrayList<>();
         for (Element ele : elements) {
             if (ele.getType() == Element.EType.CONTROLLED_EQUIPMENT) {
-                root = new Tree(ele);
-                break;
+                ceList.add(ele);
             }
+        }
+        if (ceList.size() > 0) {
+            ceList.sort((a, b) -> b.getNodeId().compareTo(a.getNodeId()));
+            root = new Tree(ceList.get(0));
         }
         return root;
     }

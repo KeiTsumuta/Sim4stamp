@@ -32,6 +32,7 @@ import tmu.fs.sim4stamp.model.em.Element;
 import tmu.fs.sim4stamp.model.iop.AppendParams;
 import tmu.fs.sim4stamp.model.iop.IOParam;
 import tmu.fs.sim4stamp.util.DisplayLevel;
+import tmu.fs.sim4stamp.util.DisplayValues;
 import tmu.fs.sim4stamp.util.JSONConvert;
 
 /**
@@ -98,7 +99,7 @@ public class Connector implements JSONConvert, DisplayLevel {
     }
 
     /**
-     * @param jointDisplay the jointDisplay to set
+     * @param jointDisplay the jointDisplay to inject
      */
     public void setJointDisplay(boolean jointDisplay) {
         this.jointDisplay = jointDisplay;
@@ -112,7 +113,7 @@ public class Connector implements JSONConvert, DisplayLevel {
     }
 
     /**
-     * @param pointed the pointed to set
+     * @param pointed the pointed to inject
      */
     public void setPointed(boolean pointed) {
         this.pointed = pointed;
@@ -166,7 +167,7 @@ public class Connector implements JSONConvert, DisplayLevel {
             gc.fillOval(xo - DISTANCE_CLOSED, yo - DISTANCE_CLOSED, DISTANCE_CLOSED * 2, DISTANCE_CLOSED * 2);
             gc.setGlobalAlpha(1.0);
         }
-        if (displayLevel == Level.Detail) {
+        if (displayLevel != Level.Base) {
             drawDetailParams(gc);
         }
     }
@@ -252,11 +253,15 @@ public class Connector implements JSONConvert, DisplayLevel {
             int i = 0;
             for (IOParam ioParam : ioParams) {
                 String id = ioParam.getId();
+                if (displayLevel == Level.PROGRESS) {
+                    id += DisplayValues.getInstance().getDisplayData(nodeToId, id);
+                }
                 Color color = STROKE_COLOR;
                 if (marked) {
-                    id = "★★ " + id + " ★★";
+                    id = "≪ " + id + " ≫";
                     color = MARKED_COLOR;
                 }
+
                 double width = getFontWidth(gc, id);
                 gc.setFill(STROKE2_COLOR);
                 gc.fillRect(xp - 2 - width / 2, yp - height, width + 2, height);
@@ -301,7 +306,7 @@ public class Connector implements JSONConvert, DisplayLevel {
     }
 
     /**
-     * @param appendParams the appendParams to set
+     * @param appendParams the appendParams to inject
      */
     public void setAppendParams(AppendParams appendParams) {
         this.appendParams = appendParams;
@@ -493,7 +498,7 @@ public class Connector implements JSONConvert, DisplayLevel {
     }
 
     /**
-     * @param marked the marked to set
+     * @param marked the marked to inject
      */
     public void setMarked(boolean marked, String comment) {
         this.marked = marked;

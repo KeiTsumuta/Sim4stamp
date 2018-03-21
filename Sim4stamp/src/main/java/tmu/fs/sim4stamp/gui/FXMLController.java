@@ -120,6 +120,14 @@ public class FXMLController implements Initializable {
 
     @FXML
     private Button executeSimButton;
+    @FXML
+    private Button loopDisplayButton;
+    @FXML
+    private Button loopDisplayDownButton;
+    @FXML
+    private Button loopDisplayUpButton;
+    @FXML
+    private TextField loopDisplayCount;
 
     @FXML
     private void handleButtonAction(ActionEvent event) {
@@ -144,13 +152,20 @@ public class FXMLController implements Initializable {
         conditionPanel.initialize(url, rb);
         pm.setConditionPanel(conditionPanel);
 
-        Control[] devMapPanelControls = new Control[]{deviationSelectionByType, executeSimButton};
+        Control[] devMapPanelControls = new Control[]{deviationSelectionByType, executeSimButton,
+            loopDisplayButton, loopDisplayDownButton, loopDisplayUpButton,
+            loopDisplayCount
+        };
         DeviationMapPanel devMapPanel = new DeviationMapPanel(deviationCanvas, devMapPanelControls);
+
         devMapPanel.initialize(url, rb);
+
         pm.setDeviationMapPanel(devMapPanel);
 
         ExecuteLogPanel executeLogPanel = new ExecuteLogPanel(clearButton, executeLog);
+
         executeLogPanel.initialize(url, rb);
+
         pm.setExecuteLogPanel(executeLogPanel);
 
         Control[] resultPanelControls = new Control[]{
@@ -158,7 +173,9 @@ public class FXMLController implements Initializable {
         };
         LineChart[] lineCharts = new LineChart[]{lineChart1, lineChart2};
         ResultPanel resultPanel = new ResultPanel(resultPanelControls, lineCharts);
+
         resultPanel.initialize(url, rb);
+
         pm.setResutPanel(resultPanel);
 
         pm.setSelectLabel(selectedProjectName);

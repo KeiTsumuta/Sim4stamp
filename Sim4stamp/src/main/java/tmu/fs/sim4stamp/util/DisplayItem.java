@@ -1,6 +1,6 @@
 /*
  *   sim4stamp - The simulation tool for STAMP/STPA
- *   Copyright (C) 2017  Keiichi Tsumuta
+ *   Copyright (C) 2018  Keiichi Tsumuta
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -15,14 +15,14 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package tmu.fs.sim4stamp;
+package tmu.fs.sim4stamp.util;
 
 /**
  *
- * @author Keiichi Tsumuta
+ * @author keiichi
  */
-public class Sim4stampVersion {
+public interface DisplayItem {
 
-    public static final String version = "0.6.3";
+    String getValue(String nodeId, String paramId);
 
 }

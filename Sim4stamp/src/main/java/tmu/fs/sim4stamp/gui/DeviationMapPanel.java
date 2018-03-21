@@ -43,11 +43,13 @@ import javafx.scene.control.Control;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Button;
 import javafx.scene.control.SingleSelectionModel;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import tmu.fs.sim4stamp.MainApp;
 import tmu.fs.sim4stamp.SimService;
+import tmu.fs.sim4stamp.gui.util.GuiUtil;
 import tmu.fs.sim4stamp.model.IOParamManager;
 import tmu.fs.sim4stamp.model.co.Connector;
 import tmu.fs.sim4stamp.model.em.Actuator;
@@ -60,6 +62,7 @@ import tmu.fs.sim4stamp.model.iop.AppendParams;
 import tmu.fs.sim4stamp.model.iop.IOParam;
 import tmu.fs.sim4stamp.model.iop.IOScene;
 import tmu.fs.sim4stamp.state.CommandLineExecute;
+import tmu.fs.sim4stamp.state.OvertureExecManager;
 import tmu.fs.sim4stamp.util.Deviation;
 import tmu.fs.sim4stamp.util.DisplayLevel;
 
@@ -89,6 +92,10 @@ public class DeviationMapPanel implements Initializable {
     private Canvas mapCanvas;
     private ComboBox deviationSelectionByType;
     private Button executeButton;
+    private Button loopDisplayButton;
+    private Button loopDisplayDownButton;
+    private Button loopDisplayUpButton;
+    private TextField loopDisplayCount;
 
     private List<Element> elementSeries;
     private List<Element> elementDisplays;
@@ -105,6 +112,10 @@ public class DeviationMapPanel implements Initializable {
         this.mapCanvas = mapCanvas;
         this.deviationSelectionByType = (ComboBox) controls[0];
         this.executeButton = (Button) controls[1];
+        this.loopDisplayButton = (Button) controls[2];
+        this.loopDisplayDownButton = (Button) controls[3];
+        this.loopDisplayUpButton = (Button) controls[4];
+        this.loopDisplayCount = (TextField) controls[5];
     }
 
     @Override
@@ -132,6 +143,34 @@ public class DeviationMapPanel implements Initializable {
         });
         connPoints = new ArrayList<>();
         initPopupMenu();
+
+        loopDisplayCount.setTextFormatter(GuiUtil.getIntTextFormater());
+        loopDisplayCount.setStyle("-fx-alignment: CENTER-RIGHT;");
+
+        loopDisplayButton.setOnAction((ActionEvent event) -> {
+            String count = loopDisplayCount.getText();
+            OvertureExecManager.getInstance().setDisplayCount(getInt(count));
+            drawPanel();
+        });
+        loopDisplayDownButton.setOnAction((ActionEvent event) -> {
+            String count = loopDisplayCount.getText();
+            OvertureExecManager.getInstance().setDisplayCount(getInt(count) - 1);
+            drawPanel();
+        });
+        loopDisplayUpButton.setOnAction((ActionEvent event) -> {
+            String count = loopDisplayCount.getText();
+            OvertureExecManager.getInstance().setDisplayCount(getInt(count) + 1);
+            drawPanel();
+        });
+    }
+
+    private int getInt(String s) {
+        try {
+            return Integer.parseInt(s);
+        } catch (Exception e) {
+
+        }
+        return 0;
     }
 
     private void executeSim() {
@@ -195,7 +234,7 @@ public class DeviationMapPanel implements Initializable {
                 continue;
             }
             Connector cc = c.clone();
-            cc.setLevel(DisplayLevel.Level.Detail);
+            cc.setLevel(DisplayLevel.Level.PROGRESS);
             cons.add(cc);
         }
         connectors = cons;
@@ -210,8 +249,9 @@ public class DeviationMapPanel implements Initializable {
                 selectedConnectorDeviation = im.getCurrentScene().getDeviation();
                 int selectNo = 0;
                 if (selectedConnectorDeviation != null) {
+                    int devId = selectedConnectorDeviation.getId();
                     for (int i = 0; i < CONNECTOR_DEVIATIONS.length; i++) {
-                        if (CONNECTOR_DEVIATIONS[i].getId() == selectedConnectorDeviation.getId()) {
+                        if (CONNECTOR_DEVIATIONS[i].getId() == devId) {
                             selectNo = i;
                             //System.out.println("init sel:" + i + ", " + selectedConnectorDeviation);
                             break;
@@ -219,6 +259,8 @@ public class DeviationMapPanel implements Initializable {
                     }
                 }
                 model.select(selectNo);
+                int dispCount = OvertureExecManager.getInstance().getDisplayCount();
+                loopDisplayCount.setText(Integer.toString(dispCount));
                 makeConnectorDrawInfos(ss);
                 drawCanvas(mapCanvas);
             } catch (Exception ex) {
@@ -252,7 +294,7 @@ public class DeviationMapPanel implements Initializable {
                         et = ((Injector) e).clone();
                         break;
                 }
-                et.setLevel(DisplayLevel.Level.Detail);
+                et.setLevel(DisplayLevel.Level.PROGRESS);
                 elementDisplays.add(et);
                 map.put(et.getNodeId(), et);
             }

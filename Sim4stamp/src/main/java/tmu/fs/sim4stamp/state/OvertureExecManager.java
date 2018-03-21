@@ -17,33 +17,41 @@
  */
 package tmu.fs.sim4stamp.state;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import tmu.fs.sim4stamp.PanelManager;
 import tmu.fs.sim4stamp.SimService;
+import tmu.fs.sim4stamp.gui.DeviationMapPanel;
 import tmu.fs.sim4stamp.model.IOParamManager;
 import tmu.fs.sim4stamp.model.em.Element;
 import tmu.fs.sim4stamp.model.iop.IOParam;
 import tmu.fs.sim4stamp.model.iop.IOScene;
+import tmu.fs.sim4stamp.util.DisplayItem;
+import tmu.fs.sim4stamp.util.DisplayValues;
 
 /**
+ * Overture実行データ管理クラス
  *
  * @author Keiichi Tsumuta
  */
-public class OvertureExecManager {
+public class OvertureExecManager implements DisplayItem {
 
     private static volatile OvertureExecManager oeManager = new OvertureExecManager();
+    private static final DecimalFormat FORMAT = new DecimalFormat("#0.00");
     private int loopCounter = 0;
     private int loopMax = 0;
     private Map<String, Element> elmMap = null;
     private List<String> idOrders = null;
     private List<String> nodeIds;
 
-    private IOScene executeScene;
+    private IOScene executeScene = null;
 
     private Map<String, Integer> indexMap = null;
+
+    private int displayCount;
 
     private OvertureExecManager() {
     }
@@ -55,10 +63,13 @@ public class OvertureExecManager {
     public void init() {
         idOrders = new ArrayList<>();
         elmMap = new HashMap<>();
+        executeScene = null;
+        displayCount = -1;
     }
 
     public void calcInit() {
         loopCounter = -1;
+        displayCount = loopCounter + 1;
         SimService ss = SimService.getInstance();
         idOrders = new ArrayList<>();
         elmMap = new HashMap<>();
@@ -84,12 +95,15 @@ public class OvertureExecManager {
         executeScene = ioParamManager.getNewExceuteScene();
         //ioParamManager.setCurrentScene(executeScene);
         loopMax = executeScene.getSize();
+        DisplayValues.getInstance().inject(this);
     }
 
     public boolean hasNext() {
         loopCounter++;
+        DeviationMapPanel dpanel = PanelManager.get().getDeviationMapPanel();
         IOParamManager ioParamManager = SimService.getInstance().getIoParamManager();
         if (loopCounter < loopMax) {
+            displayCount = loopCounter + 1;
             if (loopCounter > 0) {
                 try {
                     for (String nodeId : nodeIds) {
@@ -105,6 +119,7 @@ public class OvertureExecManager {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
+                dpanel.drawPanel();
             }
             return true;
         }
@@ -114,14 +129,49 @@ public class OvertureExecManager {
     }
 
     public void setData(String elemId, String dataId, double value) {
+        if (executeScene == null) {
+            return;
+        }
         executeScene.setData(elemId, dataId, loopCounter, value);
-        //System.out.println("set Data:(" + loopCounter + ") " + elemId + "," + dataId + " = " + value);
+        //System.out.println("inject Data:(" + loopCounter + ") " + elemId + "," + dataId + " = " + value);
     }
 
     public double getData(String elemId, String dataId) {
+        if (executeScene == null) {
+            return 0.0;
+        }
         double[] vals = executeScene.getData(elemId, dataId);
-        //ystem.out.println("get Data:(" + loopCounter + ") " + elemId + "," + dataId + " = " + vals[loopCounter]);
+        //System.out.println("getInstance Data:(" + loopCounter + ") " + elemId + "," + dataId + " = " + vals[loopCounter]);
         return vals[loopCounter];
+    }
+
+    public int getDisplayCount() {
+        return displayCount;
+    }
+
+    public void setDisplayCount(int count) {
+        if (executeScene == null) {
+            return;
+        }
+        if (count >= 0 && count <= executeScene.getSize()) {
+            displayCount = count;
+        }
+    }
+
+    @Override
+    public String getValue(String elemId, String dataId) {
+        if (executeScene == null) {
+            return "";
+        }
+        try {
+            double[] vals = executeScene.getData(elemId, dataId);
+            if (displayCount > 0 && vals != null && vals.length >= displayCount) {
+                return FORMAT.format(vals[displayCount - 1]);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return "";
     }
 
     public List<String> getElementOrders() {

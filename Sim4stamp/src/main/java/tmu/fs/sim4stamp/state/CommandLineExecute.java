@@ -30,6 +30,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.logging.Logger;
 import tmu.fs.sim4stamp.PanelManager;
 import tmu.fs.sim4stamp.SimService;
+import tmu.fs.sim4stamp.gui.DeviationMapPanel;
 import tmu.fs.sim4stamp.gui.ExecuteLogPanel;
 import tmu.fs.sim4stamp.vdm.VdmCodeMaker;
 
