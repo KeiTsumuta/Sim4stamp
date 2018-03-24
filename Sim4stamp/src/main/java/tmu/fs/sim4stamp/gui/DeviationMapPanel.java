@@ -269,6 +269,18 @@ public class DeviationMapPanel implements Initializable {
         });
     }
 
+    public void drawMapPanel() {
+        Platform.runLater(() -> {
+            try {
+                int dispCount = OvertureExecManager.getInstance().getDisplayCount();
+                loopDisplayCount.setText(Integer.toString(dispCount));
+                drawCanvas(mapCanvas);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+    }
+
     private void getElementInfo() {
         elementDisplays = new ArrayList<>();
         List<Element> group = new ArrayList<>();
@@ -357,17 +369,13 @@ public class DeviationMapPanel implements Initializable {
 
     private void drawCanvas(Canvas canvas) {
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        Scene scene = MainApp.getStage().getScene();
         double frameWidth = ELEMENT_INTERVAL * elementDisplays.size() + ELEMENT_INTERVAL * 0.6;
         double frameHeight = ELEMENT_Y_POS + ELEMENT_Y_ST + ELEMENT_Y_DS * (connectors.size() + 2);
         canvas.setWidth(frameWidth);
         canvas.setHeight(frameHeight);
-        double wMax = canvas.getWidth();
-        double hMax = canvas.getHeight();
-        //log.info("drawCanvas:" + wMax + "," + hMax);
 
         gc.setFill(FILL_BACK_COLOR);
-        gc.fillRect(0, 0, wMax, hMax);
+        gc.fillRect(0, 0, frameWidth, frameHeight);
 
         double sy0 = ELEMENT_Y_POS;
         double sy1 = ELEMENT_Y_POS + ELEMENT_Y_ST + ELEMENT_Y_DS * (connectors.size() + 1);
@@ -381,24 +389,7 @@ public class DeviationMapPanel implements Initializable {
             double x = ELEMENT_INTERVAL * i + ELEMENT_INTERVAL / 5.0;
             Element e = elementDisplays.get(i);
             e.setPoint(x, ELEMENT_Y_POS);
-            Element.EType etype = e.getType();
-            switch (etype) {
-                case CONTROLLED_EQUIPMENT:
-                    ((ControllledEquipment) e).draw(gc);
-                    break;
-                case CONTROLLER:
-                    ((Controller) e).draw(gc);
-                    break;
-                case ACTUATOR:
-                    ((Actuator) e).draw(gc);
-                    break;
-                case SENSOR:
-                    ((Sensor) e).draw(gc);
-                    break;
-                case INJECTOR:
-                    ((Injector) e).draw(gc);
-                    break;
-            }
+            e.draw(gc);
         }
 
         for (Connector c : connectorDrawInfos) {

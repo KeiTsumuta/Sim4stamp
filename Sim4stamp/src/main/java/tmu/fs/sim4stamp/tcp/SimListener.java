@@ -54,8 +54,7 @@ public class SimListener implements Runnable {
                 }
                 TransObject sendObj = null;
                 if (id.equals("finish")) {
-                    loop = false;
-                    sendObj = new TransObject("finish");
+                    break;
                 } else {
                     sendObj = getReply(id, inObj);
                 }

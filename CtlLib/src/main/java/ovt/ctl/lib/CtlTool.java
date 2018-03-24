@@ -112,7 +112,12 @@ public class CtlTool {
 
     public Value finish() throws ValueException {
         TransObject sObj = new TransObject("finish");
-        TransObject rObj = sendObject(sObj);
+        try {
+            objOutStream.writeObject(sObj);
+            objOutStream.flush();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         closeConnection();
         return new BooleanValue(true);
     }

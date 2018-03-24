@@ -119,7 +119,7 @@ public class OvertureExecManager implements DisplayItem {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-                dpanel.drawPanel();
+                dpanel.drawMapPanel();
             }
             return true;
         }
