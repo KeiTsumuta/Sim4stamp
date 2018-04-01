@@ -17,13 +17,7 @@
  */
 package tmu.fs.sim4stamp.vdm;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -42,7 +36,7 @@ import tmu.fs.sim4stamp.util.ResourceFileIO;
  */
 public class VdmCodeMaker extends ResourceFileIO {
 
-    private static Logger log = Logger.getLogger(VdmCodeMaker.class.getPackage().getName());
+    private static final Logger log = Logger.getLogger(VdmCodeMaker.class.getPackage().getName());
 
     private static final String SP = System.getProperty("file.separator");
 

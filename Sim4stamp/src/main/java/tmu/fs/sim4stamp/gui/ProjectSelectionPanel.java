@@ -96,9 +96,9 @@ public class ProjectSelectionPanel implements Initializable {
             projectSelectBox.getItems().add(pj);
             if (cpj != null && cpj.equals(pj)) {
                 selectedProjectId = pj;
-                selectProject.setText(pj);
-                selectPjHome.setText(s.getProjectHome(pj));
-                selectParam.setText(s.getProjectParams(pj));
+                selectProject.textProperty().set(pj);
+                selectPjHome.textProperty().set(s.getProjectHome(pj));
+                selectParam.textProperty().set(s.getProjectParams(pj));
             }
         }
         if (selectedProjectId != null) {
@@ -164,9 +164,9 @@ public class ProjectSelectionPanel implements Initializable {
         selectedProjectId = (String) projectSelectBox.getValue();
         //System.out.println("projectSelectAction !! :" + selectedProjectId);
         SimService ss = SimService.getInstance();
-        selectProject.setText(selectedProjectId);
-        selectPjHome.setText(ss.getProjectHome(selectedProjectId));
-        selectParam.setText(ss.getProjectParams(selectedProjectId));
+        selectProject.textProperty().set(selectedProjectId);
+        selectPjHome.textProperty().set(ss.getProjectHome(selectedProjectId));
+        selectParam.textProperty().set(ss.getProjectParams(selectedProjectId));
         ss.setCurrentProjectId(selectedProjectId);
 
     }
@@ -209,8 +209,8 @@ public class ProjectSelectionPanel implements Initializable {
         if (dir != null) {
             String dirPath = dir.getAbsolutePath();
             selectedProjectId = dir.getName();;
-            createProjectId.setText(dir.getName());
-            createPjHome.setText(dirPath);
+            createProjectId.textProperty().set(dir.getName());
+            createPjHome.textProperty().set(dirPath);
         }
     }
 
@@ -263,9 +263,9 @@ public class ProjectSelectionPanel implements Initializable {
             ss.initCurrentProject();
             projectSelectBox.getItems().removeAll(selectedProjectId);
             selectedProjectId = null;
-            selectProject.setText("");
-            selectPjHome.setText("");
-            selectParam.setText("");
+            selectProject.textProperty().set("");
+            selectPjHome.textProperty().set("");
+            selectParam.textProperty().set("");
             // 画面更新
             PanelManager.get().initDisplay();
         }

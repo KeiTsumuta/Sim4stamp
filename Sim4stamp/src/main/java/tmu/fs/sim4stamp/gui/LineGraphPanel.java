@@ -29,7 +29,7 @@ import javafx.scene.chart.XYChart;
  */
 public class LineGraphPanel implements Initializable {
 
-    private LineChart lineChart;
+    private final LineChart lineChart;
 
     public LineGraphPanel(LineChart chart) {
         this.lineChart = chart;

@@ -18,7 +18,6 @@
 package tmu.fs.sim4stamp.util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +31,7 @@ import tmu.fs.sim4stamp.model.em.Element;
  */
 public class ElementTree {
 
-    private static Logger log = Logger.getLogger(ElementTree.class.getPackage().getName());
+    private static final Logger log = Logger.getLogger(ElementTree.class.getPackage().getName());
 
     private List<Element> elements;
     private Map<String, Element> map;

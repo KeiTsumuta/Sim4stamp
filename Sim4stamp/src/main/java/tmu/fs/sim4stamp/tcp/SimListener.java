@@ -32,7 +32,7 @@ import tmu.fs.sim4stamp.state.OvertureExecManager;
  */
 public class SimListener implements Runnable {
 
-    private Socket client;
+    private final Socket client;
 
     public SimListener(Socket client) {
         this.client = client;

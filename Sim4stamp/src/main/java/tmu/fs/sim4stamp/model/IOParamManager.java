@@ -38,12 +38,12 @@ import tmu.fs.sim4stamp.util.JSONConvert;
  */
 public class IOParamManager implements JSONConvert {
 
-    private static Logger log = Logger.getLogger(IOParamManager.class.getPackage().getName());
+    private static final Logger log = Logger.getLogger(IOParamManager.class.getPackage().getName());
 
     public static final int INIT_DATA_SIZE = 10;
 
-    private ElementManager em;
-    private ConnectorManager cm;
+    private final ElementManager em;
+    private final ConnectorManager cm;
 
     private Map<String, List<IOParam>> nodeParamMap;
 

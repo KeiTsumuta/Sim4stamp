@@ -35,7 +35,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import tmu.fs.sim4stamp.SimService;
-import tmu.fs.sim4stamp.model.IOParamManager;
 
 /**
  *
@@ -102,7 +101,7 @@ public class SystemParamPanel implements Initializable {
         if (dir != null) {
             SimService s = SimService.getInstance();
             s.setOvertureHome(dir.getAbsolutePath());
-            overtureHome.setText(s.getOvertureHome());
+            overtureHome.textProperty().set(s.getOvertureHome());
         }
 
     }
@@ -117,7 +116,7 @@ public class SystemParamPanel implements Initializable {
         if (jarFile != null) {
             SimService s = SimService.getInstance();
             s.setOvertureCommandLine(jarFile.getName());
-            commandTool.setText(s.getOvertureCommandLine());
+            commandTool.textProperty().set(s.getOvertureCommandLine());
         }
     }
 

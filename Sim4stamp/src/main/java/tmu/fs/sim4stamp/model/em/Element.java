@@ -37,7 +37,7 @@ import tmu.fs.sim4stamp.util.JSONConvert;
  */
 public abstract class Element implements JSONConvert, DisplayLevel {
 
-    private static Logger log = Logger.getLogger(Element.class.getPackage().getName());
+    private static final Logger log = Logger.getLogger(Element.class.getPackage().getName());
 
     public enum EType {
         CONTROLLER, ACTUATOR, SENSOR, CONTROLLED_EQUIPMENT, INJECTOR

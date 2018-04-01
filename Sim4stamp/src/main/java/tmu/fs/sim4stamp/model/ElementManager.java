@@ -24,9 +24,7 @@ import tmu.fs.sim4stamp.model.em.Element;
 import tmu.fs.sim4stamp.model.em.Controller;
 import tmu.fs.sim4stamp.model.em.Actuator;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -39,7 +37,7 @@ import tmu.fs.sim4stamp.util.JSONConvert;
  */
 public class ElementManager implements JSONConvert {
 
-    private static Logger log = Logger.getLogger(ElementManager.class.getPackage().getName());
+    private static final Logger log = Logger.getLogger(ElementManager.class.getPackage().getName());
 
     private List<Element> elements;
 

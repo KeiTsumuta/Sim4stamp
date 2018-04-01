@@ -26,7 +26,6 @@ import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import tmu.fs.sim4stamp.SimService;
-import tmu.fs.sim4stamp.gui.ConditionPanel;
 import tmu.fs.sim4stamp.model.ConnectorManager;
 import tmu.fs.sim4stamp.model.IOParamManager;
 import tmu.fs.sim4stamp.model.co.Connector;

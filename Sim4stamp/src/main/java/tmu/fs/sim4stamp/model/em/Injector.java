@@ -18,7 +18,6 @@
 package tmu.fs.sim4stamp.model.em;
 
 import javafx.scene.canvas.GraphicsContext;
-import tmu.fs.sim4stamp.model.em.Element;
 import javafx.scene.paint.Color;
 
 /**

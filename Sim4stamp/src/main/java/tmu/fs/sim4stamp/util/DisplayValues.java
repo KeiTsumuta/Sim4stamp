@@ -17,7 +17,6 @@
  */
 package tmu.fs.sim4stamp.util;
 
-import tmu.fs.sim4stamp.state.OvertureExecManager;
 
 /**
  * 部品にシミュレーション表示値を与えるクラス。
@@ -26,7 +25,7 @@ import tmu.fs.sim4stamp.state.OvertureExecManager;
  */
 public class DisplayValues {
 
-    private static DisplayValues displayValues = new DisplayValues();
+    private static final DisplayValues displayValues = new DisplayValues();
     private DisplayItem displayItem = null;
 
     private DisplayValues() {

@@ -21,6 +21,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -136,8 +137,6 @@ public class FXMLController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        SimService simService = SimService.getInstance();
-
         PanelManager pm = PanelManager.get();
 
         Control[] modelPanelControls = new Control[]{modelDitailDisplayCheckbox, connectorJointDisplayCheckbox};
@@ -246,7 +245,7 @@ public class FXMLController implements Initializable {
             String file = simService.getProjectParams(currentPj);
             File f = new File(dir + SP + file);
             simService.saveProjectParams(f);
-            log.info("save file:" + f.getAbsolutePath());
+            log.log(Level.INFO, "save file:{0}", f.getAbsolutePath());
         }
     }
 

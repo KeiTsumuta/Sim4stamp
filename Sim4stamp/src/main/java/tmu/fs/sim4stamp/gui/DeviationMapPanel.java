@@ -20,7 +20,6 @@ package tmu.fs.sim4stamp.gui;
 import java.awt.geom.Point2D;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,10 +30,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ComboBox;
@@ -47,7 +43,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import tmu.fs.sim4stamp.MainApp;
 import tmu.fs.sim4stamp.SimService;
 import tmu.fs.sim4stamp.gui.util.GuiUtil;
 import tmu.fs.sim4stamp.model.IOParamManager;
@@ -73,15 +68,15 @@ import tmu.fs.sim4stamp.util.DisplayLevel;
  */
 public class DeviationMapPanel implements Initializable {
 
-    private static Logger log = Logger.getLogger(DeviationMapPanel.class.getPackage().getName());
+    private static final Logger log = Logger.getLogger(DeviationMapPanel.class.getPackage().getName());
     private static final double DISTANCE_CLOSED = 10.0;
     private static final Color FILL_BACK_COLOR = Color.CORNSILK;
     private static final Color STROKE_COLOR = Color.BLACK;
 
     private static final double ELEMENT_INTERVAL = 160;
-    private static final double ELEMENT_Y_POS = 40;
+    private static final double ELEMENT_Y_POS = 20;
     private static final double ELEMENT_Y_ST = 150;
-    private static final double ELEMENT_Y_DS = 40;
+    private static final double ELEMENT_Y_DS = 30;
 
     private static final Deviation[] CONNECTOR_DEVIATIONS = {
         Deviation.NORMAL,
@@ -89,13 +84,13 @@ public class DeviationMapPanel implements Initializable {
         Deviation.TOO_LATE,
         Deviation.STOPPING_TOO_SOON, Deviation.APPLYING_TOO_LONG};
 
-    private Canvas mapCanvas;
-    private ComboBox deviationSelectionByType;
-    private Button executeButton;
-    private Button loopDisplayButton;
-    private Button loopDisplayDownButton;
-    private Button loopDisplayUpButton;
-    private TextField loopDisplayCount;
+    private final Canvas mapCanvas;
+    private final ComboBox deviationSelectionByType;
+    private final Button executeButton;
+    private final Button loopDisplayButton;
+    private final Button loopDisplayDownButton;
+    private final Button loopDisplayUpButton;
+    private final TextField loopDisplayCount;
 
     private List<Element> elementSeries;
     private List<Element> elementDisplays;
@@ -132,9 +127,9 @@ public class DeviationMapPanel implements Initializable {
             SimService.getInstance().getIoParamManager().getCurrentScene().setDeviation(deviation);
             drawPanel();
         });
-        mapCanvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, (MouseEvent e) -> {
-            mouseDragged(e);
-        });
+        //mapCanvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, (MouseEvent e) -> {
+        //    mouseDragged(e);
+        //});
         mapCanvas.addEventHandler(MouseEvent.MOUSE_PRESSED, (MouseEvent t) -> {
             mousePressed(t);
         });
@@ -260,7 +255,7 @@ public class DeviationMapPanel implements Initializable {
                 }
                 model.select(selectNo);
                 int dispCount = OvertureExecManager.getInstance().getDisplayCount();
-                loopDisplayCount.setText(Integer.toString(dispCount));
+                loopDisplayCount.textProperty().set(Integer.toString(dispCount));
                 makeConnectorDrawInfos(ss);
                 drawCanvas(mapCanvas);
             } catch (Exception ex) {
@@ -273,7 +268,7 @@ public class DeviationMapPanel implements Initializable {
         Platform.runLater(() -> {
             try {
                 int dispCount = OvertureExecManager.getInstance().getDisplayCount();
-                loopDisplayCount.setText(Integer.toString(dispCount));
+                loopDisplayCount.textProperty().set(Integer.toString(dispCount));
                 drawCanvas(mapCanvas);
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -378,7 +373,7 @@ public class DeviationMapPanel implements Initializable {
         gc.fillRect(0, 0, frameWidth, frameHeight);
 
         double sy0 = ELEMENT_Y_POS;
-        double sy1 = ELEMENT_Y_POS + ELEMENT_Y_ST + ELEMENT_Y_DS * (connectors.size() + 1);
+        double sy1 = ELEMENT_Y_POS + ELEMENT_Y_ST + ELEMENT_Y_DS * (connectors.size() + 0.5);
         gc.setStroke(STROKE_COLOR);
         for (int i = 0; i < elementDisplays.size(); i++) {
             double x = ELEMENT_INTERVAL * i + (ELEMENT_INTERVAL / 5.0) * 2.0;

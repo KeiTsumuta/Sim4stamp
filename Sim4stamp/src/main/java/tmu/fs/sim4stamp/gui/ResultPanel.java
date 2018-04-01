@@ -44,20 +44,20 @@ import tmu.fs.sim4stamp.model.iop.IOScene;
  */
 public class ResultPanel implements Initializable {
 
-    private static Logger log = Logger.getLogger(ResultPanel.class.getPackage().getName());
+    private static final Logger log = Logger.getLogger(ResultPanel.class.getPackage().getName());
 
-    private ChoiceBox<String> resultChoice;
+    private final ChoiceBox<String> resultChoice;
 
-    private ChoiceBox<String> graph1ChoiseBox;
-    private LineChart lineChart1;
+    private final ChoiceBox<String> graph1ChoiseBox;
+    private final LineChart lineChart1;
     private LineGraphPanel linePanel1;
     private String initSelectParentId1 = null;
     private String initSelectId1 = null;
     private String currentSelectParentId1 = null;
     private String currentSelectId1 = null;
 
-    private ChoiceBox<String> graph2ChoiseBox;
-    private LineChart lineChart2;
+    private final ChoiceBox<String> graph2ChoiseBox;
+    private final LineChart lineChart2;
     private LineGraphPanel linePanel2;
     private String initSelectParentId2 = null;
     private String initSelectId2 = null;
@@ -66,7 +66,7 @@ public class ResultPanel implements Initializable {
 
     private int selectResultIndex = -1;
 
-    private ResultTablePanel resultTable;
+    private final ResultTablePanel resultTable;
 
     public ResultPanel(Control[] controls, LineChart[] lineCharts) {
         this.resultChoice = (ChoiceBox) controls[0];

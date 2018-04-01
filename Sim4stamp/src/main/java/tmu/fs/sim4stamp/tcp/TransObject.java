@@ -28,7 +28,7 @@ public class TransObject implements java.io.Serializable {
 
     static final long serialVersionUID = 1L;
 
-    private String id;
+    private final String id;
     private List<String> stValues = null;
     private List<Double> dValues = null;
     private List<Integer> intValues = null;
@@ -49,7 +49,7 @@ public class TransObject implements java.io.Serializable {
     }
 
     /**
-     * @param stValues the stValues to set
+     * @param values the values to set
      */
     public void addStValue(String value) {
         if (stValues == null) {
@@ -83,7 +83,7 @@ public class TransObject implements java.io.Serializable {
     }
 
     /**
-     * @param iValues the intValues to set
+     * @param values the values to set
      */
     public void addIntValue(Integer value) {
         if (intValues == null) {

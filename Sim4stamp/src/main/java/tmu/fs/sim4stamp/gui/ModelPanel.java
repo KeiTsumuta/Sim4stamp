@@ -55,16 +55,16 @@ import tmu.fs.sim4stamp.util.DisplayLevel;
  */
 public class ModelPanel implements Initializable {
 
-    private static Logger log = Logger.getLogger(ModelPanel.class.getPackage().getName());
+    private static final Logger log = Logger.getLogger(ModelPanel.class.getPackage().getName());
     private static final Color FILL_BACK_COLOR = Color.CORNSILK;
 
-    private Canvas modelCanvas;
+    private final Canvas modelCanvas;
     private double initDfWidth;
     private double initDfHeight;
     private String selectNodeId = null;
     private Connector selectJointConnector = null;
-    private CheckBox modelDitailDisplayCheckbox;
-    private CheckBox connectorJointDisplayCheckbox;
+    private final CheckBox modelDitailDisplayCheckbox;
+    private final CheckBox connectorJointDisplayCheckbox;
     private volatile boolean isDetailDisplayMode = false;
     private volatile boolean isJointDisplayMode = false;
     private ContextMenu popupAddMenu;  // 構成要素追加メニュー
@@ -311,23 +311,19 @@ public class ModelPanel implements Initializable {
         gc.setFill(FILL_BACK_COLOR);
         gc.fillRect(0, 0, wMax, hMax);
 
+        DisplayLevel.Level level = DisplayLevel.Level.Base;
+        if (isDetailDisplayMode) {
+            level = DisplayLevel.Level.Detail;
+        }
         List<Element> elements = SimService.getInstance().getElements();
         for (Element el : elements) {
-            if (isDetailDisplayMode) {
-                el.setLevel(DisplayLevel.Level.Detail);
-            } else {
-                el.setLevel(DisplayLevel.Level.Base);
-            }
+            el.setLevel(level);
             el.draw(gc);
         }
 
         List<Connector> connectors = SimService.getInstance().getConnectors();
         for (Connector c : connectors) {
-            if (isDetailDisplayMode) {
-                c.setLevel(DisplayLevel.Level.Detail);
-            } else {
-                c.setLevel(DisplayLevel.Level.Base);
-            }
+            c.setLevel(level);
             c.setJointDisplay(isJointDisplayMode);
             c.draw(gc);
         }

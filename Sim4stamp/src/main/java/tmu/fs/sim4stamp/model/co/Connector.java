@@ -41,7 +41,7 @@ import tmu.fs.sim4stamp.util.JSONConvert;
  */
 public class Connector implements JSONConvert, DisplayLevel {
 
-    private static Logger log = Logger.getLogger(Connector.class.getPackage().getName());
+    private static final Logger log = Logger.getLogger(Connector.class.getPackage().getName());
 
     private static final double ARROW_LENGTH = 20.0;
     private static final double DISTANCE_CLOSED = 10.0;

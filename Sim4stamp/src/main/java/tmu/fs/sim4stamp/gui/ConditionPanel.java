@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.regex.Pattern;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -34,22 +33,17 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Control;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -107,7 +101,7 @@ public class ConditionPanel implements Initializable {
         radioMap = new HashMap<>();
         IOScene ioScene = SimService.getInstance().getIoParamManager().getCurrentScene();
         sceneTitle.setText(ioScene.getScene());
-        simInitSeqSize.setText(Integer.toString(ioScene.getSize()));
+        simInitSeqSize.textProperty().set(Integer.toString(ioScene.getSize()));
         simInitSeqSize.setTextFormatter(GuiUtil.getIntTextFormater());
         setItemTableView();
         //setConnectorTableView();
@@ -117,7 +111,7 @@ public class ConditionPanel implements Initializable {
         });
         ObservableList<Deviation> list = FXCollections.observableArrayList(CONNECTOR_DEVIATIONS);
 
-        deviationStartIndex.setText(Integer.toString(ioScene.getDeviationStartIndex()));
+        deviationStartIndex.textProperty().set(Integer.toString(ioScene.getDeviationStartIndex()));
         deviationStartIndex.setTextFormatter(GuiUtil.getIntTextFormater());
     }
 
@@ -184,8 +178,8 @@ public class ConditionPanel implements Initializable {
 
     public void setInitDisplay() {
         IOScene ioScene = SimService.getInstance().getIoParamManager().getCurrentScene();
-        sceneTitle.setText(ioScene.getScene());
-        simInitSeqSize.setText(Integer.toString(ioScene.getSize()));
+        sceneTitle.textProperty().set(ioScene.getScene());
+        simInitSeqSize.textProperty().set(Integer.toString(ioScene.getSize()));
         setItemTableView();
         //setConnectorTableView();
 

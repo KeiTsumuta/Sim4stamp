@@ -49,7 +49,6 @@ public class OvertureExecManager implements DisplayItem {
 
     private IOScene executeScene = null;
 
-    private Map<String, Integer> indexMap = null;
 
     private int displayCount;
 

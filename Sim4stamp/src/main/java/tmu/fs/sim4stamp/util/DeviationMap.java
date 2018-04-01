@@ -27,7 +27,7 @@ import java.util.Map;
  */
 public class DeviationMap {
 
-    private static final Deviation[] deviations = {
+    private static final Deviation[] DEVIATIONS = {
         Deviation.NORMAL,
         Deviation.NOT_PROVIDING,
         Deviation.PROVIDING_MORE,
@@ -42,7 +42,7 @@ public class DeviationMap {
     private static final Map<Integer, Deviation> dmap = new HashMap<Integer, Deviation>();
 
     static {
-        for (Deviation d : deviations) {
+        for (Deviation d : DEVIATIONS) {
             dmap.put(new Integer(d.getId()), d);
         }
     }

@@ -31,8 +31,8 @@ import javafx.scene.control.TextArea;
  */
 public class ExecuteLogPanel implements Initializable {
 
-    private Button clearButton;
-    private TextArea executeLog;
+    private final Button clearButton;
+    private final TextArea executeLog;
 
     public ExecuteLogPanel(Button clearButton, TextArea executeLog) {
         this.clearButton = clearButton;

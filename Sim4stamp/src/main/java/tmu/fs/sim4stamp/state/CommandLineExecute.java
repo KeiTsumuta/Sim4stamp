@@ -30,7 +30,6 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.logging.Logger;
 import tmu.fs.sim4stamp.PanelManager;
 import tmu.fs.sim4stamp.SimService;
-import tmu.fs.sim4stamp.gui.DeviationMapPanel;
 import tmu.fs.sim4stamp.gui.ExecuteLogPanel;
 import tmu.fs.sim4stamp.vdm.VdmCodeMaker;
 
@@ -40,7 +39,7 @@ import tmu.fs.sim4stamp.vdm.VdmCodeMaker;
  */
 public class CommandLineExecute implements Runnable {
 
-    private static Logger log = Logger.getLogger(CommandLineExecute.class.getPackage().getName());
+    private static final Logger log = Logger.getLogger(CommandLineExecute.class.getPackage().getName());
 
     private static final String[] COMMAND_EXECUTE
             = new String[]{"-vdmpp", "-w", "-r", "vdm10",
@@ -65,6 +64,7 @@ public class CommandLineExecute implements Runnable {
         }
     }
 
+    @Override
     public void run() {
         try {
             SimService ss = SimService.getInstance();
@@ -99,8 +99,8 @@ public class CommandLineExecute implements Runnable {
     }
 
     public void displayInputStream(InputStream is) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(is));
-        try {
+        try (InputStreamReader isr = new InputStreamReader(is);
+                BufferedReader br = new BufferedReader(isr)) {
             for (;;) {
                 String line = br.readLine();
                 if (line == null) {
@@ -108,18 +108,17 @@ public class CommandLineExecute implements Runnable {
                 }
                 logQue.add(line + "\n");
             }
-        } finally {
-            br.close();
         }
     }
 
     class LogQueue {
 
-        private BlockingQueue<String> que = new LinkedBlockingDeque<String>();
+        private BlockingQueue<String> que = new LinkedBlockingDeque<>();
 
         public LogQueue() {
 
             Runnable runnable = new Runnable() {
+                @Override
                 public void run() {
                     try {
                         ExecuteLogPanel elp = PanelManager.get().getExecuteLogPanel();

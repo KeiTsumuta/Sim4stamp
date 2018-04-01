@@ -35,10 +35,10 @@ import javafx.scene.control.TableView;
  */
 public class ResultTablePanel implements Initializable {
 
-    private TableView resultTable;
+    private final TableView resultTable;
     private ObservableList<String> headers;
     private ObservableList<ObservableList> dataVals;
-    private static DecimalFormat format = new DecimalFormat("#0.00");
+    private static final DecimalFormat format = new DecimalFormat("#0.00");
 
     public ResultTablePanel(TableView resultTable) {
         this.resultTable = resultTable;

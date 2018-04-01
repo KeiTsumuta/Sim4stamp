@@ -30,8 +30,8 @@ import java.util.logging.Logger;
  */
 public class SimServer implements Runnable {
 
-    private static Logger log = Logger.getLogger(SimServer.class.getPackage().getName());
-    private int portNo;
+    private static final Logger log = Logger.getLogger(SimServer.class.getPackage().getName());
+    private final int portNo;
     private ServerSocket server;
 
     public SimServer(int portNo) throws Exception {

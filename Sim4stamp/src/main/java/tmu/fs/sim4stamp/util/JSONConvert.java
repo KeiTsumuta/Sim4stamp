@@ -17,7 +17,6 @@
  */
 package tmu.fs.sim4stamp.util;
 
-import java.util.List;
 import org.json.JSONObject;
 
 /**
