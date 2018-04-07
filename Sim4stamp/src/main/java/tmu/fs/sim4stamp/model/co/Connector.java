@@ -18,6 +18,7 @@
 package tmu.fs.sim4stamp.model.co;
 
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -48,6 +49,7 @@ public class Connector implements JSONConvert, DisplayLevel {
     private static final Color STROKE_COLOR = Color.BLUE;
     private static final Color STROKE2_COLOR = Color.SEASHELL;
     private static final Color MARKED_COLOR = Color.RED;
+    private static final double DELTA = 8.0;
 
     private String nodeFromId;
     private String nodeToId;
@@ -389,24 +391,40 @@ public class Connector implements JSONConvert, DisplayLevel {
             double x = points.get(0).getX();
             double y = points.get(0).getY();
             for (Element el : elements) {
-                if (el.containsOutside(x, y)) {
+                if (el.containsOutside(x, y) && !el.containsInside(x, y)) {
                     nodeFromId = el.getNodeId();
+                    setFit(el, points.get(0));
                     break;
                 }
             }
         } else if (selectedIndex == (points.size() - 1)) { // To node side
             nodeToId = "";
             List<Element> elements = SimService.getInstance().getElements();
-            double x = points.get(points.size() - 1).getX();
-            double y = points.get(points.size() - 1).getY();
+            int index = points.size() - 1;
+            double x = points.get(index).getX();
+            double y = points.get(index).getY();
             for (Element el : elements) {
-                if (el.containsOutside(x, y)) {
+                if (el.containsOutside(x, y) && !el.containsInside(x, y)) {
                     nodeToId = el.getNodeId();
+                    setFit(el, points.get(index));
                     break;
                 }
             }
         }
         //System.out.println("cons:" + nodeFromId + "," + nodeToId);
+    }
+
+    private void setFit(Element el, Point2D.Double point) {
+        Rectangle2D.Double base = el.getBaseRect();
+        if (Math.abs(base.x - point.x) < DELTA) {
+            point.x = base.x;
+        } else if (Math.abs(base.x + base.width - point.x) < DELTA) {
+            point.x = base.x + base.width;
+        } else if (Math.abs(base.y - point.y) < DELTA) {
+            point.y = base.y;
+        } else if (Math.abs(base.y + base.height - point.y) < DELTA) {
+            point.y = base.y + base.height;
+        }
     }
 
     public void checkNode(String nodeId) {

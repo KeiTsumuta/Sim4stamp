@@ -55,7 +55,7 @@ public class ExecuteLogPanel implements Initializable {
     }
 
     public void clear() {
-        executeLog.setText("");
+        executeLog.textProperty().set("");
     }
 
 }

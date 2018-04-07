@@ -51,7 +51,7 @@ public abstract class Element implements JSONConvert, DisplayLevel {
     protected EType etype;
     protected final String nodeId;
     protected final String title;
-    protected Rectangle2D.Double baseRect;
+    private Rectangle2D.Double baseRect;
     protected Rectangle2D.Double baseRectOutside;
     protected Rectangle2D.Double baseRectInside;
     protected double eleWidth;
@@ -79,6 +79,13 @@ public abstract class Element implements JSONConvert, DisplayLevel {
         baseRectInside = new Rectangle2D.Double(x + 4, y + 4, eleWidth - 8, eleHeight - 8);
     }
 
+    /**
+     * @return the baseRect
+     */
+    public Rectangle2D.Double getBaseRect() {
+        return baseRect;
+    }
+
     public String getNodeId() {
         return nodeId;
     }
@@ -90,10 +97,10 @@ public abstract class Element implements JSONConvert, DisplayLevel {
     public abstract void draw(GraphicsContext gc);
 
     public boolean contains(double pointX, double pointY) {
-        if (baseRect != null) {
-            if (baseRect.contains(pointX, pointY)) {
-                pointXDelta = pointX - baseRect.getX();
-                pointYDelta = pointY - baseRect.getY();
+        if (getBaseRect() != null) {
+            if (getBaseRect().contains(pointX, pointY)) {
+                pointXDelta = pointX - getBaseRect().getX();
+                pointYDelta = pointY - getBaseRect().getY();
                 return true;
             }
         }
@@ -103,8 +110,8 @@ public abstract class Element implements JSONConvert, DisplayLevel {
     public boolean containsInside(double pointX, double pointY) {
         if (baseRectInside != null) {
             if (baseRectInside.contains(pointX, pointY)) {
-                pointXDelta = pointX - baseRect.getX();
-                pointYDelta = pointY - baseRect.getY();
+                pointXDelta = pointX - getBaseRect().getX();
+                pointYDelta = pointY - getBaseRect().getY();
                 return true;
             }
         }
@@ -114,8 +121,8 @@ public abstract class Element implements JSONConvert, DisplayLevel {
     public boolean containsOutside(double pointX, double pointY) {
         if (baseRectOutside != null) {
             if (baseRectOutside.contains(pointX, pointY)) {
-                pointXDelta = pointX - baseRect.getX();
-                pointYDelta = pointY - baseRect.getY();
+                pointXDelta = pointX - getBaseRect().getX();
+                pointYDelta = pointY - getBaseRect().getY();
                 return true;
             }
         }
@@ -215,7 +222,7 @@ public abstract class Element implements JSONConvert, DisplayLevel {
 
     @Override
     public String toString() {
-        return etype + "," + nodeId + ", (" + baseRect.getX() + ", " + baseRect.getY() + ")";
+        return etype + "," + nodeId + ", (" + getBaseRect().getX() + ", " + getBaseRect().getY() + ")";
     }
 
     @Override
@@ -259,7 +266,7 @@ public abstract class Element implements JSONConvert, DisplayLevel {
                     break;
             }
             jobj.accumulate("id", nodeId);
-            jobj.accumulate("xy", baseRect.getX() + "," + baseRect.getY());
+            jobj.accumulate("xy", getBaseRect().getX() + "," + getBaseRect().getY());
             if (appendParams != null) {
                 appendParams.addJson(AppendParams.ParamType.Element, jobj);
             }

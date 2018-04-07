@@ -76,7 +76,7 @@ public class DeviationMapPanel implements Initializable {
     private static final double ELEMENT_INTERVAL = 160;
     private static final double ELEMENT_Y_POS = 20;
     private static final double ELEMENT_Y_ST = 150;
-    private static final double ELEMENT_Y_DS = 30;
+    private static final double ELEMENT_Y_DS = 40;
 
     private static final Deviation[] CONNECTOR_DEVIATIONS = {
         Deviation.NORMAL,
@@ -170,14 +170,14 @@ public class DeviationMapPanel implements Initializable {
 
     private void executeSim() {
         log.info("overtureExecuteAction:--");
-        Platform.runLater(() -> {
-            try {
-                CommandLineExecute ce = new CommandLineExecute();
-                ce.start();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        });
+        //Platform.runLater(() -> {
+        try {
+            CommandLineExecute ce = new CommandLineExecute();
+            ce.start();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        //});
     }
 
     private void initPopupMenu() {
@@ -186,11 +186,17 @@ public class DeviationMapPanel implements Initializable {
         mitem1.setOnAction((ActionEvent t) -> {
             selectDeviationConnector(t, "y");
         });
-        MenuItem mitem2 = new MenuItem("偏差投入対象外す");
-        mitem2.setOnAction((ActionEvent t) -> {
-            selectDeviationConnector(t, "n");
+        popupDeviationMenu.getItems().add(mitem1);
+        //MenuItem mitem2 = new MenuItem("偏差投入対象外す");
+        //mitem2.setOnAction((ActionEvent t) -> {
+        //    selectDeviationConnector(t, "n");
+        //});
+        //popupDeviationMenu.getItems().add(mitem2);
+        MenuItem gitem = new MenuItem("グラフ表示");
+        gitem.setOnAction((ActionEvent t) -> {
+            showGraphDialog(t);
         });
-        popupDeviationMenu.getItems().addAll(mitem1, mitem2);
+        popupDeviationMenu.getItems().add(gitem);
     }
 
     public void selectDeviationConnector(ActionEvent t, String sr) {
@@ -211,6 +217,29 @@ public class DeviationMapPanel implements Initializable {
             ioScene.setDeviationConnection(null);
         }
         drawPanel();
+    }
+
+    private void showGraphDialog(ActionEvent t) {
+        if (selectedConnector == null) {
+            return;
+        }
+        IOScene ioScene = SimService.getInstance().getIoParamManager().getCurrentScene();
+        AppendParams ap = selectedConnector.getAppendParams();
+        List<IOParam> aps = ap.getParams();
+        if (aps != null && aps.size() > 0) {
+            try {
+                GraphDisplayDialog gdd = new GraphDisplayDialog();
+                IOScene sc = OvertureExecManager.getInstance().getExecuteScene();
+                if (sc != null) {
+                    double[] data = sc.getData(selectedConnector.getNodeToId(), aps.get(0).getId());
+                    gdd.setData(aps.get(0).getId(), data);
+                }
+                gdd.show(t);
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     public void initDisplayPanel() {

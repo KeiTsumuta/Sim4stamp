@@ -199,12 +199,12 @@ public class IOScene implements JSONConvert {
         if (val != null) {
             val.set(index, value);
             if (val.getParamType() == AppendParams.ParamType.Connector) {
-                copyNfNt(elementId, val.getParentId()[1], paramId, index, value);
+                copyNfNt(elementId, val.getParentId()[1], paramId, index);
             }
         }
     }
 
-    private void copyNfNt(String nfId, String ntId, String paramId, int index, double value) {
+    private void copyNfNt(String nfId, String ntId, String paramId, int index) {
         List<IOValue> listNf = nodeValues.get(nfId);
         for (IOValue ioNf : listNf) {
             if (ioNf.getId().equals(paramId)) {

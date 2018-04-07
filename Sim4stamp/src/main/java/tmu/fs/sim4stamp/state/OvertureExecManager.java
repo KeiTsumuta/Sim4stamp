@@ -49,7 +49,6 @@ public class OvertureExecManager implements DisplayItem {
 
     private IOScene executeScene = null;
 
-
     private int displayCount;
 
     private OvertureExecManager() {
@@ -179,5 +178,9 @@ public class OvertureExecManager implements DisplayItem {
 
     public Element getElement(String id) {
         return elmMap.get(id);
+    }
+
+    public IOScene getExecuteScene() {
+        return executeScene;
     }
 }

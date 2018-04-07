@@ -41,8 +41,8 @@ public class Controller extends Element {
 
     @Override
     public void draw(GraphicsContext gc) {
-        double x0 = baseRect.getX();
-        double y0 = baseRect.getY();
+        double x0 = getBaseRect().getX();
+        double y0 = getBaseRect().getY();
         gc.setFill(FILL_COLOR);
         gc.fillRect(x0, y0, RECT_WIDTH, RECT_HIGHT);
 

@@ -298,14 +298,14 @@ public class FXMLController implements Initializable {
     @FXML
     public void overtureExecuteAction(ActionEvent event) {
         log.info("overtureExecuteAction:--");
-        Platform.runLater(() -> {
+        //Platform.runLater(() -> {
             try {
                 CommandLineExecute ce = new CommandLineExecute();
                 ce.start();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-        });
+        //});
     }
 
     @FXML
