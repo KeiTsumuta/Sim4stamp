@@ -229,10 +229,15 @@ public class DeviationMapPanel implements Initializable {
         if (aps != null && aps.size() > 0) {
             try {
                 GraphDisplayDialog gdd = new GraphDisplayDialog();
-                IOScene sc = OvertureExecManager.getInstance().getExecuteScene();
-                if (sc != null) {
-                    double[] data = sc.getData(selectedConnector.getNodeToId(), aps.get(0).getId());
-                    gdd.setData(aps.get(0).getId(), data);
+                List<IOScene> resultScenes = SimService.getInstance().getIoParamManager().getResultScenes();
+                if (resultScenes.size() > 0) {
+                    gdd.reset(selectedConnector.getNodeToId() + "." + aps.get(0).getId());
+                    int i = 1;
+                    for (IOScene ios : resultScenes) {
+                        double[] data = ios.getData(selectedConnector.getNodeToId(), aps.get(0).getId());
+                        gdd.addData(ios.getDeviation().toString(), data);
+                        i++;
+                    }
                 }
                 gdd.show(t);
 

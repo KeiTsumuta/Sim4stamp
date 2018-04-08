@@ -251,7 +251,7 @@ public class ResultPanel implements Initializable {
         for (IOScene ios : resultScenes) {
             if (currentSelectParentId1 != null) {
                 double[] data = ios.getData(parentId, id);
-                graph.addData(i + ":" + title, data);
+                graph.addData(i + ":" + ios.getDeviation().toString(), data);
             }
             i++;
         }

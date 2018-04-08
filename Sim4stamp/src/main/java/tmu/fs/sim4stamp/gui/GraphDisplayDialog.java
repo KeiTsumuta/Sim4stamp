@@ -19,6 +19,8 @@ package tmu.fs.sim4stamp.gui;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -47,8 +49,9 @@ public class GraphDisplayDialog implements Initializable {
     private LineChart displayedGraph;
     private LineGraphPanel linePanel;
 
-    private static String title;
-    private static double[] data;
+    private static String mainTitle;
+    private static List<String> subTitles;
+    private static List<double[]> gdata;
 
     private Stage stage;
 
@@ -56,15 +59,21 @@ public class GraphDisplayDialog implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         linePanel = new LineGraphPanel(displayedGraph);
         linePanel.reset();
-        if (data != null) {
-            linePanel.addData(title, data);
+        for (int i = 0; i < subTitles.size(); i++) {
+            linePanel.addData(i + "：" + subTitles.get(i), gdata.get(i));
         }
-        graphTitle.textProperty().set(title);
+        graphTitle.textProperty().set(mainTitle);
     }
 
-    public void setData(String title, double[] data) {
-        this.title = title;
-        this.data = data;
+    public void reset(String title) {
+        mainTitle = title;
+        subTitles = new ArrayList<>();
+        gdata = new ArrayList<>();
+    }
+
+    public void addData(String title, double[] data) {
+        subTitles.add(title);
+        gdata.add(data);
     }
 
     public void show(ActionEvent event) throws IOException {
