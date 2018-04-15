@@ -96,6 +96,7 @@ public class DeviationMapPanel implements Initializable {
     private List<Element> elementDisplays;
     private List<Connector> connectors;
     private List<Connector> connectorDrawInfos;
+    private Element selectedElement;
 
     private Connector selectedConnector = null;
     private List<ConnectorPoint> connPoints;
@@ -428,16 +429,16 @@ public class DeviationMapPanel implements Initializable {
     }
 
     private void mouseDragged(MouseEvent e) {
-        double x = e.getX();
-        double y = e.getY();
-
-        drawPanel();
+        //double x = e.getX();
+        //double y = e.getY();
+        //drawPanel();
     }
 
     private void mousePressed(MouseEvent e) {
         double x = e.getX();
         double y = e.getY();
         selectedConnector = null;
+        selectedElement = null;
         popupDeviationMenu.hide();
         MouseButton mouseButton = e.getButton();
         if (mouseButton == MouseButton.PRIMARY) {   // 左クリック
@@ -448,18 +449,32 @@ public class DeviationMapPanel implements Initializable {
                     popupDeviationMenu.show(mapCanvas, e.getScreenX(), e.getScreenY());
                     //System.out.println(selectedConnector.getNodeFromId() + "," + selectedConnector.getNodeToId()
                     //        + selectedConnector.getAppendParams().getParams().get(0).getId());
-                    break;
+                    drawPanel();
+                    return;
                 }
             }
+            for(Element el : elementDisplays){
+                if(el.containsInside(x, y)){
+                    selectedElement = el;
+                    selectedElement.setSelect(true);
+                    
+                    drawPanel();
+                    return;
+                }
+            }
+            
         } else if (mouseButton == MouseButton.SECONDARY) { // 右クリック
 
         }
-        drawPanel();
+        
     }
 
     private void mouseReleased(MouseEvent e) {
         for (ConnectorPoint c : connPoints) {
             c.get().setPointed(false);
+        }
+        for(Element el : elementDisplays){
+            el.setSelect(false);
         }
         drawPanel();
     }

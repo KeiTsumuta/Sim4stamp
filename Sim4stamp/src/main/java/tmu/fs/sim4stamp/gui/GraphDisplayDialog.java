@@ -59,10 +59,14 @@ public class GraphDisplayDialog implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         linePanel = new LineGraphPanel(displayedGraph);
         linePanel.reset();
-        for (int i = 0; i < subTitles.size(); i++) {
-            linePanel.addData(i + "：" + subTitles.get(i), gdata.get(i));
+        if (subTitles != null) {
+            for (int i = 0; i < subTitles.size(); i++) {
+                linePanel.addData(i + "：" + subTitles.get(i), gdata.get(i));
+            }
+            graphTitle.textProperty().set(mainTitle);
+        } else {
+            graphTitle.textProperty().set("");
         }
-        graphTitle.textProperty().set(mainTitle);
     }
 
     public void reset(String title) {

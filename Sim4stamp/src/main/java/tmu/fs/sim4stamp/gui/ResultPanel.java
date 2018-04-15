@@ -45,24 +45,17 @@ import tmu.fs.sim4stamp.model.iop.IOScene;
 public class ResultPanel implements Initializable {
 
     private static final Logger log = Logger.getLogger(ResultPanel.class.getPackage().getName());
+    private static final int GRAPH_SIZE = 4;
 
     private final ChoiceBox<String> resultChoice;
 
-    private final ChoiceBox<String> graph1ChoiseBox;
-    private final LineChart lineChart1;
-    private LineGraphPanel linePanel1;
-    private String initSelectParentId1 = null;
-    private String initSelectId1 = null;
-    private String currentSelectParentId1 = null;
-    private String currentSelectId1 = null;
-
-    private final ChoiceBox<String> graph2ChoiseBox;
-    private final LineChart lineChart2;
-    private LineGraphPanel linePanel2;
-    private String initSelectParentId2 = null;
-    private String initSelectId2 = null;
-    private String currentSelectParentId2 = null;
-    private String currentSelectId2 = null;
+    private final ChoiceBox<String>[] graphChoiseBoxs = new ChoiceBox[GRAPH_SIZE];
+    private final LineChart[] lineCharts = new LineChart[GRAPH_SIZE];
+    private final LineGraphPanel[] linePanels = new LineGraphPanel[GRAPH_SIZE];
+    private final String initSelectParentIds[] = new String[GRAPH_SIZE];
+    private final String initSelectIds[] = new String[GRAPH_SIZE];
+    private final String currentSelectParentIds[] = new String[GRAPH_SIZE];
+    private final String currentSelectIds[] = new String[GRAPH_SIZE];
 
     private int selectResultIndex = -1;
 
@@ -70,36 +63,39 @@ public class ResultPanel implements Initializable {
 
     public ResultPanel(Control[] controls, LineChart[] lineCharts) {
         this.resultChoice = (ChoiceBox) controls[0];
-
-        this.graph1ChoiseBox = (ChoiceBox) controls[1];
-        this.lineChart1 = lineCharts[0];
-
-        this.graph2ChoiseBox = (ChoiceBox) controls[2];
-        this.lineChart2 = lineCharts[1];
-        this.resultTable = new ResultTablePanel((TableView) controls[3]);
+        graphChoiseBoxs[0] = (ChoiceBox) controls[1];
+        graphChoiseBoxs[1] = (ChoiceBox) controls[2];
+        graphChoiseBoxs[2] = (ChoiceBox) controls[3];
+        graphChoiseBoxs[3] = (ChoiceBox) controls[4];
+        this.lineCharts[0] = lineCharts[0];
+        this.lineCharts[1] = lineCharts[1];
+        this.lineCharts[2] = lineCharts[2];
+        this.lineCharts[3] = lineCharts[3];
+        this.resultTable = new ResultTablePanel((TableView) controls[5]);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        linePanel1 = new LineGraphPanel(lineChart1);
-        linePanel2 = new LineGraphPanel(lineChart2);
+        for (int i = 0; i < GRAPH_SIZE; i++) {
+            linePanels[i] = new LineGraphPanel(lineCharts[i]);
+        }
 
         getResultTable().initialize(location, resources);
         PanelManager.get().setResultTablePanel(getResultTable());
     }
 
     public void initDisplay() {
-        getLinePanel1().reset();
-        getLinePanel2().reset();
+        resetData();
         resultTable.initData();
         setGraphSelections();
     }
 
     private void setGraphSelections() {
-        initSelectParentId1 = null;
-        initSelectId1 = null;
-        initSelectParentId2 = null;
-        initSelectId2 = null;
+        for (int i = 0; i < GRAPH_SIZE; i++) {
+            initSelectParentIds[i] = null;
+            initSelectIds[i] = null;
+        }
+
         selectResultIndex = -1;
         ObservableList<String> rss = FXCollections.observableArrayList();
         resultChoice.setItems(rss);
@@ -132,73 +128,53 @@ public class ResultPanel implements Initializable {
                 for (IOParam ip : ios) {
                     if (ip.getParamType() == AppendParams.ParamType.Element) {
                         eis.add(ip.getId());
-                        if (eType == Element.EType.INJECTOR && initSelectId1 == null) {
-                            initSelectParentId1 = nodeId;
-                            initSelectId1 = ip.getId();
-                        } else if (initSelectId2 == null) {
-                            initSelectParentId2 = nodeId;
-                            initSelectId2 = ip.getId();
+                        for (int i = 0; i < GRAPH_SIZE; i++) {
+                            if (initSelectIds[i] == null) {
+                                if (i == 0 && eType == Element.EType.INJECTOR) {
+                                    initSelectParentIds[i] = nodeId;
+                                    initSelectIds[i] = ip.getId();
+                                } else if (i > 0) {
+                                    initSelectParentIds[i] = nodeId;
+                                    initSelectIds[i] = ip.getId();
+                                }
+                                break;
+                            }
                         }
                     }
                 }
             }
         });
-        graph1ChoiseBox.setItems(eis);
-        if (initSelectId1 != null) {
-            graph1ChoiseBox.getSelectionModel().select(initSelectId1);
-        }
-        graph1ChoiseBox.getSelectionModel()
-                .selectedItemProperty()
-                .addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
-                    //System.out.println(newValue);
-                    IOParamManager iom = SimService.getInstance().getIoParamManager();
-                    List<String> elemIds = iom.getNodeIds();
-                    for (String elemId : elemIds) {
-                        String parentId = elemId;
-                        List<IOParam> iops = iom.getParamMap().get(elemId);
-                        for (IOParam iop : iops) {
-                            String id = iop.getId();
-                            if (id.equals(newValue)) {
-                                linePanel1.reset();
-                                addGraphDisplay(linePanel1, id, parentId, id);
-                                currentSelectParentId1 = parentId;
-                                currentSelectId1 = id;
-                                return;
+
+        for (int i = 0; i < GRAPH_SIZE; i++) {
+            graphChoiseBoxs[i].setItems(eis);
+            if (initSelectIds[i] != null) {
+                graphChoiseBoxs[i].getSelectionModel().select(initSelectIds[i]);
+            }
+            final int idx = i;
+            graphChoiseBoxs[i].getSelectionModel()
+                    .selectedItemProperty()
+                    .addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+                        //System.out.println(newValue);
+                        IOParamManager iom = SimService.getInstance().getIoParamManager();
+                        List<String> elemIds = iom.getNodeIds();
+                        for (String elemId : elemIds) {
+                            String parentId = elemId;
+                            List<IOParam> iops = iom.getParamMap().get(elemId);
+                            for (IOParam iop : iops) {
+                                String id = iop.getId();
+                                if (id.equals(newValue)) {
+                                    linePanels[idx].reset();
+                                    addGraphDisplay(linePanels[idx], id, parentId, id);
+                                    currentSelectParentIds[idx] = parentId;
+                                    currentSelectIds[idx] = id;
+                                    return;
+                                }
                             }
                         }
-                    }
-                });
-        currentSelectParentId1 = initSelectParentId1;
-        currentSelectId1 = initSelectId1;
-
-        graph2ChoiseBox.setItems(eis);
-        if (initSelectId2 != null) {
-            graph2ChoiseBox.getSelectionModel().select(initSelectId2);
+                    });
+            currentSelectParentIds[i] = initSelectParentIds[i];
+            currentSelectIds[i] = initSelectIds[i];
         }
-        graph2ChoiseBox.getSelectionModel()
-                .selectedItemProperty()
-                .addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
-                    //System.out.println(newValue);
-                    IOParamManager iom = SimService.getInstance().getIoParamManager();
-                    List<String> elemIds = iom.getNodeIds();
-                    for (String elemId : elemIds) {
-                        String parentId = elemId;
-                        List<IOParam> iops = iom.getParamMap().get(elemId);
-                        for (IOParam iop : iops) {
-                            String id = iop.getId();
-                            if (id.equals(newValue)) {
-                                linePanel2.reset();
-                                addGraphDisplay(linePanel2, id, parentId, id);
-                                currentSelectParentId2 = parentId;
-                                currentSelectId2 = id;
-                                return;
-                            }
-                        }
-                    }
-                });
-        currentSelectParentId2 = initSelectParentId2;
-        currentSelectId2 = initSelectId2;
-
     }
 
     private int getInt(String s) {
@@ -214,11 +190,10 @@ public class ResultPanel implements Initializable {
         // 結果データのプルダウンリスト
         makeResultSelect();
         // グラフ
-        if (currentSelectParentId1 != null) {
-            addGraphDisplay(linePanel1, currentSelectId1, currentSelectParentId1, currentSelectId1);
-        }
-        if (currentSelectParentId2 != null) {
-            addGraphDisplay(linePanel2, currentSelectId2, currentSelectParentId2, currentSelectId2);
+        for (int i = 0; i < GRAPH_SIZE; i++) {
+            if (currentSelectParentIds[i] != null) {
+                addGraphDisplay(linePanels[i], currentSelectIds[i], currentSelectParentIds[i], currentSelectIds[i]);
+            }
         }
         // テーブル
         IOScene executeScene = SimService.getInstance().getIoParamManager().getExceuteScene();
@@ -249,7 +224,7 @@ public class ResultPanel implements Initializable {
         graph.reset();
         int i = 1;
         for (IOScene ios : resultScenes) {
-            if (currentSelectParentId1 != null) {
+            if (currentSelectParentIds[i - 1] != null) {
                 double[] data = ios.getData(parentId, id);
                 graph.addData(i + ":" + ios.getDeviation().toString(), data);
             }
@@ -278,8 +253,9 @@ public class ResultPanel implements Initializable {
     }
 
     public void resetData() {
-        getLinePanel1().reset();
-        getLinePanel2().reset();
+        for (int i = 0; i < GRAPH_SIZE; i++) {
+            linePanels[i].reset();
+        }
     }
 
     public void displayFirstData() {
@@ -287,11 +263,10 @@ public class ResultPanel implements Initializable {
         if (resultScenes.size() > 0) {
             displayResultTable(resultScenes.get(0));
             // グラフ
-            if (currentSelectParentId1 != null) {
-                addGraphDisplay(linePanel1, currentSelectId1, currentSelectParentId1, currentSelectId1);
-            }
-            if (currentSelectParentId2 != null) {
-                addGraphDisplay(linePanel2, currentSelectId2, currentSelectParentId2, currentSelectId2);
+            for (int i = 0; i < GRAPH_SIZE; i++) {
+                if (currentSelectParentIds[i] != null) {
+                    addGraphDisplay(linePanels[i], currentSelectIds[i], currentSelectParentIds[i], currentSelectIds[i]);
+                }
             }
         }
         makeResultSelect();
@@ -301,14 +276,22 @@ public class ResultPanel implements Initializable {
      * @return the linePanel1
      */
     public LineGraphPanel getLinePanel1() {
-        return linePanel1;
+        return linePanels[0];
     }
 
     /**
      * @return the linePanel2
      */
     public LineGraphPanel getLinePanel2() {
-        return linePanel2;
+        return linePanels[1];
+    }
+
+    public LineGraphPanel getLinePanel3() {
+        return linePanels[2];
+    }
+
+    public LineGraphPanel getLinePanel4() {
+        return linePanels[3];
     }
 
     /**

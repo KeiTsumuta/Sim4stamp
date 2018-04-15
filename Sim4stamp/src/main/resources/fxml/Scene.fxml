@@ -30,7 +30,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" xmlns="http://javafx.com/javafx/9.0.4" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tmu.fs.sim4stamp.gui.FXMLController">
+<AnchorPane id="AnchorPane" xmlns="http://javafx.com/javafx/10" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tmu.fs.sim4stamp.gui.FXMLController">
     <children>
         <BorderPane layoutX="4.0" layoutY="-1.0" prefHeight="700.0" prefWidth="993.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-1.0">
             <top>
@@ -236,64 +236,114 @@
                                 </BorderPane>
                             </content>
                         </Tab>
-                        <Tab fx:id="result_panel" text="分析結果">
+                        <Tab fx:id="result_panel" text="結果グラフ">
                             <content>
                                 <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                     <children>
-                                        <SplitPane dividerPositions="0.4221183800623053" orientation="VERTICAL" prefHeight="642.0" prefWidth="993.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                            <items>
-                                                <VBox prefHeight="266.0" prefWidth="991.0">
-                                                    <children>
-                                                        <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="272.0" prefWidth="991.0">
-                                                            <columnConstraints>
-                                                                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" percentWidth="50.0" />
-                                                                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" />
-                                                            </columnConstraints>
-                                                            <rowConstraints>
-                                                                <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
-                                                                <RowConstraints maxHeight="509.0" minHeight="10.0" prefHeight="238.0" vgrow="SOMETIMES" />
-                                                            </rowConstraints>
-                                                            <children>
-                                                                <FlowPane prefHeight="200.0" prefWidth="200.0" GridPane.valignment="CENTER">
-                                                                    <children>
-                                                                        <ChoiceBox fx:id="resultChoice" prefHeight="25.0" prefWidth="184.0">
-                                                                            <FlowPane.margin>
-                                                                                <Insets left="10.0" top="4.0" />
-                                                                            </FlowPane.margin>
-                                                                        </ChoiceBox>
-                                                                        <ChoiceBox fx:id="graph1ChoiseBox" prefWidth="150.0">
-                                                                            <FlowPane.margin>
-                                                                                <Insets left="40.0" top="4.0" />
-                                                                            </FlowPane.margin>
-                                                                        </ChoiceBox>
-                                                                    </children>
-                                                                </FlowPane>
-                                                                <ChoiceBox fx:id="graph2ChoiseBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.valignment="CENTER" />
-                                                                <LineChart fx:id="lineChart1" animated="false" prefHeight="180.0" prefWidth="447.0" titleSide="BOTTOM" GridPane.rowIndex="1">
-                                                                    <xAxis>
-                                                                        <NumberAxis prefHeight="25.0" prefWidth="432.0" side="BOTTOM" />
-                                                                    </xAxis>
-                                                                    <yAxis>
-                                                                        <NumberAxis prefHeight="162.0" prefWidth="28.0" side="LEFT" />
-                                                                    </yAxis>
-                                                                </LineChart>
-                                                                <LineChart fx:id="lineChart2" animated="false" prefHeight="180.0" prefWidth="501.0" titleSide="BOTTOM" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                                                                    <xAxis>
-                                                                        <NumberAxis side="BOTTOM" />
-                                                                    </xAxis>
-                                                                    <yAxis>
-                                                                        <NumberAxis side="LEFT" />
-                                                                    </yAxis>
-                                                                </LineChart>
-                                                            </children>
-                                                        </GridPane>
-                                                    </children>
-                                                </VBox>
-                                                <TableView fx:id="resultTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="369.0" prefWidth="991.0">
-                                      
-                                                </TableView>
-                                            </items>
-                                        </SplitPane>
+                                          <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="2.0">
+                                              <columnConstraints>
+                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" percentWidth="50.0" />
+                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" />
+                                                  <ColumnConstraints />
+                                                  <ColumnConstraints />
+                                              </columnConstraints>
+                                              <rowConstraints>
+                                                  <RowConstraints maxHeight="347.0" minHeight="30.0" prefHeight="322.0" valignment="CENTER" vgrow="SOMETIMES" />
+                                                  <RowConstraints maxHeight="509.0" minHeight="294.0" prefHeight="319.0" vgrow="SOMETIMES" />
+                                              </rowConstraints>
+                                              <children>
+                                                  <VBox>
+                                                      <children>
+                                                          <ChoiceBox fx:id="graph1ChoiseBox" prefWidth="150.0">
+                                                              <VBox.margin>
+                                                                  <Insets left="40.0" top="4.0" />
+                                                              </VBox.margin>
+                                                          </ChoiceBox>
+                                                          <LineChart fx:id="lineChart1" animated="false" titleSide="BOTTOM">
+                                                              <xAxis>
+                                                                  <NumberAxis prefHeight="25.0" prefWidth="432.0" side="BOTTOM" />
+                                                              </xAxis>
+                                                              <yAxis>
+                                                                  <NumberAxis prefHeight="162.0" prefWidth="28.0" side="LEFT" />
+                                                              </yAxis>
+                                                          </LineChart>
+                                                      </children>
+                                                  </VBox>
+                                                  <VBox GridPane.columnIndex="1">
+                                                      <children>
+                                                          <ChoiceBox fx:id="graph2ChoiseBox" prefWidth="150.0">
+                                                              <VBox.margin>
+                                                                  <Insets left="40.0" top="4.0" />
+                                                              </VBox.margin>
+                                                          </ChoiceBox>
+                                                          <LineChart fx:id="lineChart2" animated="false" titleSide="BOTTOM">
+                                                              <xAxis>
+                                                                  <NumberAxis side="BOTTOM" />
+                                                              </xAxis>
+                                                              <yAxis>
+                                                                  <NumberAxis side="LEFT" />
+                                                              </yAxis>
+                                                          </LineChart>
+                                                      </children>
+                                                  </VBox>
+                                                  <VBox GridPane.rowIndex="1">
+                                                      <children>
+                                                          <ChoiceBox fx:id="graph3ChoiseBox" prefWidth="150.0">
+                                                              <VBox.margin>
+                                                                  <Insets left="40.0" top="4.0" />
+                                                              </VBox.margin>
+                                                          </ChoiceBox>
+                                                          <LineChart fx:id="lineChart3" animated="false" titleSide="BOTTOM">
+                                                              <xAxis>
+                                                                  <NumberAxis prefHeight="25.0" prefWidth="432.0" side="BOTTOM" />
+                                                              </xAxis>
+                                                              <yAxis>
+                                                                  <NumberAxis prefHeight="162.0" prefWidth="28.0" side="LEFT" />
+                                                              </yAxis>
+                                                          </LineChart>
+                                                      </children>
+                                                  </VBox>
+                                                  <VBox GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                      <children>
+                                                          <ChoiceBox fx:id="graph4ChoiseBox" prefWidth="150.0">
+                                                              <VBox.margin>
+                                                                  <Insets left="40.0" top="4.0" />
+                                                              </VBox.margin>
+                                                          </ChoiceBox>
+                                                          <LineChart fx:id="lineChart4" animated="false" titleSide="BOTTOM">
+                                                              <xAxis>
+                                                                  <NumberAxis side="BOTTOM" />
+                                                              </xAxis>
+                                                              <yAxis>
+                                                                  <NumberAxis side="LEFT" />
+                                                              </yAxis>
+                                                          </LineChart>
+                                                      </children>
+                                                  </VBox>
+                                              </children>
+                                          </GridPane>
+                                    </children>
+                                </AnchorPane>
+                            </content>
+                        </Tab>
+                        <Tab text="結果表">
+                            <content>
+                                <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                    <children>
+                                            <FlowPane maxHeight="32.0" prefHeight="32.0" prefWidth="500.0">
+                                                <children>
+                                                    <ChoiceBox fx:id="resultChoice" prefHeight="25.0" prefWidth="184.0">
+                                                        <FlowPane.margin>
+                                                            <Insets left="10.0" top="4.0" />
+                                                        </FlowPane.margin>
+                                       <padding>
+                                          <Insets left="30.0" />
+                                       </padding>
+                                                    </ChoiceBox>       
+                                                </children>
+                                            </FlowPane>
+                                        <TableView fx:id="resultTable" layoutY="40.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="600.0" prefWidth="905.0" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
+                                        </TableView>
                                     </children>
                                 </AnchorPane>
                             </content>

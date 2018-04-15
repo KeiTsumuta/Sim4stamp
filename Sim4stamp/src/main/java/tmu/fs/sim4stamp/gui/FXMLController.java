@@ -79,6 +79,16 @@ public class FXMLController implements Initializable {
     private LineChart lineChart2;
 
     @FXML
+    private ChoiceBox graph3ChoiseBox;
+    @FXML
+    private LineChart lineChart3;
+
+    @FXML
+    private ChoiceBox graph4ChoiseBox;
+    @FXML
+    private LineChart lineChart4;
+
+    @FXML
     private TableView itemParamTable;
     //@FXML
     //private TableView connectorParamTable;
@@ -168,9 +178,9 @@ public class FXMLController implements Initializable {
         pm.setExecuteLogPanel(executeLogPanel);
 
         Control[] resultPanelControls = new Control[]{
-            resultChoice, graph1ChoiseBox, graph2ChoiseBox, resultTable
+            resultChoice, graph1ChoiseBox, graph2ChoiseBox, graph3ChoiseBox, graph4ChoiseBox, resultTable
         };
-        LineChart[] lineCharts = new LineChart[]{lineChart1, lineChart2};
+        LineChart[] lineCharts = new LineChart[]{lineChart1, lineChart2, lineChart3, lineChart4};
         ResultPanel resultPanel = new ResultPanel(resultPanelControls, lineCharts);
 
         resultPanel.initialize(url, rb);
@@ -299,12 +309,12 @@ public class FXMLController implements Initializable {
     public void overtureExecuteAction(ActionEvent event) {
         log.info("overtureExecuteAction:--");
         //Platform.runLater(() -> {
-            try {
-                CommandLineExecute ce = new CommandLineExecute();
-                ce.start();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+        try {
+            CommandLineExecute ce = new CommandLineExecute();
+            ce.start();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         //});
     }
 
