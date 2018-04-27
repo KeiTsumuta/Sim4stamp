@@ -67,8 +67,8 @@ public class ModelPanel implements Initializable {
     private final CheckBox connectorJointDisplayCheckbox;
     private volatile boolean isDetailDisplayMode = false;
     private volatile boolean isJointDisplayMode = false;
-    private ContextMenu popupAddMenu;  // 構成要素追加メニュー
-    private ContextMenu popupElementMenu;  // 構成要素操作メニュー
+    private ContextMenu popupAddMenu; // 構成要素追加メニュー
+    private ContextMenu popupElementMenu; // 構成要素操作メニュー
     private ContextMenu popupConnectorMenu; // コネクタ操作メニュー
     private Element selectElemnt;
     private double popupX;
@@ -174,16 +174,24 @@ public class ModelPanel implements Initializable {
                 ex.printStackTrace();
             }
         });
+        MenuItem addJoint = new MenuItem("ジョイント追加");
+        addJoint.setOnAction((ActionEvent t) -> {
+            addConnectorJoint();
+        });
+        MenuItem deleteJoint = new MenuItem("ジョイント削除");
+        deleteJoint.setOnAction((ActionEvent t) -> {
+            deleteConnectorJoint();
+        });
         MenuItem cDelete = new MenuItem("コネクタ削除");
         cDelete.setOnAction((ActionEvent t) -> {
-            deleteConnector(selectJointConnector);
+            deleteConnector();
         });
-        popupConnectorMenu.getItems().addAll(addCParam, cDelete);
+        popupConnectorMenu.getItems().addAll(addCParam, addJoint, deleteJoint, cDelete);
 
     }
 
     public void initDsplayMode() {
-        //System.out.println("--- initDsplayMode --- ");
+        // System.out.println("--- initDsplayMode --- ");
         isDetailDisplayMode = false;
         modelDitailDisplayCheckbox.setSelected(isDetailDisplayMode);
         isJointDisplayMode = false;
@@ -250,7 +258,7 @@ public class ModelPanel implements Initializable {
         ButtonType bt = alert.showAndWait().orElse(ButtonType.CANCEL);
         deleteElement.setSelect(false);
         if (bt == ButtonType.OK) {
-            //System.out.println("delete!!");
+            // System.out.println("delete!!");
             String id = deleteElement.getNodeId();
             ElementManager em = SimService.getInstance().getElementManger();
             em.deleteElement(id);
@@ -262,7 +270,25 @@ public class ModelPanel implements Initializable {
         drawCanvasPanel();
     }
 
-    private void deleteConnector(Connector connector) {
+    private void addConnectorJoint() {
+        ConnectorManager cm = SimService.getInstance().getConnectorManager();
+        Connector c = cm.getJointSelected();
+        if (c != null) {
+            c.addJoint(popupX, popupY);
+        }
+        drawCanvasPanel();
+    }
+
+    private void deleteConnectorJoint() {
+        ConnectorManager cm = SimService.getInstance().getConnectorManager();
+        Connector c = cm.getSelected();
+        if (c != null) {
+            c.deleteJoint();
+        }
+        drawCanvasPanel();
+    }
+
+    private void deleteConnector() {
         Alert alert = new Alert(AlertType.CONFIRMATION, "", ButtonType.OK, ButtonType.CANCEL);
         alert.setTitle("コネクタ削除");
         alert.getDialogPane().setHeaderText("削除確認");
@@ -306,7 +332,7 @@ public class ModelPanel implements Initializable {
         canvas.setHeight(frameHeight - initDfHeight);
         double wMax = canvas.getWidth();
         double hMax = canvas.getHeight();
-        //log.info("drawCanvas:" + wMax + "," + hMax);
+        // log.info("drawCanvas:" + wMax + "," + hMax);
 
         gc.setFill(FILL_BACK_COLOR);
         gc.fillRect(0, 0, wMax, hMax);
@@ -353,6 +379,8 @@ public class ModelPanel implements Initializable {
     private void mousePressed(MouseEvent e) {
         double x = e.getX();
         double y = e.getY();
+        popupX = x;
+        popupY = y;
         MouseButton mouseButton = e.getButton();
         selectElemnt = null;
         popupElementMenu.hide();
@@ -363,10 +391,14 @@ public class ModelPanel implements Initializable {
         for (Element el : elements) {
             el.setSelect(false);
         }
+        for (Connector c : connectors) {
+            c.resetSelect();
+        }
         selectJointConnector = null;
-        if (mouseButton == MouseButton.PRIMARY) {   // 左クリック
+        if (mouseButton == MouseButton.PRIMARY) { // 左クリック
             for (Connector c : connectors) {
                 if (c.selectDistance(x, y)) {
+                    c.setPointed(true);
                     selectJointConnector = c;
                     break;
                 }
@@ -374,7 +406,7 @@ public class ModelPanel implements Initializable {
             if (selectJointConnector == null) {
                 for (Element el : elements) {
                     if (el.containsInside(x, y)) {
-                        //System.out.println("Select element:" + el.getNodeId());
+                        // System.out.println("Select element:" + el.getNodeId());
                         selectNodeId = el.getNodeId();
                         el.setSelect(true);
                         for (Connector c : connectors) {
@@ -397,14 +429,13 @@ public class ModelPanel implements Initializable {
             if (selectElemnt == null) {
                 for (Connector c : connectors) {
                     if (c.selectDistance(x, y)) {
+                        c.setPointed(true);
                         selectJointConnector = c;
                         popupConnectorMenu.show(modelCanvas, e.getScreenX(), e.getScreenY());
                         break;
                     }
                 }
                 if (selectJointConnector == null) {
-                    popupX = x;
-                    popupY = y;
                     popupAddMenu.show(modelCanvas, e.getScreenX(), e.getScreenY());
                 }
             }
@@ -416,6 +447,10 @@ public class ModelPanel implements Initializable {
         List<Element> elements = SimService.getInstance().getElements();
         for (Element el : elements) {
             el.setSelect(false);
+        }
+        List<Connector> connectors = SimService.getInstance().getConnectors();
+        for (Connector c : connectors) {
+            c.setPointed(false);
         }
         if (selectJointConnector != null) {
             selectJointConnector.setPos();

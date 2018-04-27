@@ -166,15 +166,11 @@ public class FXMLController implements Initializable {
             loopDisplayCount
         };
         DeviationMapPanel devMapPanel = new DeviationMapPanel(deviationCanvas, devMapPanelControls);
-
         devMapPanel.initialize(url, rb);
-
         pm.setDeviationMapPanel(devMapPanel);
 
         ExecuteLogPanel executeLogPanel = new ExecuteLogPanel(clearButton, executeLog);
-
         executeLogPanel.initialize(url, rb);
-
         pm.setExecuteLogPanel(executeLogPanel);
 
         Control[] resultPanelControls = new Control[]{
@@ -182,13 +178,10 @@ public class FXMLController implements Initializable {
         };
         LineChart[] lineCharts = new LineChart[]{lineChart1, lineChart2, lineChart3, lineChart4};
         ResultPanel resultPanel = new ResultPanel(resultPanelControls, lineCharts);
-
         resultPanel.initialize(url, rb);
-
         pm.setResutPanel(resultPanel);
-
+        
         pm.setSelectLabel(selectedProjectName);
-
         pm.initDisplay();
     }
 

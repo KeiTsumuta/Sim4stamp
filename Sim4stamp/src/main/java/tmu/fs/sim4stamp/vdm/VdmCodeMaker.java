@@ -111,7 +111,6 @@ public class VdmCodeMaker extends ResourceFileIO {
 
     private void makeElementClasses(String dir) {
         String source = getResource(R_VDM_DIR + ELEM_CLASS);
-        StringBuilder sb = null;
         List<Connector> connectors = connMgr.getConnectors();
         try {
             for (Element element : elemMgr.getElements()) {

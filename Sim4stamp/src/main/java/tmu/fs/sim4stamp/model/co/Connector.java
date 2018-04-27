@@ -46,6 +46,7 @@ public class Connector implements JSONConvert, DisplayLevel {
 
     private static final double ARROW_LENGTH = 20.0;
     private static final double DISTANCE_CLOSED = 10.0;
+    private static final double DISTANCE_CLOSED2 = DISTANCE_CLOSED * DISTANCE_CLOSED;
     private static final Color STROKE_COLOR = Color.BLUE;
     private static final Color STROKE2_COLOR = Color.SEASHELL;
     private static final Color MARKED_COLOR = Color.RED;
@@ -58,6 +59,7 @@ public class Connector implements JSONConvert, DisplayLevel {
     private volatile double pointXDelta = 0L;
     private volatile double pointYDelta = 0L;
     private volatile int selectedIndex = -1;
+    private volatile int jointSelected = -1;
     private volatile boolean jointDisplay = false;
     private volatile boolean pointed = false;
     private volatile boolean marked = false;
@@ -93,6 +95,13 @@ public class Connector implements JSONConvert, DisplayLevel {
         return jointDisplay;
     }
 
+    public boolean isJointSelected() {
+        if (jointSelected == -1) {
+            return false;
+        }
+        return true;
+    }
+
     public boolean isSelected() {
         if (selectedIndex != -1) {
             return true;
@@ -100,8 +109,13 @@ public class Connector implements JSONConvert, DisplayLevel {
         return false;
     }
 
+    public void resetSelect() {
+        selectedIndex = -1;
+    }
+
     /**
-     * @param jointDisplay the jointDisplay to inject
+     * @param jointDisplay
+     *            the jointDisplay to inject
      */
     public void setJointDisplay(boolean jointDisplay) {
         this.jointDisplay = jointDisplay;
@@ -115,7 +129,8 @@ public class Connector implements JSONConvert, DisplayLevel {
     }
 
     /**
-     * @param pointed the pointed to inject
+     * @param pointed
+     *            the pointed to inject
      */
     public void setPointed(boolean pointed) {
         this.pointed = pointed;
@@ -147,6 +162,9 @@ public class Connector implements JSONConvert, DisplayLevel {
         Point2D.Double p1 = points.get(points.size() - 1);
         Point2D.Double p2 = points.get(points.size() - 2);
         drawArrow(gc, p2.getX(), p2.getY(), p1.getX(), p1.getY());
+        if (displayLevel != Level.Base) {
+            drawDetailParams(gc);
+        }
         if (jointDisplay) {
             for (int i = 0; i < points.size(); i++) {
                 Point2D.Double point = points.get(i);
@@ -169,9 +187,6 @@ public class Connector implements JSONConvert, DisplayLevel {
             gc.fillOval(xo - DISTANCE_CLOSED, yo - DISTANCE_CLOSED, DISTANCE_CLOSED * 2, DISTANCE_CLOSED * 2);
             gc.setGlobalAlpha(1.0);
         }
-        if (displayLevel != Level.Base) {
-            drawDetailParams(gc);
-        }
     }
 
     private void drawArrow(GraphicsContext gc, double x1, double y1, double x2, double y2) {
@@ -186,8 +201,8 @@ public class Connector implements JSONConvert, DisplayLevel {
             double ay = Math.sin(th - Math.PI * 5 / 6.0) * ARROW_LENGTH;
             double ax2 = Math.cos(th - Math.PI * 7 / 6.0) * ARROW_LENGTH;
             double ay2 = Math.sin(th - Math.PI * 1 / 6.0) * ARROW_LENGTH;
-            axs = new double[]{ax + x2, x2, ax2 + x2};
-            ays = new double[]{ay + y2, y2, -ay2 + y2};
+            axs = new double[] { ax + x2, x2, ax2 + x2 };
+            ays = new double[] { ay + y2, y2, -ay2 + y2 };
         } else {
             th = Math.PI / 2.0;
             if (y1 > y2) {
@@ -195,8 +210,8 @@ public class Connector implements JSONConvert, DisplayLevel {
             }
             double ax = Math.cos(th - Math.PI * 5 / 6.0) * ARROW_LENGTH;
             double ay = Math.sin(th - Math.PI * 5 / 6.0) * ARROW_LENGTH;
-            axs = new double[]{ax + x2, x2, -ax + x2};
-            ays = new double[]{ay + y2, y2, ay + y2};
+            axs = new double[] { ax + x2, x2, -ax + x2 };
+            ays = new double[] { ay + y2, y2, ay + y2 };
         }
         gc.strokePolyline(axs, ays, 3);
     }
@@ -308,7 +323,8 @@ public class Connector implements JSONConvert, DisplayLevel {
     }
 
     /**
-     * @param appendParams the appendParams to inject
+     * @param appendParams
+     *            the appendParams to inject
      */
     public void setAppendParams(AppendParams appendParams) {
         this.appendParams = appendParams;
@@ -342,12 +358,11 @@ public class Connector implements JSONConvert, DisplayLevel {
     public void jointMove(double pointX, double pointY) {
         if (selectedIndex != -1) {
             if (selectedIndex == 0 || selectedIndex == (points.size()) - 1
-                    || (nodeFromId != null && nodeFromId.length() > 0)
-                    || (nodeToId != null && nodeToId.length() > 0)) {
+                    || (nodeFromId != null && nodeFromId.length() > 0) || (nodeToId != null && nodeToId.length() > 0)) {
                 // 部分移動
                 Point2D.Double point = new Point2D.Double(pointX, pointY);
                 points.set(selectedIndex, point);
-            } else {  // 全移動
+            } else { // 全移動
                 Point2D.Double selPoint = points.get(selectedIndex);
                 double sx = selPoint.getX();
                 double sy = selPoint.getY();
@@ -374,18 +389,65 @@ public class Connector implements JSONConvert, DisplayLevel {
     }
 
     public boolean selectDistance(double x, double y) {
+        jointSelected = -1;
         selectedIndex = -1;
-        for (int i = 0; i < points.size(); i++) {
-            if (points.get(i).distanceSq(x, y) <= DISTANCE_CLOSED) {
-                selectedIndex = i;
-                return true;
+        if (points.size() >= 2) {
+            for (int i = 1; i < points.size(); i++) {
+                Point2D.Double p1 = points.get(i - 1);
+                double x1 = p1.getX();
+                double y1 = p1.getY();
+                Point2D.Double p2 = points.get(i);
+                double x2 = p2.getX();
+                double y2 = p2.getY();
+
+                if (p1.distanceSq(x, y) <= DISTANCE_CLOSED) {
+                    selectedIndex = i - 1;
+                    return true;
+                } else if (p2.distanceSq(x, y) <= DISTANCE_CLOSED) {
+                    selectedIndex = i;
+                    return true;
+                }
+                if (Math.abs(x - x1) < DISTANCE_CLOSED) {
+                    if (y2 > y1 && y1 <= y && y <= y2) {
+                        jointSelected = i;
+                        return true;
+                    } else if (y2 <= y && y <= y1) {
+                        jointSelected = i;
+                        return true;
+                    }
+                }
+                if (Math.abs(y - y1) < DISTANCE_CLOSED) {
+                    if (x2 > x1 && x1 <= x && x <= x2) {
+                        jointSelected = i;
+                        return true;
+                    } else if (x2 <= x && x <= x1) {
+                        jointSelected = i;
+                        return true;
+                    }
+                }
+                if ((x1 > x && x2 > x) || (x1 < x && x2 < x)) {
+                    continue;
+                }
+                if ((y1 > y && y2 > y) || (y1 < y && y2 < y)) {
+                    continue;
+                }
+                if (Math.abs(x2 - x1) > 1.0) {
+                    double a = (y2 - y1) / (x2 - x1);
+                    double b = y1 - a * x1;
+                    double z2 = (x - (y - b) / a) * (x - (y - b) / a) + (a * x + b - y) * (a * x + b - y);
+                    double d = (a * x + b - y) * (a * x + b - y) / Math.sqrt(z2);
+                    if (d < 2.0) {
+                        jointSelected = i;
+                        return true;
+                    }
+                }
             }
         }
         return false;
     }
 
     public void setPos() {
-        if (selectedIndex == 0) {  // From node side
+        if (selectedIndex == 0) { // From node side
             nodeFromId = "";
             List<Element> elements = SimService.getInstance().getElements();
             double x = points.get(0).getX();
@@ -411,7 +473,7 @@ public class Connector implements JSONConvert, DisplayLevel {
                 }
             }
         }
-        //System.out.println("cons:" + nodeFromId + "," + nodeToId);
+        // System.out.println("cons:" + nodeFromId + "," + nodeToId);
     }
 
     private void setFit(Element el, Point2D.Double point) {
@@ -435,6 +497,26 @@ public class Connector implements JSONConvert, DisplayLevel {
                 nodeToId = null;
             }
         }
+    }
+
+    public void addJoint(double x, double y) {
+        if (jointSelected == -1) {
+            return;
+        }
+        Point2D.Double point = new Point2D.Double(x, y);
+        points.add(jointSelected, point);
+        selectedIndex = jointSelected;
+        jointSelected = -1;
+    }
+
+    public void deleteJoint() {
+        if (selectedIndex == -1) {
+            return;
+        }
+        if (selectedIndex == 0 || selectedIndex == (points.size() - 1)) {
+            return;
+        }
+        points.remove(selectedIndex);
     }
 
     @Override
@@ -516,7 +598,8 @@ public class Connector implements JSONConvert, DisplayLevel {
     }
 
     /**
-     * @param marked the marked to inject
+     * @param marked
+     *            the marked to inject
      */
     public void setMarked(boolean marked, String comment) {
         this.marked = marked;

@@ -110,15 +110,6 @@ public class ElementManager implements JSONConvert {
         }
     }
 
-    private double getDouble(String t) {
-        try {
-            return Double.parseDouble(t);
-        } catch (Exception ex) {
-
-        }
-        return 0.0;
-    }
-
     @Override
     public void addJSON(JSONObject ob) {
         List<JSONObject> objs = new ArrayList<>();

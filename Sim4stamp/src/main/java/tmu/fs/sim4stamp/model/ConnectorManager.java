@@ -71,6 +71,23 @@ public class ConnectorManager implements JSONConvert {
         return null;
     }
 
+    public Connector getJointSelected() {
+        for (int i = 0; i < connectors.size(); i++) {
+            Connector c = connectors.get(i);
+            if (c.isJointSelected()) {
+                return c;
+            }
+        }
+        return null;
+    }
+
+    public void resetSelect() {
+        for (int i = 0; i < connectors.size(); i++) {
+            Connector c = connectors.get(i);
+            c.resetSelect();
+        }
+    }
+
     @Override
     public void parseJson(JSONObject sj) {
         try {
@@ -85,7 +102,7 @@ public class ConnectorManager implements JSONConvert {
                 AppendParams ap = new AppendParams(AppendParams.ParamType.Connector);
                 JSONArray apObj = ob.optJSONArray("ioparams");
                 if (apObj != null) {
-                    String[] parentId = new String[]{fromId, toId};
+                    String[] parentId = new String[] { fromId, toId };
                     ap.parseJson(parentId, apObj);
                     connector.setAppendParams(ap);
                 }
@@ -95,15 +112,6 @@ public class ConnectorManager implements JSONConvert {
         } catch (Exception ex) {
             log.severe(ex.toString());
         }
-    }
-
-    private double getDouble(String t) {
-        try {
-            return Double.parseDouble(t);
-        } catch (Exception ex) {
-
-        }
-        return 0.0;
     }
 
     @Override

@@ -92,15 +92,12 @@ public class AppendParams {
                 IOParam p = null;
                 switch (type) {
                     case "real":
-                        double d = 0.0;
                         p = new IOParam(this.type, parentId, id, IOParam.ValueType.REAL);
                         break;
                     case "int":
-                        int k = 0;
                         p = new IOParam(this.type, parentId, id, IOParam.ValueType.INT);
                         break;
                     case "bool":
-                        boolean b = false;
                         p = new IOParam(this.type, parentId, id, IOParam.ValueType.BOOL);
                         break;
                 }

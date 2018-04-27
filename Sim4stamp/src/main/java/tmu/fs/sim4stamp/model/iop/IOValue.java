@@ -161,7 +161,7 @@ public class IOValue implements JSONConvert {
     public void parseJson(JSONObject sj) {
         String list = sj.optString("list");
         String[] tokens = list.split(",");
-        String type = tokens[0];
+        //String type = tokens[0];
         size = tokens.length - 1;
         switch (ioParam.getType()) {
             case REAL:
