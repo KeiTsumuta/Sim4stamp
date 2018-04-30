@@ -46,7 +46,6 @@ public class Connector implements JSONConvert, DisplayLevel {
 
     private static final double ARROW_LENGTH = 20.0;
     private static final double DISTANCE_CLOSED = 10.0;
-    private static final double DISTANCE_CLOSED2 = DISTANCE_CLOSED * DISTANCE_CLOSED;
     private static final Color STROKE_COLOR = Color.BLUE;
     private static final Color STROKE2_COLOR = Color.SEASHELL;
     private static final Color MARKED_COLOR = Color.RED;
@@ -103,7 +102,7 @@ public class Connector implements JSONConvert, DisplayLevel {
     }
 
     public boolean isSelected() {
-        if (selectedIndex != -1) {
+        if (selectedIndex != -1 || jointSelected != -1) {
             return true;
         }
         return false;

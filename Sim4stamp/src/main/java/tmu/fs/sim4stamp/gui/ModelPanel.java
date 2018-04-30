@@ -129,7 +129,6 @@ public class ModelPanel implements Initializable {
         mitem5.setOnAction((ActionEvent t) -> {
             showElementAddDialog(t, Element.EType.INJECTOR);
         });
-        SeparatorMenuItem sepItem = new SeparatorMenuItem();
         MenuItem mitem6 = new MenuItem("コネクタ追加(-->)");
         mitem6.setOnAction((ActionEvent t) -> {
             addNewConnectorLeft(t);
@@ -138,13 +137,13 @@ public class ModelPanel implements Initializable {
         mitem7.setOnAction((ActionEvent t) -> {
             addNewConnectorRight(t);
         });
-        popupAddMenu.getItems().addAll(mitem1, mitem2, mitem3, mitem4, mitem5, sepItem, mitem6, mitem7);
+        popupAddMenu.getItems().addAll(mitem1, mitem2, mitem3, mitem4, mitem5, new SeparatorMenuItem(), mitem6, mitem7);
 
         popupElementMenu = new ContextMenu();
         MenuItem addEParam = new MenuItem("パラメータ追加/削除");
         addEParam.setOnAction((ActionEvent t) -> {
             try {
-                ParamsSettingPanel psp = new ParamsSettingPanel();
+                ElementParamsDialog psp = new ElementParamsDialog();
                 String st = selectElemnt.getNodeId() + " 構成要素";
                 AppendParams aps = selectElemnt.getAppendParams();
                 psp.set(AppendParams.ParamType.Element, st, aps);
@@ -160,12 +159,12 @@ public class ModelPanel implements Initializable {
         popupElementMenu.getItems().addAll(addEParam, eDdelete);
 
         popupConnectorMenu = new ContextMenu();
-        MenuItem addCParam = new MenuItem("パラメータ追加");
+        MenuItem addCParam = new MenuItem("パラメータ追加/削除");
         addCParam.setOnAction((ActionEvent t) -> {
             try {
                 ConnectorManager cm = SimService.getInstance().getConnectorManager();
                 Connector c = cm.getSelected();
-                ParamsSettingPanel psp = new ParamsSettingPanel();
+                ConnectorParamDialog psp = new ConnectorParamDialog();
                 String st = c.getNodeFromId() + " - " + c.getNodeToId() + "コネクタ";
                 AppendParams aps = c.getAppendParams();
                 psp.set(AppendParams.ParamType.Connector, st, aps);
@@ -186,7 +185,7 @@ public class ModelPanel implements Initializable {
         cDelete.setOnAction((ActionEvent t) -> {
             deleteConnector();
         });
-        popupConnectorMenu.getItems().addAll(addCParam, addJoint, deleteJoint, cDelete);
+        popupConnectorMenu.getItems().addAll(addCParam, new SeparatorMenuItem(), addJoint, deleteJoint, new SeparatorMenuItem(), cDelete);
 
     }
 

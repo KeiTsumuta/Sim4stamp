@@ -42,10 +42,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import tmu.fs.sim4stamp.PanelManager;
 import tmu.fs.sim4stamp.SimService;
-import tmu.fs.sim4stamp.model.ConnectorManager;
 import tmu.fs.sim4stamp.model.ElementManager;
 import tmu.fs.sim4stamp.model.IOParamManager;
-import tmu.fs.sim4stamp.model.co.Connector;
 import tmu.fs.sim4stamp.model.em.Element;
 import tmu.fs.sim4stamp.model.iop.AppendParams;
 import tmu.fs.sim4stamp.model.iop.IOParam;
@@ -54,7 +52,7 @@ import tmu.fs.sim4stamp.model.iop.IOParam;
  *
  * @author Keiichi Tsumuta
  */
-public class ParamsSettingPanel implements Initializable {
+public class ElementParamsDialog implements Initializable {
 
     @FXML
     private Label paramType;
@@ -86,22 +84,15 @@ public class ParamsSettingPanel implements Initializable {
 
     private void makeDisplayList() {
         displayList = FXCollections.observableArrayList();
-        int paramSize = 0;
         if (appendParams != null) {
             List<IOParam> ioParams = appendParams.getParams();
             for (IOParam io : ioParams) {
                 if (aType == io.getParamType()) {
                     displayList.add(io.getId());
-                    paramSize++;
                 }
             }
         }
-        // コネクタに設定できるパラメータは１つに限定する。
-        if (aType == AppendParams.ParamType.Connector && paramSize > 0) {
-            addButton.setDisable(true);
-        } else {
-            addButton.setDisable(false);
-        }
+        addButton.setDisable(false);
         paramList.setItems(displayList);
         paramList.getSelectionModel().selectedItemProperty().addListener(
                 new ChangeListener<String>() {
@@ -122,7 +113,7 @@ public class ParamsSettingPanel implements Initializable {
 
     public void show(ActionEvent event) throws IOException {
         stage = new Stage();
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/appendParamsSettingDialog.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/elementParamsSettingDialog.fxml"));
         stage.setScene(new Scene(root));
         stage.setTitle("sim4stamp");
         stage.initModality(Modality.WINDOW_MODAL);
@@ -156,27 +147,9 @@ public class ParamsSettingPanel implements Initializable {
                 }
             }
         }
-
-        ConnectorManager cm = SimService.getInstance().getConnectorManager();
-        for (Connector c : cm.getConnectors()) {
-            AppendParams aps = c.getAppendParams();
-            if (aps == null) {
-                continue;
-            }
-            for (IOParam iop : aps.getParams()) {
-                if (iop.getId().equals(id)) {
-                    error = "？？？ すでに使用済みです";
-                    break;
-                }
-            }
-        }
         if (error == null) {
             if (aType == AppendParams.ParamType.Element) {
                 ioParam = new IOParam(AppendParams.ParamType.Element, null, id, IOParam.ValueType.REAL);
-                appendParams.addIOParam(ioParam);
-            } else {
-                String[] parentId = new String[2];
-                ioParam = new IOParam(AppendParams.ParamType.Connector, parentId, id, IOParam.ValueType.REAL);
                 appendParams.addIOParam(ioParam);
             }
             IOParamManager ipm = SimService.getInstance().getIoParamManager();
@@ -184,12 +157,7 @@ public class ParamsSettingPanel implements Initializable {
             //IOScene ioScene = ipm.getCurrentScene();
             //ioScene.setSize(ioScene.getSize());
             displayList.add(id);
-            // コネクタに設定できるパラメータは１つに限定する。
-            if (aType == AppendParams.ParamType.Connector && displayList.size() > 0) {
-                addButton.setDisable(true);
-            } else {
-                addButton.setDisable(false);
-            }
+            addButton.setDisable(false);
             addParamId.setText("");
             PanelManager.get().getModelPanel().drawCanvasPanel();
         } else {
@@ -209,21 +177,6 @@ public class ParamsSettingPanel implements Initializable {
             ElementManager em = SimService.getInstance().getElementManger();
             for (Element el : em.getElements()) {
                 AppendParams aps = el.getAppendParams();
-                if (aps == null) {
-                    continue;
-                }
-                for (IOParam iop : aps.getParams()) {
-                    if (iop.getId().equals(deleteId)) {
-                        aps.deleteIOParam(iop);
-                        deleteParamId.setText("");
-                        break;
-                    }
-                }
-            }
-
-            ConnectorManager cm = SimService.getInstance().getConnectorManager();
-            for (Connector c : cm.getConnectors()) {
-                AppendParams aps = c.getAppendParams();
                 if (aps == null) {
                     continue;
                 }
