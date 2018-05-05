@@ -32,96 +32,96 @@ import tmu.fs.sim4stamp.util.JSONConvert;
  */
 public class ConnectorManager implements JSONConvert {
 
-    private static final Logger log = Logger.getLogger(ConnectorManager.class.getPackage().getName());
+	private static final Logger log = Logger.getLogger(ConnectorManager.class.getPackage().getName());
 
-    private List<Connector> connectors;
+	private List<Connector> connectors;
 
-    public ConnectorManager() {
-        init();
-    }
+	public ConnectorManager() {
+		init();
+	}
 
-    public void init() {
-        connectors = new ArrayList<>();
-    }
+	public void init() {
+		connectors = new ArrayList<>();
+	}
 
-    public void add(Connector connector) {
-        connectors.add(connector);
-    }
+	public void add(Connector connector) {
+		connectors.add(0, connector);
+	}
 
-    public List<Connector> getConnectors() {
-        return connectors;
-    }
+	public List<Connector> getConnectors() {
+		return connectors;
+	}
 
-    public void deleteConnector() {
-        for (int i = 0; i < connectors.size(); i++) {
-            Connector c = connectors.get(i);
-            if (c.isSelected()) {
-                connectors.remove(c);
-            }
-        }
-    }
+	public void deleteConnector() {
+		for (int i = 0; i < connectors.size(); i++) {
+			Connector c = connectors.get(i);
+			if (c.isSelected()) {
+				connectors.remove(c);
+			}
+		}
+	}
 
-    public Connector getSelected() {
-        for (int i = 0; i < connectors.size(); i++) {
-            Connector c = connectors.get(i);
-            if (c.isSelected()) {
-                return c;
-            }
-        }
-        return null;
-    }
+	public Connector getSelected() {
+		for (int i = 0; i < connectors.size(); i++) {
+			Connector c = connectors.get(i);
+			if (c.isSelected()) {
+				return c;
+			}
+		}
+		return null;
+	}
 
-    public Connector getJointSelected() {
-        for (int i = 0; i < connectors.size(); i++) {
-            Connector c = connectors.get(i);
-            if (c.isJointSelected()) {
-                return c;
-            }
-        }
-        return null;
-    }
+	public Connector getJointSelected() {
+		for (int i = 0; i < connectors.size(); i++) {
+			Connector c = connectors.get(i);
+			if (c.isJointSelected()) {
+				return c;
+			}
+		}
+		return null;
+	}
 
-    public void resetSelect() {
-        for (int i = 0; i < connectors.size(); i++) {
-            Connector c = connectors.get(i);
-            c.resetSelect();
-        }
-    }
+	public void resetSelect() {
+		for (int i = 0; i < connectors.size(); i++) {
+			Connector c = connectors.get(i);
+			c.resetSelect();
+		}
+	}
 
-    @Override
-    public void parseJson(JSONObject sj) {
-        try {
-            JSONArray arr = sj.getJSONArray("connections");
-            int len = arr.length();
-            for (int i = 0; i < len; i++) {
-                JSONObject ob = arr.getJSONObject(i).getJSONObject("connection");
-                Connector connector = new Connector();
-                connector.parseJson(ob);
-                String fromId = connector.getNodeFromId();
-                String toId = connector.getNodeToId();
-                AppendParams ap = new AppendParams(AppendParams.ParamType.Connector);
-                JSONArray apObj = ob.optJSONArray("ioparams");
-                if (apObj != null) {
-                    String[] parentId = new String[] { fromId, toId };
-                    ap.parseJson(parentId, apObj);
-                    connector.setAppendParams(ap);
-                }
-                connectors.add(connector);
-            }
+	@Override
+	public void parseJson(JSONObject sj) {
+		try {
+			JSONArray arr = sj.getJSONArray("connections");
+			int len = arr.length();
+			for (int i = 0; i < len; i++) {
+				JSONObject ob = arr.getJSONObject(i).getJSONObject("connection");
+				Connector connector = new Connector();
+				connector.parseJson(ob);
+				String fromId = connector.getNodeFromId();
+				String toId = connector.getNodeToId();
+				AppendParams ap = new AppendParams(AppendParams.ParamType.Connector);
+				JSONArray apObj = ob.optJSONArray("ioparams");
+				if (apObj != null) {
+					String[] parentId = new String[]{fromId, toId};
+					ap.parseJson(parentId, apObj);
+					connector.setAppendParams(ap);
+				}
+				connectors.add(connector);
+			}
 
-        } catch (Exception ex) {
-            log.severe(ex.toString());
-        }
-    }
+		} catch (Exception ex) {
+			log.severe(ex.toString());
+		}
+	}
 
-    @Override
-    public void addJSON(JSONObject ob) {
-        List<JSONObject> objs = new ArrayList<>();
-        for (Connector co : getConnectors()) {
-            JSONObject obj = new JSONObject();
-            co.addJSON(obj);
-            objs.add(obj);
-        }
-        ob.accumulate("connections", objs);
-    }
+	@Override
+	public void addJSON(JSONObject ob) {
+		List<JSONObject> objs = new ArrayList<>();
+		for (Connector co : getConnectors()) {
+			JSONObject obj = new JSONObject();
+			co.addJSON(obj);
+			objs.add(obj);
+		}
+		ob.accumulate("connections", objs);
+	}
 }

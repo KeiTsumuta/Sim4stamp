@@ -30,37 +30,37 @@ import java.util.logging.Logger;
  */
 public class SimServer implements Runnable {
 
-    private static final Logger log = Logger.getLogger(SimServer.class.getPackage().getName());
-    private ServerSocket server;
+	private static final Logger log = Logger.getLogger(SimServer.class.getPackage().getName());
+	private ServerSocket server;
 
-    public SimServer(int portNo) throws Exception {
-        server = new ServerSocket(portNo);
-    }
+	public SimServer(int portNo) throws Exception {
+		server = new ServerSocket(portNo);
+	}
 
-    @Override
-    public void run() {
-        ExecutorService es = Executors.newCachedThreadPool();
-        try {
-            for (;;) {
-                Socket client = server.accept();
-                es.execute(new SimListener(client));
-            }
-        } catch (SocketException se) {
-            log.info("Socket loop out");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
+	@Override
+	public void run() {
+		ExecutorService es = Executors.newCachedThreadPool();
+		try {
+			for (;;) {
+				Socket client = server.accept();
+				es.execute(new SimListener(client));
+			}
+		} catch (SocketException se) {
+			log.info("Socket loop out");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 
-    public void close() {
-        try {
-            if (server != null) {
-                server.close();
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        server = null;
-    }
+	public void close() {
+		try {
+			if (server != null) {
+				server.close();
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		server = null;
+	}
 
 }

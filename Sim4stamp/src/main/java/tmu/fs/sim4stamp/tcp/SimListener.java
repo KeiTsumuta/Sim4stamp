@@ -24,6 +24,9 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.List;
+import tmu.fs.sim4stamp.model.iop.IOParam;
+import tmu.fs.sim4stamp.model.iop.IOScene;
+import tmu.fs.sim4stamp.model.iop.IOValue;
 import tmu.fs.sim4stamp.state.OvertureExecManager;
 
 /**
@@ -32,101 +35,131 @@ import tmu.fs.sim4stamp.state.OvertureExecManager;
  */
 public class SimListener implements Runnable {
 
-    private final Socket client;
+	private final Socket client;
 
-    public SimListener(Socket client) {
-        this.client = client;
-    }
+	public SimListener(Socket client) {
+		this.client = client;
+	}
 
-    @Override
-    public void run() {
-        try (InputStream fromClient = client.getInputStream();
-                ObjectInputStream oi = new ObjectInputStream(fromClient);
-                OutputStream toClient = client.getOutputStream();
-                ObjectOutputStream oo = new ObjectOutputStream(toClient);) {
-            boolean loop = true;
-            while (loop) {
-                TransObject inObj = (TransObject) oi.readObject();
-                String id = inObj.getId();
-                //System.out.println("TCP-IP read id:" + id);
-                if (id == null) {
-                    break;
-                }
-                TransObject sendObj = null;
-                if (id.equals("finish")) {
-                    break;
-                } else {
-                    sendObj = getReply(id, inObj);
-                }
-                //System.out.println("send obj");
-                oo.writeObject(sendObj);
-                oo.flush();
-            }
-        } catch (EOFException eoe) {
-            //System.out.println("conection close!!");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        try {
-            client.close();
-        } catch (Exception ex) {
+	@Override
+	public void run() {
+		try (InputStream fromClient = client.getInputStream();
+				ObjectInputStream oi = new ObjectInputStream(fromClient);
+				OutputStream toClient = client.getOutputStream();
+				ObjectOutputStream oo = new ObjectOutputStream(toClient);) {
+			boolean loop = true;
+			while (loop) {
+				TransObject inObj = (TransObject) oi.readObject();
+				String id = inObj.getId();
+				// System.out.println("TCP-IP read id:" + id);
+				if (id == null) {
+					break;
+				}
+				TransObject sendObj = null;
+				if (id.equals("finish")) {
+					sendObj = new TransObject("finish");
+					oo.writeObject(sendObj);
+					oo.flush();
+					break;
+				} else {
+					sendObj = getReply(id, inObj);
+					oo.writeObject(sendObj);
+					oo.flush();
+				}
+			}
+		} catch (EOFException eoe) {
+			// System.out.println("conection close!!");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		try {
+			client.close();
+		} catch (Exception ex) {
 
-        }
-        //System.out.println("conection out");
-    }
+		}
+		// System.out.println("conection out");
+	}
 
-    private static TransObject getReply(String id, TransObject inObj) {
-        OvertureExecManager oem = OvertureExecManager.getInstance();
-        TransObject tobj = new TransObject(id);
-        switch (id) {
-            case "init_start":
-                oem.calcInit();
-                break;
-            case "is_loop":
-                if (oem.hasNext()) {
-                    tobj.addStValue("y");
-                } else {
-                    tobj.addStValue("n");
-                }
-                break;
-            case "elem_order":
-                setOrder(tobj);
-                break;
-            case "read_data":
-                getReadData(inObj, tobj);
-                break;
-            case "write_data":
-                getWriteData(inObj, tobj);
-                break;
-            default:
-                break;
-        }
-        return tobj;
-    }
+	private static TransObject getReply(String id, TransObject inObj) {
+		OvertureExecManager oem = OvertureExecManager.getInstance();
+		TransObject tobj = new TransObject(id);
+		switch (id) {
+		case "init_start":
+			oem.calcInit();
+			break;
+		case "is_loop":
+			if (oem.hasNext()) {
+				tobj.addStValue("y");
+			} else {
+				tobj.addStValue("n");
+			}
+			break;
+		case "elem_order":
+			setOrder(tobj);
+			break;
+		case "read_data":
+			getReadData(inObj, tobj);
+			break;
+		case "write_data":
+			getWriteData(inObj, tobj);
+			break;
+		default:
+			break;
+		}
+		return tobj;
+	}
 
-    private static void setOrder(TransObject tobj) {
-        OvertureExecManager oem = OvertureExecManager.getInstance();
-        List<String> list = oem.getElementOrders();
-        for (int i = 0; i < list.size(); i++) {
-            tobj.addStValue(list.get(i));
-        }
-    }
+	private static void setOrder(TransObject tobj) {
+		OvertureExecManager oem = OvertureExecManager.getInstance();
+		List<String> list = oem.getElementOrders();
+		for (int i = 0; i < list.size(); i++) {
+			tobj.addStValue(list.get(i));
+		}
+	}
 
-    private static void getReadData(TransObject inObj, TransObject tobj) {
-        OvertureExecManager oem = OvertureExecManager.getInstance();
-        String elemId = inObj.getStValues().get(0);
-        String dataId = inObj.getStValues().get(1);
-        tobj.addStValue(dataId);
-        tobj.addDValue(oem.getData(elemId, dataId));
-    }
+	private static void getReadData(TransObject inObj, TransObject tobj) {
+		OvertureExecManager oem = OvertureExecManager.getInstance();
+		String elemId = inObj.getStValues().get(0);
+		String dataId = inObj.getStValues().get(1);
+		tobj.addStValue(dataId);
+		IOScene ios = oem.getExecuteScene();
+		IOValue iov = ios.getIOData(elemId, dataId);
+		if (iov != null) {
+			IOParam.ValueType type = iov.getType();
+			if (type == IOParam.ValueType.REAL) {
+				tobj.addDValue(oem.getData(elemId, dataId));
+			} else if (type == IOParam.ValueType.INT) {
+				tobj.addIValue(oem.getIntData(elemId, dataId));
+			} else if (type == IOParam.ValueType.BOOL) {
+				tobj.addBValue(oem.getBoolData(elemId, dataId));
+			}
+		} else { // 未定義データは実数としてとりあえず設定する。
+			tobj.addDValue(oem.getData(elemId, dataId));
+		}
+	}
 
-    private static void getWriteData(TransObject inObj, TransObject tobj) {
-        OvertureExecManager oem = OvertureExecManager.getInstance();
-        String elemId = inObj.getStValues().get(0);
-        String dataId = inObj.getStValues().get(1);
-        oem.setData(elemId, dataId, inObj.getDValues().get(0));
-        tobj.addStValue("status");
-        tobj.addIntValue(0);
-    }
+	private static void getWriteData(TransObject inObj, TransObject tobj) {
+		OvertureExecManager oem = OvertureExecManager.getInstance();
+		String elemId = inObj.getStValues().get(0);
+		String dataId = inObj.getStValues().get(1);
+		IOScene ios = oem.getExecuteScene();
+		IOValue iov = ios.getIOData(elemId, dataId);
+		if (iov != null) {
+			IOParam.ValueType type = iov.getType();
+			if (type == IOParam.ValueType.REAL && inObj.getDValues() != null) {
+				oem.setData(elemId, dataId, inObj.getDValues().get(0));
+			} else if (type == IOParam.ValueType.INT && inObj.getIValues() != null) {
+				oem.setIntData(elemId, dataId, inObj.getIValues().get(0));
+			} else if (type == IOParam.ValueType.BOOL && inObj.getBValues() != null) {
+				oem.setBoolData(elemId, dataId, inObj.getBValues().get(0));
+			}
+		} else { // 未定義データは実数としてとりあえず処理する。
+			if (inObj.getDValues() != null) {
+				oem.setData(elemId, dataId, inObj.getDValues().get(0));
+			}
+		}
+		// tobj.addStValue("status");
+		// tobj.addIntValue(0);
+	}
 
 }

@@ -33,178 +33,183 @@ import tmu.fs.sim4stamp.model.IOParamManager;
  */
 public class PanelManager {
 
-    private static PanelManager panelManager = new PanelManager();
+	private static PanelManager panelManager = new PanelManager();
 
-    private ModelPanel modelPanel;
-    private ConditionPanel conditionPanel;
-    private DeviationMapPanel deviationMapPanel;
-    private ExecuteLogPanel executeLogPanel;
-    private ResultPanel resutPanel;
+	private ModelPanel modelPanel;
+	private ConditionPanel conditionPanel;
+	private DeviationMapPanel deviationMapPanel;
+	private ExecuteLogPanel executeLogPanel;
+	private ResultPanel resutPanel;
 
-    private ResultTablePanel resultTablePanel;
+	private ResultTablePanel resultTablePanel;
 
-    private static Label selectedProjectName;
+	private static Label selectedProjectName;
 
-    public PanelManager() {
+	public PanelManager() {
 
-    }
+	}
 
-    public static PanelManager get() {
-        return panelManager;
-    }
+	public static PanelManager get() {
+		return panelManager;
+	}
 
-    public void setSelectLabel(Label selectedProjectName) {
-        this.selectedProjectName = selectedProjectName;
-    }
+	public void setSelectLabel(Label selectedProjectName) {
+		this.selectedProjectName = selectedProjectName;
+	}
 
-    /**
-     * @return the modelPanel
-     */
-    public ModelPanel getModelPanel() {
-        return modelPanel;
-    }
+	/**
+	 * @return the modelPanel
+	 */
+	public ModelPanel getModelPanel() {
+		return modelPanel;
+	}
 
-    /**
-     * @param modelPanel the modelPanel to set
-     */
-    public void setModelPanel(ModelPanel modelPanel) {
-        this.modelPanel = modelPanel;
-    }
+	/**
+	 * @param modelPanel
+	 *            the modelPanel to set
+	 */
+	public void setModelPanel(ModelPanel modelPanel) {
+		this.modelPanel = modelPanel;
+	}
 
-    /**
-     * @return the conditionPanel
-     */
-    public ConditionPanel getConditionPanel() {
-        return conditionPanel;
-    }
+	/**
+	 * @return the conditionPanel
+	 */
+	public ConditionPanel getConditionPanel() {
+		return conditionPanel;
+	}
 
-    /**
-     * @param conditionPanel the conditionPanel to set
-     */
-    public void setConditionPanel(ConditionPanel conditionPanel) {
-        this.conditionPanel = conditionPanel;
-    }
+	/**
+	 * @param conditionPanel
+	 *            the conditionPanel to set
+	 */
+	public void setConditionPanel(ConditionPanel conditionPanel) {
+		this.conditionPanel = conditionPanel;
+	}
 
-    /**
-     * @return the deviationMapPanel
-     */
-    public DeviationMapPanel getDeviationMapPanel() {
-        return deviationMapPanel;
-    }
+	/**
+	 * @return the deviationMapPanel
+	 */
+	public DeviationMapPanel getDeviationMapPanel() {
+		return deviationMapPanel;
+	}
 
-    /**
-     * @param deviationMapPanel the deviationMapPanel to set
-     */
-    public void setDeviationMapPanel(DeviationMapPanel deviationMapPanel) {
-        this.deviationMapPanel = deviationMapPanel;
-    }
+	/**
+	 * @param deviationMapPanel
+	 *            the deviationMapPanel to set
+	 */
+	public void setDeviationMapPanel(DeviationMapPanel deviationMapPanel) {
+		this.deviationMapPanel = deviationMapPanel;
+	}
 
-    /**
-     * @return the executeLogPanel
-     */
-    public ExecuteLogPanel getExecuteLogPanel() {
-        return executeLogPanel;
-    }
+	/**
+	 * @return the executeLogPanel
+	 */
+	public ExecuteLogPanel getExecuteLogPanel() {
+		return executeLogPanel;
+	}
 
-    /**
-     * @param executeLogPanel the executeLogPanel to set
-     */
-    public void setExecuteLogPanel(ExecuteLogPanel executeLogPanel) {
-        this.executeLogPanel = executeLogPanel;
-    }
+	/**
+	 * @param executeLogPanel
+	 *            the executeLogPanel to set
+	 */
+	public void setExecuteLogPanel(ExecuteLogPanel executeLogPanel) {
+		this.executeLogPanel = executeLogPanel;
+	}
 
-    /**
-     * @return the resutPanel
-     */
-    public ResultPanel getResutPanel() {
-        return resutPanel;
-    }
+	/**
+	 * @return the resutPanel
+	 */
+	public ResultPanel getResutPanel() {
+		return resutPanel;
+	}
 
-    /**
-     * @return the resutPanel
-     */
-    public void setResutPanel(ResultPanel resultPanel) {
-        this.resutPanel = resultPanel;
-    }
+	/**
+	 * @return the resutPanel
+	 */
+	public void setResutPanel(ResultPanel resultPanel) {
+		this.resutPanel = resultPanel;
+	}
 
-    /**
-     * @return the resultTablePanel
-     */
-    public ResultTablePanel getResultTablePanel() {
-        return resultTablePanel;
-    }
+	/**
+	 * @return the resultTablePanel
+	 */
+	public ResultTablePanel getResultTablePanel() {
+		return resultTablePanel;
+	}
 
-    /**
-     * @param resultTablePanel the resultTablePanel to set
-     */
-    public void setResultTablePanel(ResultTablePanel resultTablePanel) {
-        this.resultTablePanel = resultTablePanel;
-    }
+	/**
+	 * @param resultTablePanel
+	 *            the resultTablePanel to set
+	 */
+	public void setResultTablePanel(ResultTablePanel resultTablePanel) {
+		this.resultTablePanel = resultTablePanel;
+	}
 
-    public void initDisplay() {
-        Platform.runLater(() -> {
-            try {
-                SimService ss = SimService.getInstance();
-                getModelPanel().drawCanvasPanel();
-                getConditionPanel().setInitDisplay();
-                getModelPanel().initDsplayMode();
-                if (selectedProjectName != null) {
-                    selectedProjectName.setText(ss.getCurrentProjectId());
-                }
-                getDeviationMapPanel().initDisplayPanel();
-                getResutPanel().initDisplay();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        });
-    }
+	public void initDisplay() {
+		Platform.runLater(() -> {
+			try {
+				SimService ss = SimService.getInstance();
+				getModelPanel().drawCanvasPanel();
+				getConditionPanel().setInitDisplay();
+				getModelPanel().initDsplayMode();
+				if (selectedProjectName != null) {
+					selectedProjectName.setText(ss.getCurrentProjectId());
+				}
+				getDeviationMapPanel().initDisplayPanel();
+				getResutPanel().initDisplay();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		});
+	}
 
-    public void updateCondition() {
-        Platform.runLater(() -> {
-            try {
-                SimService ss = SimService.getInstance();
-                getModelPanel().drawCanvasPanel();
-                getDeviationMapPanel().initDisplayPanel();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        });
-    }
+	public void updateCondition() {
+		Platform.runLater(() -> {
+			try {
+				SimService ss = SimService.getInstance();
+				getModelPanel().drawCanvasPanel();
+				getDeviationMapPanel().initDisplayPanel();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		});
+	}
 
-    public void resultDisplay() {
-        Platform.runLater(() -> {
-            try {
-                getResutPanel().resultDisplay();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        });
-    }
+	public void resultDisplay() {
+		Platform.runLater(() -> {
+			try {
+				getResutPanel().resultDisplay();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		});
+	}
 
-    public void resetResult() {
-        Platform.runLater(() -> {
-            try {
-                IOParamManager iom = SimService.getInstance().getIoParamManager();
-                iom.initResultScenes();
-                getResutPanel().resetData();
-                //System.out.println("Reset result!!");
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        });
-    }
+	public void resetResult() {
+		Platform.runLater(() -> {
+			try {
+				IOParamManager iom = SimService.getInstance().getIoParamManager();
+				iom.initResultScenes();
+				getResutPanel().resetData();
+				// System.out.println("Reset result!!");
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		});
+	}
 
-    public void resetSecondResult() {
-        Platform.runLater(() -> {
-            try {
-                IOParamManager iom = SimService.getInstance().getIoParamManager();
-                iom.initSecondScenes();
-                getResutPanel().displayFirstData();
-                //System.out.println("Reset result!!");
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        });
-    }
+	public void resetSecondResult() {
+		Platform.runLater(() -> {
+			try {
+				IOParamManager iom = SimService.getInstance().getIoParamManager();
+				iom.initSecondScenes();
+				getResutPanel().displayFirstData();
+				// System.out.println("Reset result!!");
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		});
+	}
 
 }

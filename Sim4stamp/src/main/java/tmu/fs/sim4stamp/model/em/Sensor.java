@@ -26,50 +26,50 @@ import javafx.scene.canvas.GraphicsContext;
  */
 public class Sensor extends Element {
 
-    private static final int RECT_WIDTH = 150;
-    private static final int RECT_HIGHT = 80;
-    private static final Color FILL_COLOR = Color.CORNSILK;
-    private static final Color STROKE_COLOR = Color.BLACK;
+	private static final int RECT_WIDTH = 150;
+	private static final int RECT_HIGHT = 80;
+	private static final Color FILL_COLOR = Color.CORNSILK;
+	private static final Color STROKE_COLOR = Color.BLACK;
 
-    public Sensor(String id) {
-        super(EType.SENSOR, id, id, RECT_WIDTH, RECT_HIGHT);
-    }
+	public Sensor(String id) {
+		super(EType.SENSOR, id, id, RECT_WIDTH, RECT_HIGHT);
+	}
 
-    public Sensor(String id, String title) {
-        super(EType.SENSOR, id, title, RECT_WIDTH, RECT_HIGHT);
-    }
+	public Sensor(String id, String title) {
+		super(EType.SENSOR, id, title, RECT_WIDTH, RECT_HIGHT);
+	}
 
-    @Override
-    public void draw(GraphicsContext gc) {
-        double x0 = getBaseRect().getX();
-        double y0 = getBaseRect().getY();
-        gc.setFill(FILL_COLOR);
-        gc.fillRect(x0, y0, RECT_WIDTH, RECT_HIGHT);
+	@Override
+	public void draw(GraphicsContext gc) {
+		double x0 = getBaseRect().getX();
+		double y0 = getBaseRect().getY();
+		gc.setFill(FILL_COLOR);
+		gc.fillRect(x0, y0, RECT_WIDTH, RECT_HIGHT);
 
-        setSelectState(gc, STROKE_COLOR, SELECTED_COLOR);
-        gc.strokeRect(x0, y0, RECT_WIDTH, RECT_HIGHT);
+		setSelectState(gc, STROKE_COLOR, SELECTED_COLOR);
+		gc.strokeRect(x0, y0, RECT_WIDTH, RECT_HIGHT);
 
-        double width = getFontWidth(gc, title);
-        double height = getFontHight(gc);
-        gc.setFill(STROKE_COLOR);
-        if (getLevel() == Level.Base) {
-            gc.fillText(title, x0 + (RECT_WIDTH - width) / 2, y0 + (RECT_HIGHT + height) / 2);
-        } else {
-            gc.fillText(title, x0 + 8, y0 + height);
-            drawParams(gc, x0 + 30, y0 + 4 + height * 2);
-        }
-    }
+		double width = getFontWidth(gc, title);
+		double height = getFontHight(gc);
+		gc.setFill(STROKE_COLOR);
+		if (getLevel() == Level.Base) {
+			gc.fillText(title, x0 + (RECT_WIDTH - width) / 2, y0 + (RECT_HIGHT + height) / 2);
+		} else {
+			gc.fillText(title, x0 + 8, y0 + height);
+			drawParams(gc, x0 + 30, y0 + 4 + height * 2);
+		}
+	}
 
-    @Override
-    public Sensor clone() {
-        Sensor s = new Sensor(nodeId, title);
-        s.setOrder(getOrder());
-        s.setAppendParams(getAppendParams());
-        return s;
-    }
+	@Override
+	public Sensor clone() {
+		Sensor s = new Sensor(nodeId, title);
+		s.setOrder(getOrder());
+		s.setAppendParams(getAppendParams());
+		return s;
+	}
 
-    @Override
-    public String toString() {
-        return super.toString();
-    }
+	@Override
+	public String toString() {
+		return super.toString();
+	}
 }

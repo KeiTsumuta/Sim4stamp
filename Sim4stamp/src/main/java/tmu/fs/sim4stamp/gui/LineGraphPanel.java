@@ -29,44 +29,44 @@ import javafx.scene.chart.XYChart;
  */
 public class LineGraphPanel implements Initializable {
 
-    private final LineChart lineChart;
+	private final LineChart lineChart;
 
-    public LineGraphPanel(LineChart chart) {
-        this.lineChart = chart;
-    }
+	public LineGraphPanel(LineChart chart) {
+		this.lineChart = chart;
+	}
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
 
-    }
+	}
 
-    public void setTitle(String title) {
-        lineChart.setTitle(title);
-    }
+	public void setTitle(String title) {
+		lineChart.setTitle(title);
+	}
 
-    public void setData(String seriesName, double[] data) {
-        //defining a series
-        XYChart.Series series = new XYChart.Series();
-        series.setName(seriesName);
-        //populating the series with data
-        for (int i = 0; i < data.length; i++) {
-            series.getData().add(new XYChart.Data(i + 1, data[i]));
-        }
-        lineChart.getData().setAll(series);
-    }
+	public void setData(String seriesName, double[] data) {
+		// defining a series
+		XYChart.Series series = new XYChart.Series();
+		series.setName(seriesName);
+		// populating the series with data
+		for (int i = 0; i < data.length; i++) {
+			series.getData().add(new XYChart.Data(i + 1, data[i]));
+		}
+		lineChart.getData().setAll(series);
+	}
 
-    public void addData(String seriesName, double[] data) {
-        XYChart.Series series = new XYChart.Series();
-        series.setName(seriesName);
-        //populating the series with data
-        for (int i = 0; i < data.length; i++) {
-            series.getData().add(new XYChart.Data(i + 1, data[i]));
-        }
-        lineChart.getData().add(series);
-    }
+	public void addData(String seriesName, double[] data) {
+		XYChart.Series series = new XYChart.Series();
+		series.setName(seriesName);
+		// populating the series with data
+		for (int i = 0; i < data.length; i++) {
+			series.getData().add(new XYChart.Data(i + 1, data[i]));
+		}
+		lineChart.getData().add(series);
+	}
 
-    public void reset() {
-        lineChart.getData().removeAll(lineChart.getData().toArray());
-    }
+	public void reset() {
+		lineChart.getData().removeAll(lineChart.getData().toArray());
+	}
 
 }

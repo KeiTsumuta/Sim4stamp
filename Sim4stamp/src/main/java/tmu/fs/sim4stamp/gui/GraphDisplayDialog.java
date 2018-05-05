@@ -42,57 +42,57 @@ import tmu.fs.sim4stamp.SimService;
  */
 public class GraphDisplayDialog implements Initializable {
 
-    @FXML
-    private Label graphTitle;
+	@FXML
+	private Label graphTitle;
 
-    @FXML
-    private LineChart displayedGraph;
-    private LineGraphPanel linePanel;
+	@FXML
+	private LineChart displayedGraph;
+	private LineGraphPanel linePanel;
 
-    private static String mainTitle;
-    private static List<String> subTitles;
-    private static List<double[]> gdata;
+	private static String mainTitle;
+	private static List<String> subTitles;
+	private static List<double[]> gdata;
 
-    private Stage stage;
+	private Stage stage;
 
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        linePanel = new LineGraphPanel(displayedGraph);
-        linePanel.reset();
-        if (subTitles != null) {
-            for (int i = 0; i < subTitles.size(); i++) {
-                linePanel.addData(i + "：" + subTitles.get(i), gdata.get(i));
-            }
-            graphTitle.textProperty().set(mainTitle);
-        } else {
-            graphTitle.textProperty().set("");
-        }
-    }
+	@Override
+	public void initialize(URL url, ResourceBundle rb) {
+		linePanel = new LineGraphPanel(displayedGraph);
+		linePanel.reset();
+		if (subTitles != null) {
+			for (int i = 0; i < subTitles.size(); i++) {
+				linePanel.addData(i + "：" + subTitles.get(i), gdata.get(i));
+			}
+			graphTitle.textProperty().set(mainTitle);
+		} else {
+			graphTitle.textProperty().set("");
+		}
+	}
 
-    public void reset(String title) {
-        mainTitle = title;
-        subTitles = new ArrayList<>();
-        gdata = new ArrayList<>();
-    }
+	public void reset(String title) {
+		mainTitle = title;
+		subTitles = new ArrayList<>();
+		gdata = new ArrayList<>();
+	}
 
-    public void addData(String title, double[] data) {
-        subTitles.add(title);
-        gdata.add(data);
-    }
+	public void addData(String title, double[] data) {
+		subTitles.add(title);
+		gdata.add(data);
+	}
 
-    public void show(ActionEvent event) throws IOException {
-        stage = new Stage();
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/graphDisplayDialog.fxml"));
-        stage.setScene(new Scene(root));
-        stage.setTitle("sim4stamp");
-        stage.initModality(Modality.WINDOW_MODAL);
-        SimService s = SimService.getInstance();
-        stage.initOwner(s.getStage());
-        stage.show();
-    }
+	public void show(ActionEvent event) throws IOException {
+		stage = new Stage();
+		Parent root = FXMLLoader.load(getClass().getResource("/fxml/graphDisplayDialog.fxml"));
+		stage.setScene(new Scene(root));
+		stage.setTitle("sim4stamp");
+		stage.initModality(Modality.WINDOW_MODAL);
+		SimService s = SimService.getInstance();
+		stage.initOwner(s.getStage());
+		stage.show();
+	}
 
-    @FXML
-    public void okAction(ActionEvent event) {
-        ((Node) event.getSource()).getScene().getWindow().hide();
-    }
+	@FXML
+	public void okAction(ActionEvent event) {
+		((Node) event.getSource()).getScene().getWindow().hide();
+	}
 }

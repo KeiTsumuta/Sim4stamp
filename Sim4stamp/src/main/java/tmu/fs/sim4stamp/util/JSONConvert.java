@@ -25,8 +25,8 @@ import org.json.JSONObject;
  */
 public interface JSONConvert {
 
-    public void parseJson(JSONObject sj);
+	public void parseJson(JSONObject sj);
 
-    public void addJSON(JSONObject ob);
+	public void addJSON(JSONObject ob);
 
 }

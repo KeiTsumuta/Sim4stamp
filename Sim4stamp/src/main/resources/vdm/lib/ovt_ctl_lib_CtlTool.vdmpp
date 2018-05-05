@@ -54,6 +54,23 @@ operations
 	setValue(elementId, dataId, value) ==
 		is not yet specified;
 		
+	public getInputIntValue : seq of char * seq of char ==> int
+	getInputIntValue(elementId, dataId) ==
+		is not yet specified;
+		
+	public setIntValue : seq of char * seq of char * int ==> ()
+	setIntValue(elementId, dataId, value) ==
+		is not yet specified;
+		
+	public getInputBoolValue : seq of char * seq of char ==> bool
+	getInputBoolValue(elementId, dataId) ==
+		is not yet specified;
+		
+	public setBoolValue : seq of char * seq of char * bool ==> ()
+	setBoolValue(elementId, dataId, value) ==
+		is not yet specified;
+		
+		
 functions
 
 end ovt_ctl_lib_CtlTool

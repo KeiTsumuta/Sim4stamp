@@ -23,11 +23,11 @@ package tmu.fs.sim4stamp.util;
  */
 public interface DisplayLevel {
 
-    public enum Level {
-        Base, Detail, PROGRESS
-    };
+	public enum Level {
+		Base, Detail, PROGRESS
+	};
 
-    void setLevel(Level level);
+	void setLevel(Level level);
 
-    Level getLevel();
+	Level getLevel();
 }

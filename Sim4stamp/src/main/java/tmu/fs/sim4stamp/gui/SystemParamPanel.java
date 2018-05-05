@@ -42,82 +42,82 @@ import tmu.fs.sim4stamp.SimService;
  */
 public class SystemParamPanel implements Initializable {
 
-    @FXML
-    private TextField overtureHome;
+	@FXML
+	private TextField overtureHome;
 
-    @FXML
-    private TextField commandTool;
+	@FXML
+	private TextField commandTool;
 
-    private Stage stage;
+	private Stage stage;
 
-    public SystemParamPanel() {
-    }
+	public SystemParamPanel() {
+	}
 
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        SimService s = SimService.getInstance();
-        overtureHome.setText(s.getOvertureHome());
-        commandTool.setText(s.getOvertureCommandLine());
-        List<String> projects = s.getProjects();
-    }
+	@Override
+	public void initialize(URL url, ResourceBundle rb) {
+		SimService s = SimService.getInstance();
+		overtureHome.setText(s.getOvertureHome());
+		commandTool.setText(s.getOvertureCommandLine());
+		List<String> projects = s.getProjects();
+	}
 
-    public void show(ActionEvent event) throws IOException {
-        stage = new Stage();
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/systemparampanel.fxml"));
-        stage.setScene(new Scene(root));
-        stage.setTitle("sim4stamp");
-        stage.initModality(Modality.WINDOW_MODAL);
-        SimService s = SimService.getInstance();
-        stage.initOwner(s.getStage());
-        stage.show();
-    }
+	public void show(ActionEvent event) throws IOException {
+		stage = new Stage();
+		Parent root = FXMLLoader.load(getClass().getResource("/fxml/systemparampanel.fxml"));
+		stage.setScene(new Scene(root));
+		stage.setTitle("sim4stamp");
+		stage.initModality(Modality.WINDOW_MODAL);
+		SimService s = SimService.getInstance();
+		stage.initOwner(s.getStage());
+		stage.show();
+	}
 
-    @FXML
-    public void saveAction(ActionEvent event) {
-        //System.out.println("SystemParamPanel saveAction !!");
-        SimService s = SimService.getInstance();
-        s.writeInfoFile();
-        closeDialog(event);
-    }
+	@FXML
+	public void saveAction(ActionEvent event) {
+		// System.out.println("SystemParamPanel saveAction !!");
+		SimService s = SimService.getInstance();
+		s.writeInfoFile();
+		closeDialog(event);
+	}
 
-    @FXML
-    public void cancelAction(ActionEvent event) {
-        //System.out.println("cancelAction !!");
-        SimService s = SimService.getInstance();
-        s.readInfoFile();
-        //s.readProjectFile();
-        closeDialog(event);
-    }
+	@FXML
+	public void cancelAction(ActionEvent event) {
+		// System.out.println("cancelAction !!");
+		SimService s = SimService.getInstance();
+		s.readInfoFile();
+		// s.readProjectFile();
+		closeDialog(event);
+	}
 
-    public void closeDialog(ActionEvent event) {
-        ((Node) event.getSource()).getScene().getWindow().hide();
-    }
+	public void closeDialog(ActionEvent event) {
+		((Node) event.getSource()).getScene().getWindow().hide();
+	}
 
-    @FXML
-    public void overtureRefAction(ActionEvent event) {
-        final DirectoryChooser fc = new DirectoryChooser();
-        fc.setTitle("Overture Home選択");
-        File dir = fc.showDialog(stage);
-        if (dir != null) {
-            SimService s = SimService.getInstance();
-            s.setOvertureHome(dir.getAbsolutePath());
-            overtureHome.textProperty().set(s.getOvertureHome());
-        }
+	@FXML
+	public void overtureRefAction(ActionEvent event) {
+		final DirectoryChooser fc = new DirectoryChooser();
+		fc.setTitle("Overture Home選択");
+		File dir = fc.showDialog(stage);
+		if (dir != null) {
+			SimService s = SimService.getInstance();
+			s.setOvertureHome(dir.getAbsolutePath());
+			overtureHome.textProperty().set(s.getOvertureHome());
+		}
 
-    }
+	}
 
-    @FXML
-    public void commandToolRefAction(ActionEvent event) {
-        //System.out.println("commandToolRefAction !!");
-        final FileChooser fc = new FileChooser();
-        fc.setTitle("Overture commandlinetool選択");
-        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("jar", "*.jar"));
-        File jarFile = fc.showOpenDialog(stage);
-        if (jarFile != null) {
-            SimService s = SimService.getInstance();
-            s.setOvertureCommandLine(jarFile.getName());
-            commandTool.textProperty().set(s.getOvertureCommandLine());
-        }
-    }
+	@FXML
+	public void commandToolRefAction(ActionEvent event) {
+		// System.out.println("commandToolRefAction !!");
+		final FileChooser fc = new FileChooser();
+		fc.setTitle("Overture commandlinetool選択");
+		fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("jar", "*.jar"));
+		File jarFile = fc.showOpenDialog(stage);
+		if (jarFile != null) {
+			SimService s = SimService.getInstance();
+			s.setOvertureCommandLine(jarFile.getName());
+			commandTool.textProperty().set(s.getOvertureCommandLine());
+		}
+	}
 
 }

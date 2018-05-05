@@ -28,45 +28,45 @@ import javafx.scene.control.TextFormatter;
  */
 public class GuiUtil {
 
-    private static final Pattern NUMBER = Pattern.compile("[^0-9]");
-    private static final Pattern NUMBER_D = Pattern.compile("[^0-9.]");
+	private static final Pattern NUMBER = Pattern.compile("[^0-9]");
+	private static final Pattern NUMBER_D = Pattern.compile("[^0-9.]");
 
-    public static TextFormatter<String> getIntTextFormater() {
-        UnaryOperator<TextFormatter.Change> filter = (TextFormatter.Change t) -> {
-            if (t.isReplaced()) {
-                if(NUMBER.matcher(t.getText()).matches()){
-                    t.setText(t.getControlText().substring(t.getRangeStart(), t.getRangeEnd()));
-                }
-            }
-            if (t.isAdded()) {
-                if(NUMBER.matcher(t.getText()).matches()){   
-                    t.setText("");
-                }
-            }
-            return t;
-        };
-        return new TextFormatter<>(filter);
-    }
+	public static TextFormatter<String> getIntTextFormater() {
+		UnaryOperator<TextFormatter.Change> filter = (TextFormatter.Change t) -> {
+			if (t.isReplaced()) {
+				if (NUMBER.matcher(t.getText()).matches()) {
+					t.setText(t.getControlText().substring(t.getRangeStart(), t.getRangeEnd()));
+				}
+			}
+			if (t.isAdded()) {
+				if (NUMBER.matcher(t.getText()).matches()) {
+					t.setText("");
+				}
+			}
+			return t;
+		};
+		return new TextFormatter<>(filter);
+	}
 
-    public static TextFormatter<String> getDecimalTextFormater() {
-        UnaryOperator<TextFormatter.Change> filter = (TextFormatter.Change t) -> {
-            if (t.isReplaced()) {
-                if(NUMBER.matcher(t.getText()).matches()){
-                    t.setText(t.getControlText().substring(t.getRangeStart(), t.getRangeEnd()));
-                }
-            }
-            if (t.isAdded()) {
-                if (t.getControlText().contains(".")) {
-                    if(NUMBER.matcher(t.getText()).matches()){
-                        t.setText("");
-                    }
-                }else if(NUMBER_D.matcher(t.getText()).matches()){   
-                    t.setText("");
-                }
-            }
-            return t;
-        };
-        return new TextFormatter<>(filter);
-    }
+	public static TextFormatter<String> getDecimalTextFormater() {
+		UnaryOperator<TextFormatter.Change> filter = (TextFormatter.Change t) -> {
+			if (t.isReplaced()) {
+				if (NUMBER.matcher(t.getText()).matches()) {
+					t.setText(t.getControlText().substring(t.getRangeStart(), t.getRangeEnd()));
+				}
+			}
+			if (t.isAdded()) {
+				if (t.getControlText().contains(".")) {
+					if (NUMBER.matcher(t.getText()).matches()) {
+						t.setText("");
+					}
+				} else if (NUMBER_D.matcher(t.getText()).matches()) {
+					t.setText("");
+				}
+			}
+			return t;
+		};
+		return new TextFormatter<>(filter);
+	}
 
 }

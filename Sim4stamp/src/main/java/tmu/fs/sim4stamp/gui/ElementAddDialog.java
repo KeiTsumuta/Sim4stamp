@@ -47,118 +47,118 @@ import tmu.fs.sim4stamp.model.em.Sensor;
  */
 public class ElementAddDialog implements Initializable {
 
-    @FXML
-    private Label elementAddTitleId;
+	@FXML
+	private Label elementAddTitleId;
 
-    @FXML
-    private TextField elementid;
+	@FXML
+	private TextField elementid;
 
-    @FXML
-    private Label errorMessageDisplay;
+	@FXML
+	private Label errorMessageDisplay;
 
-    private static ModelPanel modelPanel;
-    private static Element.EType eType;
-    private static double xAxis = 0;
-    private static double yAxis = 0;
+	private static ModelPanel modelPanel;
+	private static Element.EType eType;
+	private static double xAxis = 0;
+	private static double yAxis = 0;
 
-    public ElementAddDialog() {
-    }
+	public ElementAddDialog() {
+	}
 
-    public ElementAddDialog(ModelPanel mp, Element.EType e, double x, double y) {
-        modelPanel = mp;
-        eType = e;
-        xAxis = x;
-        yAxis = y;
-    }
+	public ElementAddDialog(ModelPanel mp, Element.EType e, double x, double y) {
+		modelPanel = mp;
+		eType = e;
+		xAxis = x;
+		yAxis = y;
+	}
 
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        //System.out.println("init!! " + eType);
-        String title = "";
-        switch (eType) {
-            case CONTROLLER:
-                title = "コントローラ";
-                break;
-            case ACTUATOR:
-                title = "アクチュエータ";
-                break;
-            case SENSOR:
-                title = "センサ";
-                break;
-            case CONTROLLED_EQUIPMENT:
-                title = "被コントロールプロセス";
-                break;
-            case INJECTOR:
-                title = "インジェクタ";
-                break;
-        }
-        elementAddTitleId.setText("＜" + title + "＞ ");
-        errorMessageDisplay.setText("");
-        elementid.setText("");
-    }
+	@Override
+	public void initialize(URL url, ResourceBundle rb) {
+		// System.out.println("init!! " + eType);
+		String title = "";
+		switch (eType) {
+		case CONTROLLER:
+			title = "コントローラ";
+			break;
+		case ACTUATOR:
+			title = "アクチュエータ";
+			break;
+		case SENSOR:
+			title = "センサ";
+			break;
+		case CONTROLLED_EQUIPMENT:
+			title = "被コントロールプロセス";
+			break;
+		case INJECTOR:
+			title = "インジェクタ";
+			break;
+		}
+		elementAddTitleId.setText("＜" + title + "＞ ");
+		errorMessageDisplay.setText("");
+		elementid.setText("");
+	}
 
-    public void show(ActionEvent event) throws IOException {
-        Stage stage = new Stage();
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/elementAddDialog.fxml"));
-        stage.setScene(new Scene(root));
-        stage.setTitle("sim4stamp 構成要素追加");
-        stage.initModality(Modality.WINDOW_MODAL);
-        SimService s = SimService.getInstance();
-        stage.initOwner(s.getStage());
-        stage.show();
-    }
+	public void show(ActionEvent event) throws IOException {
+		Stage stage = new Stage();
+		Parent root = FXMLLoader.load(getClass().getResource("/fxml/elementAddDialog.fxml"));
+		stage.setScene(new Scene(root));
+		stage.setTitle("sim4stamp 構成要素追加");
+		stage.initModality(Modality.WINDOW_MODAL);
+		SimService s = SimService.getInstance();
+		stage.initOwner(s.getStage());
+		stage.show();
+	}
 
-    @FXML
-    public void addButtonActin(ActionEvent event) {
-        String id = elementid.getText();
-        if (id == null || id.length() == 0) {
-            errorMessageDisplay.setText("？？？ ：構成要素名が入力されていません。");
-            return;
-        }
-        ElementManager em = SimService.getInstance().getElementManger();
-        List<Element> elements = em.getElements();
-        for (Element element : elements) {
-            if (element.getNodeId().equals(id)) {
-                errorMessageDisplay.setText("？？？ ： 入力した構成要素名は既に登録されています。");
-                return;
-            }
-        }
-        Element ce = createElement(xAxis, yAxis, id);
-        if (ce != null) {
-            em.addElement(ce);
-        }
-        modelPanel.drawCanvasPanel();
-        ((Node) event.getSource()).getScene().getWindow().hide();
-    }
+	@FXML
+	public void addButtonActin(ActionEvent event) {
+		String id = elementid.getText();
+		if (id == null || id.length() == 0) {
+			errorMessageDisplay.setText("？？？ ：構成要素名が入力されていません。");
+			return;
+		}
+		ElementManager em = SimService.getInstance().getElementManger();
+		List<Element> elements = em.getElements();
+		for (Element element : elements) {
+			if (element.getNodeId().equals(id)) {
+				errorMessageDisplay.setText("？？？ ： 入力した構成要素名は既に登録されています。");
+				return;
+			}
+		}
+		Element ce = createElement(xAxis, yAxis, id);
+		if (ce != null) {
+			em.addElement(ce);
+		}
+		modelPanel.drawCanvasPanel();
+		((Node) event.getSource()).getScene().getWindow().hide();
+	}
 
-    private Element createElement(double x, double y, String id) {
-        switch (eType) {
-            case CONTROLLER:
-                Controller cl = new Controller(id);
-                cl.setPoint(x, y);
-                return cl;
-            case ACTUATOR:
-                Actuator ac = new Actuator(id);
-                ac.setPoint(x, y);
-                return ac;
-            case SENSOR:
-                Sensor ss = new Sensor(id);
-                ss.setPoint(x, y);
-                return ss;
-            case CONTROLLED_EQUIPMENT:
-                ControllledEquipment ce = new ControllledEquipment(id);
-                ce.setPoint(x, y);
-                return ce;
-            case INJECTOR:
-                Injector ij = new Injector(id);
-                ij.setPoint(x, y);
-                return ij;
-        }
-        return null;
-    }
+	private Element createElement(double x, double y, String id) {
+		switch (eType) {
+		case CONTROLLER:
+			Controller cl = new Controller(id);
+			cl.setPoint(x, y);
+			return cl;
+		case ACTUATOR:
+			Actuator ac = new Actuator(id);
+			ac.setPoint(x, y);
+			return ac;
+		case SENSOR:
+			Sensor ss = new Sensor(id);
+			ss.setPoint(x, y);
+			return ss;
+		case CONTROLLED_EQUIPMENT:
+			ControllledEquipment ce = new ControllledEquipment(id);
+			ce.setPoint(x, y);
+			return ce;
+		case INJECTOR:
+			Injector ij = new Injector(id);
+			ij.setPoint(x, y);
+			return ij;
+		}
+		return null;
+	}
 
-    @FXML
-    public void cancelAction(ActionEvent event) {
-        ((Node) event.getSource()).getScene().getWindow().hide();
-    }
+	@FXML
+	public void cancelAction(ActionEvent event) {
+		((Node) event.getSource()).getScene().getWindow().hide();
+	}
 }

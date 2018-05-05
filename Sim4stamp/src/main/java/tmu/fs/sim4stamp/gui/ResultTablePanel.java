@@ -30,87 +30,88 @@ import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 
 /**
- *
+ * 結果表の表示データを編集する。
+ * 
  * @author Keiichi Tsumuta
  */
 public class ResultTablePanel implements Initializable {
 
-    private final TableView resultTable;
-    private ObservableList<String> headers;
-    private ObservableList<ObservableList> dataVals;
-    private static final DecimalFormat format = new DecimalFormat("#0.00");
+	private final TableView resultTable;
+	private ObservableList<String> headers;
+	private ObservableList<ObservableList> dataVals;
+	private static final DecimalFormat format = new DecimalFormat("#0.00");
 
-    public ResultTablePanel(TableView resultTable) {
-        this.resultTable = resultTable;
-    }
+	public ResultTablePanel(TableView resultTable) {
+		this.resultTable = resultTable;
+	}
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        initData();
-    }
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		initData();
+	}
 
-    public void initData() {
-        headers = FXCollections.observableArrayList();
-        dataVals = FXCollections.observableArrayList();
-        TableColumn<ObservableList, String>[] columns = new TableColumn[headers.size()];
-        resultTable.getColumns().setAll(columns);
-        resultTable.setItems(dataVals);
-    }
+	public void initData() {
+		headers = FXCollections.observableArrayList();
+		dataVals = FXCollections.observableArrayList();
+		TableColumn<ObservableList, String>[] columns = new TableColumn[headers.size()];
+		resultTable.getColumns().setAll(columns);
+		resultTable.setItems(dataVals);
+	}
 
-    public void setData(List<String> colParents, List<List<String>> colTitles, List<double[]> data) {
-        headers = FXCollections.observableArrayList();
-        dataVals = FXCollections.observableArrayList();
-        headers.add("No.");
-        colParents.forEach((colHeader) -> {
-            headers.add(colHeader);
-        });
-        int colIndex = 0;
-        int indexAll = colIndex;
-        TableColumn<ObservableList, String>[] columns = new TableColumn[headers.size()];
-        for (String header : headers) {
-            final int idx = colIndex;
-            columns[colIndex] = new TableColumn(header);
-            columns[colIndex].setStyle("-fx-alignment: CENTER-RIGHT;");
-            columns[colIndex].setCellValueFactory(
-                    (CellDataFeatures<ObservableList, String> param)
-                    -> new SimpleStringProperty(param.getValue().get(idx).toString()));
-            if (colIndex > 0) {
-                List<String> subColHeaders = colTitles.get(colIndex - 1);
-                ObservableList<String> subHeaders = FXCollections.observableArrayList();
-                subColHeaders.forEach((hs) -> {
-                    subHeaders.add(hs);
-                });
-                int subColIndex = 0;
-                TableColumn<ObservableList, String>[] subColumns = new TableColumn[subColHeaders.size()];
-                for (String subHeader : subHeaders) {
-                    final int idx2 = subColIndex;
-                    final int fIndexAll = indexAll;
-                    subColumns[subColIndex] = new TableColumn(subHeader);
-                    subColumns[subColIndex].setStyle("-fx-alignment: CENTER-RIGHT;");
-                    subColumns[subColIndex].setCellValueFactory(
-                            (CellDataFeatures<ObservableList, String> param)
-                            -> new SimpleStringProperty(param.getValue().get(fIndexAll).toString()));
-                    subColIndex++;
-                    indexAll++;
-                }
-                columns[colIndex].getColumns().addAll(subColumns);
-            } else {
-                indexAll++;
-            }
-            colIndex++;
-        }
-        resultTable.getColumns().setAll(columns);
-        int size = data.get(0).length;
-        for (int i = 0; i < size; i++) {
-            ObservableList<String> rows = FXCollections.observableArrayList();
-            rows.add(Integer.toString(i + 1));
-            for (int k = 0; k < data.size(); k++) {
-                rows.add(format.format(data.get(k)[i]));
-            }
-            dataVals.add(rows);
-        }
+	public void setData(List<String> colParents, List<List<String>> colTitles, List<String[]> data) {
+		headers = FXCollections.observableArrayList();
+		dataVals = FXCollections.observableArrayList();
+		headers.add("No.");
+		colParents.forEach((colHeader) -> {
+			headers.add(colHeader);
+		});
+		int colIndex = 0;
+		int indexAll = colIndex;
+		TableColumn<ObservableList, String>[] columns = new TableColumn[headers.size()];
+		for (String header : headers) {
+			final int idx = colIndex;
+			columns[colIndex] = new TableColumn(header);
+			columns[colIndex].setStyle("-fx-alignment: CENTER-RIGHT;");
+			columns[colIndex]
+					.setCellValueFactory((CellDataFeatures<ObservableList, String> param) -> new SimpleStringProperty(
+							param.getValue().get(idx).toString()));
+			if (colIndex > 0) {
+				List<String> subColHeaders = colTitles.get(colIndex - 1);
+				ObservableList<String> subHeaders = FXCollections.observableArrayList();
+				subColHeaders.forEach((hs) -> {
+					subHeaders.add(hs);
+				});
+				int subColIndex = 0;
+				TableColumn<ObservableList, String>[] subColumns = new TableColumn[subColHeaders.size()];
+				for (String subHeader : subHeaders) {
+					final int idx2 = subColIndex;
+					final int fIndexAll = indexAll;
+					subColumns[subColIndex] = new TableColumn(subHeader);
+					subColumns[subColIndex].setStyle("-fx-alignment: CENTER-RIGHT;");
+					subColumns[subColIndex].setCellValueFactory(
+							(CellDataFeatures<ObservableList, String> param) -> new SimpleStringProperty(
+									param.getValue().get(fIndexAll).toString()));
+					subColIndex++;
+					indexAll++;
+				}
+				columns[colIndex].getColumns().addAll(subColumns);
+			} else {
+				indexAll++;
+			}
+			colIndex++;
+		}
+		resultTable.getColumns().setAll(columns);
+		int size = data.get(0).length;
+		for (int i = 0; i < size; i++) {
+			ObservableList<String> rows = FXCollections.observableArrayList();
+			rows.add(Integer.toString(i + 1));
+			for (int k = 0; k < data.size(); k++) {
+				rows.add(data.get(k)[i]);
+			}
+			dataVals.add(rows);
+		}
 
-        resultTable.setItems(dataVals);
-    }
+		resultTable.setItems(dataVals);
+	}
 
 }

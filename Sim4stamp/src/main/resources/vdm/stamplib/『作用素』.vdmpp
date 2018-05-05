@@ -50,6 +50,34 @@ operations
 		--IO`print("setData:");IO`print(i構成種別);IO`print(":");IO`print(key);IO`print(",");IO`println(値);
 		return iCtl.setValue(i要素ID, key, 値);
 	);
+	
+	public getIntData : seq of char ==> int
+	getIntData(key) ==
+	(dcl val : int := iCtl.getInputIntValue(i要素ID, key);
+		--IO`print("getData:");IO`print(key);IO`print(":");IO`println(val);
+		return val;
+	);
+		
+	public setIntData : seq of char * int ==> ()
+	setIntData(key, data) ==
+	(dcl 値 : int := data;
+		--IO`print("setData:");IO`print(i構成種別);IO`print(":");IO`print(key);IO`print(",");IO`println(値);
+		return iCtl.setIntValue(i要素ID, key, 値);
+	);
+	
+	public getBoolData : seq of char ==> bool
+	getBoolData(key) ==
+	(dcl val : bool := iCtl.getInputBoolValue(i要素ID, key);
+		--IO`print("getData:");IO`print(key);IO`print(":");IO`println(val);
+		return val;
+	);
+		
+	public setBoolData : seq of char * bool ==> ()
+	setBoolData(key, data) ==
+	(dcl 値 : bool := data;
+		--IO`print("setData:");IO`print(i構成種別);IO`print(":");IO`print(key);IO`print(",");IO`println(値);
+		return iCtl.setBoolValue(i要素ID, key, 値);
+	);
 		
 	public func : () ==> ()
 	func() ==

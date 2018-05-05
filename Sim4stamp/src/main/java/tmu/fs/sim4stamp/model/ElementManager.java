@@ -37,87 +37,87 @@ import tmu.fs.sim4stamp.util.JSONConvert;
  */
 public class ElementManager implements JSONConvert {
 
-    private static final Logger log = Logger.getLogger(ElementManager.class.getPackage().getName());
+	private static final Logger log = Logger.getLogger(ElementManager.class.getPackage().getName());
 
-    private List<Element> elements;
+	private List<Element> elements;
 
-    public ElementManager() {
-        init();
-    }
+	public ElementManager() {
+		init();
+	}
 
-    public void init() {
-        elements = new ArrayList<>();
-    }
+	public void init() {
+		elements = new ArrayList<>();
+	}
 
-    public void addElement(Element element) {
-        elements.add(element);
-    }
+	public void addElement(Element element) {
+		elements.add(element);
+	}
 
-    public void deleteElement(String id) {
-        for (int i = 0; i < elements.size(); i++) {
-            Element e = elements.get(i);
-            if (e.getNodeId().equals(id)) {
-                elements.remove(i);
-                break;
-            }
-        }
-    }
+	public void deleteElement(String id) {
+		for (int i = 0; i < elements.size(); i++) {
+			Element e = elements.get(i);
+			if (e.getNodeId().equals(id)) {
+				elements.remove(i);
+				break;
+			}
+		}
+	}
 
-    public List<Element> getElements() {
-        return elements;
-    }
+	public List<Element> getElements() {
+		return elements;
+	}
 
-    @Override
-    public void parseJson(JSONObject sj) {
-        try {
-            JSONArray arr = sj.getJSONArray("elements");
-            int len = arr.length();
-            for (int i = 0; i < len; i++) {
-                JSONObject ob = arr.getJSONObject(i).getJSONObject("element");
-                //System.out.println("element:" + ob);
-                String type = ob.optString("type");
-                String id = ob.optString("id");
-                Element element = null;
-                switch (type) {
-                    case "equipment":
-                        element = new ControllledEquipment(id);
-                        break;
-                    case "controller":
-                        element = new Controller(id);
-                        break;
-                    case "actuator":
-                        element = new Actuator(id);
-                        break;
-                    case "sensor":
-                        element = new Sensor(id);
-                        break;
-                    case "injector":
-                        element = new Injector(id);
-                        break;
-                }
-                element.parseJson(ob);
-                AppendParams ap = new AppendParams(AppendParams.ParamType.Element);
-                JSONArray apObj = ob.optJSONArray("ioparams");
-                if (apObj != null) {
-                    String[] parentId = new String[]{id};
-                    ap.parseJson(parentId, apObj);
-                    element.setAppendParams(ap);
-                }
-                addElement(element);
-            }
-        } catch (Exception ex) {
-            log.severe(ex.toString());
-        }
-    }
+	@Override
+	public void parseJson(JSONObject sj) {
+		try {
+			JSONArray arr = sj.getJSONArray("elements");
+			int len = arr.length();
+			for (int i = 0; i < len; i++) {
+				JSONObject ob = arr.getJSONObject(i).getJSONObject("element");
+				// System.out.println("element:" + ob);
+				String type = ob.optString("type");
+				String id = ob.optString("id");
+				Element element = null;
+				switch (type) {
+				case "equipment":
+					element = new ControllledEquipment(id);
+					break;
+				case "controller":
+					element = new Controller(id);
+					break;
+				case "actuator":
+					element = new Actuator(id);
+					break;
+				case "sensor":
+					element = new Sensor(id);
+					break;
+				case "injector":
+					element = new Injector(id);
+					break;
+				}
+				element.parseJson(ob);
+				AppendParams ap = new AppendParams(AppendParams.ParamType.Element);
+				JSONArray apObj = ob.optJSONArray("ioparams");
+				if (apObj != null) {
+					String[] parentId = new String[] { id };
+					ap.parseJson(parentId, apObj);
+					element.setAppendParams(ap);
+				}
+				addElement(element);
+			}
+		} catch (Exception ex) {
+			log.severe(ex.toString());
+		}
+	}
 
-    @Override
-    public void addJSON(JSONObject ob) {
-        List<JSONObject> objs = new ArrayList<>();
-        for (Element el : getElements()) {
-            JSONObject obj = new JSONObject();
-            el.addJSON(obj);
-            objs.add(obj);
-        }
-        ob.accumulate("elements", objs);
-    }
+	@Override
+	public void addJSON(JSONObject ob) {
+		List<JSONObject> objs = new ArrayList<>();
+		for (Element el : getElements()) {
+			JSONObject obj = new JSONObject();
+			el.addJSON(obj);
+			objs.add(obj);
+		}
+		ob.accumulate("elements", objs);
+	}
 }

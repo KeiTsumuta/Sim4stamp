@@ -18,7 +18,6 @@
 package tmu.fs.sim4stamp;
 
 import javafx.application.Application;
-import static javafx.application.Application.launch;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -34,54 +33,52 @@ import tmu.fs.sim4stamp.gui.ModelPanel;
  */
 public class MainApp extends Application {
 
-    private static Stage stage;
+	private static Stage stage;
 
-    @Override
-    public void start(Stage stage) throws Exception {
-        this.stage = stage;
-        stage.setOnCloseRequest((WindowEvent t) -> {
-            System.exit(0);
-        });
+	@Override
+	public void start(Stage stage) throws Exception {
+		this.stage = stage;
+		stage.setOnCloseRequest((WindowEvent t) -> {
+			System.exit(0);
+		});
 
-        SimService simService = SimService.getInstance();
-        simService.setStage(stage);
-        simService.readInfoFile();
-        simService.readProjectFile(simService.getCurrentProjectId());
+		SimService simService = SimService.getInstance();
+		simService.setStage(stage);
+		simService.readInfoFile();
+		simService.readProjectFile(simService.getCurrentProjectId());
 
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/Scene.fxml"));
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add("/styles/Styles.css");
+		Parent root = FXMLLoader.load(getClass().getResource("/fxml/Scene.fxml"));
+		Scene scene = new Scene(root);
+		scene.getStylesheets().add("/styles/Styles.css");
 
-        stage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/icon/s4s.png")));
-        stage.setTitle("sim4stamp : STAMP/STPA シミュレータ");
-        stage.setScene(scene);
-        stage.show();
-        //System.out.println("start main");
+		stage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/icon/s4s.png")));
+		stage.setTitle("sim4stamp : STAMP/STPA シミュレータ");
+		stage.setScene(scene);
+		stage.show();
+		// System.out.println("start main");
 
-        ModelPanel mp = PanelManager.get().getModelPanel();
-        mp.initSize();
-        mp.drawCanvasPanel();
-        PanelManager.get().getConditionPanel().setItemDisplay();
+		ModelPanel mp = PanelManager.get().getModelPanel();
+		mp.initSize();
+		mp.drawCanvasPanel();
+		PanelManager.get().getConditionPanel().setItemDisplay();
 
-        scene.widthProperty().addListener(
-                (ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth)
-                -> {
-            PanelManager.get().getModelPanel().drawCanvasPanel();
-        });
-        scene.heightProperty().addListener(
-                (ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight)
-                -> {
-            PanelManager.get().getModelPanel().drawCanvasPanel();
-        });
+		scene.widthProperty().addListener(
+				(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) -> {
+					PanelManager.get().getModelPanel().drawCanvasPanel();
+				});
+		scene.heightProperty().addListener(
+				(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) -> {
+					PanelManager.get().getModelPanel().drawCanvasPanel();
+				});
 
-    }
+	}
 
-    public static Stage getStage() {
-        return stage;
-    }
+	public static Stage getStage() {
+		return stage;
+	}
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+	public static void main(String[] args) {
+		launch(args);
+	}
 
 }

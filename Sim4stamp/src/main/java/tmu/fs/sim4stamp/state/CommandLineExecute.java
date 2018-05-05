@@ -39,115 +39,113 @@ import tmu.fs.sim4stamp.vdm.VdmCodeMaker;
  */
 public class CommandLineExecute implements Runnable {
 
-    private static final Logger log = Logger.getLogger(CommandLineExecute.class.getPackage().getName());
+	private static final Logger log = Logger.getLogger(CommandLineExecute.class.getPackage().getName());
 
-    private static final String[] COMMAND_EXECUTE
-            = new String[]{"-vdmpp", "-w", "-r", "vdm10",
-                "-c", "UTF-8", "-e", "\"new ExecuteMain().execute()\""};
-    private static final String VDM_LIB = "lib";
-    private static final String STAMP_LIB = "stamplib";
-    private static final String SIM4STAMP_TCP_LIB = VdmCodeMaker.CTLIB;
-    private static final String VDMJ = "org.overture.interpreter.VDMJ";
-    private static volatile boolean runStatus = false;
-    private static LogQueue logQue;
+	private static final String[] COMMAND_EXECUTE = new String[] { "-vdmpp", "-w", "-r", "vdm10", "-c", "UTF-8", "-e",
+			"\"new ExecuteMain().execute()\"" };
+	private static final String VDM_LIB = "lib";
+	private static final String STAMP_LIB = "stamplib";
+	private static final String SIM4STAMP_TCP_LIB = VdmCodeMaker.CTLIB;
+	private static final String VDMJ = "org.overture.interpreter.VDMJ";
+	private static volatile boolean runStatus = false;
+	private static LogQueue logQue;
 
-    public CommandLineExecute() {
-        if (logQue == null) {
-            logQue = new LogQueue();
-        }
-    }
+	public CommandLineExecute() {
+		if (logQue == null) {
+			logQue = new LogQueue();
+		}
+	}
 
-    public void start() {
-        if (!runStatus) {
-            runStatus = true;
-            new Thread(this).start();
-        }
-    }
+	public void start() {
+		if (!runStatus) {
+			runStatus = true;
+			new Thread(this).start();
+		}
+	}
 
-    @Override
-    public void run() {
-        try {
-            SimService ss = SimService.getInstance();
-            String exeBase = ss.getCurrentProjectHome();
-            List<String> list = new ArrayList<>();
-            list.add("java");
-            list.add("-cp");
-            String cp = exeBase + SimService.SP + VDM_LIB + SimService.SP + SIM4STAMP_TCP_LIB;
-            cp += SimService.PAS + ss.getOvertureCommandLineJar();
-            list.add(cp);
-            list.add(VDMJ);
-            for (String opt : COMMAND_EXECUTE) {
-                list.add(opt);
-            }
-            list.add("-path");
-            list.add(exeBase);
-            list.add(exeBase);
-            list.add(exeBase + SimService.SP + VDM_LIB);
-            list.add(exeBase + SimService.SP + STAMP_LIB);
+	@Override
+	public void run() {
+		try {
+			SimService ss = SimService.getInstance();
+			String exeBase = ss.getCurrentProjectHome();
+			List<String> list = new ArrayList<>();
+			list.add("java");
+			list.add("-cp");
+			String cp = exeBase + SimService.SP + VDM_LIB + SimService.SP + SIM4STAMP_TCP_LIB;
+			cp += SimService.PAS + ss.getOvertureCommandLineJar();
+			list.add(cp);
+			list.add(VDMJ);
+			for (String opt : COMMAND_EXECUTE) {
+				list.add(opt);
+			}
+			list.add("-path");
+			list.add(exeBase);
+			list.add(exeBase);
+			list.add(exeBase + SimService.SP + VDM_LIB);
+			list.add(exeBase + SimService.SP + STAMP_LIB);
 
-            ProcessBuilder pb = new ProcessBuilder(list);
-            pb = pb.redirectErrorStream(true);
-            Process proc = pb.start();
-            InputStream is = proc.getInputStream();
-            displayInputStream(is);
-            int exitVal = proc.waitFor();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            runStatus = false;
-        }
-    }
+			ProcessBuilder pb = new ProcessBuilder(list);
+			pb = pb.redirectErrorStream(true);
+			Process proc = pb.start();
+			InputStream is = proc.getInputStream();
+			displayInputStream(is);
+			int exitVal = proc.waitFor();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			runStatus = false;
+		}
+	}
 
-    public void displayInputStream(InputStream is) throws IOException {
-        try (InputStreamReader isr = new InputStreamReader(is);
-                BufferedReader br = new BufferedReader(isr)) {
-            for (;;) {
-                String line = br.readLine();
-                if (line == null) {
-                    break;
-                }
-                logQue.add(line + "\n");
-            }
-        }
-    }
+	public void displayInputStream(InputStream is) throws IOException {
+		try (InputStreamReader isr = new InputStreamReader(is); BufferedReader br = new BufferedReader(isr)) {
+			for (;;) {
+				String line = br.readLine();
+				if (line == null) {
+					break;
+				}
+				logQue.add(line + "\n");
+			}
+		}
+	}
 
-    class LogQueue {
+	class LogQueue {
 
-        private BlockingQueue<String> que = new LinkedBlockingDeque<>();
+		private BlockingQueue<String> que = new LinkedBlockingDeque<>();
 
-        public LogQueue() {
+		public LogQueue() {
 
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        ExecuteLogPanel elp = PanelManager.get().getExecuteLogPanel();
-                        StringBuilder sb = new StringBuilder();
-                        for (;;) {
-                            String s = que.peek();
-                            if (s == null) {
-                                elp.addLine(sb.toString());
-                                sb = new StringBuilder();
-                            }
-                            String log = que.take();
-                            sb.append(log);
-                        }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            };
-            ExecutorService es = Executors.newFixedThreadPool(1);
-            es.submit(runnable);
-        }
+			Runnable runnable = new Runnable() {
+				@Override
+				public void run() {
+					try {
+						ExecuteLogPanel elp = PanelManager.get().getExecuteLogPanel();
+						StringBuilder sb = new StringBuilder();
+						for (;;) {
+							String s = que.peek();
+							if (s == null) {
+								elp.addLine(sb.toString());
+								sb = new StringBuilder();
+							}
+							String log = que.take();
+							sb.append(log);
+						}
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
+				}
+			};
+			ExecutorService es = Executors.newFixedThreadPool(1);
+			es.submit(runnable);
+		}
 
-        public void add(String log) {
-            try {
-                que.put(log);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+		public void add(String log) {
+			try {
+				que.put(log);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
 
-    }
+	}
 }

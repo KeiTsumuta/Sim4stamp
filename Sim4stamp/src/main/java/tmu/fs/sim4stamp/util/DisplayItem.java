@@ -23,6 +23,6 @@ package tmu.fs.sim4stamp.util;
  */
 public interface DisplayItem {
 
-    String getValue(String nodeId, String paramId);
+	String getValue(String nodeId, String paramId);
 
 }

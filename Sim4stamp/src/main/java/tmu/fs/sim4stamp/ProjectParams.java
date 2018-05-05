@@ -27,17 +27,17 @@ import tmu.fs.sim4stamp.model.em.Element;
  */
 public class ProjectParams {
 
-    private List<Element> elements;
+	private List<Element> elements;
 
-    public ProjectParams() {
-        elements = new ArrayList<>();
-    }
+	public ProjectParams() {
+		elements = new ArrayList<>();
+	}
 
-    public void add(Element e) {
-        elements.add(e);
-    }
+	public void add(Element e) {
+		elements.add(e);
+	}
 
-    public List<Element> getList() {
-        return elements;
-    }
+	public List<Element> getList() {
+		return elements;
+	}
 }

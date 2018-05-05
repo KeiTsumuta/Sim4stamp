@@ -26,70 +26,88 @@ import java.util.List;
  */
 public class TransObject implements java.io.Serializable {
 
-    static final long serialVersionUID = 1L;
+	static final long serialVersionUID = 1L;
 
-    private String id;
-    private List<String> stValues = null;
-    private List<Double> dValues = null;
-    private List<Integer> intValues = null;
+	private String id;
+	private List<String> stValues = null;
+	private List<Double> dValues = null;
+	private List<Integer> intValues = null;
+	private List<Boolean> boolValues = null;
 
-    public TransObject(String id) {
-        this.id = id;
-    }
+	public TransObject(String id) {
+		this.id = id;
+	}
 
-    public String getId() {
-        return id;
-    }
+	public String getId() {
+		return id;
+	}
 
-    /**
-     * @return the stValues
-     */
-    public List<String> getStValues() {
-        return stValues;
-    }
+	/**
+	 * @return the stValues
+	 */
+	public List<String> getStValues() {
+		return stValues;
+	}
 
-    /**
-     * @param stValues the stValues to set
-     */
-    public void addStValue(String value) {
-        if (stValues == null) {
-            stValues = new ArrayList<>();
-        }
-        stValues.add(value);
-    }
+	/**
+	 * @param stValues the stValues to set
+	 */
+	public void addStValue(String value) {
+		if (stValues == null) {
+			stValues = new ArrayList<>();
+		}
+		stValues.add(value);
+	}
 
-    /**
-     * @return the dValues
-     */
-    public List<Double> getDValues() {
-        return dValues;
-    }
+	/**
+	 * @return the dValues
+	 */
+	public List<Double> getDValues() {
+		return dValues;
+	}
 
-    /**
-     * @param dValues the dValues to set
-     */
-    public void addDValue(Double value) {
-        if (dValues == null) {
-            dValues = new ArrayList<>();
-        }
-        dValues.add(value);
-    }
+	/**
+	 * @param dValues the dValues to set
+	 */
+	public void addDValue(Double value) {
+		if (dValues == null) {
+			dValues = new ArrayList<>();
+		}
+		dValues.add(value);
+	}
 
-    /**
-     * @return the intValues
-     */
-    public List<Integer> getIntValues() {
-        return intValues;
-    }
+	/**
+	 * @return the intValues
+	 */
+	public List<Integer> getIValues() {
+		return intValues;
+	}
 
-    /**
-     * @param iValues the intValues to set
-     */
-    public void addIntValue(Integer value) {
-        if (intValues == null) {
-            intValues = new ArrayList<>();
-        }
-        intValues.add(value);
-    }
+	/**
+	 * @param iValues the intValues to set
+	 */
+	public void addIValue(Integer value) {
+		if (intValues == null) {
+			intValues = new ArrayList<>();
+		}
+		intValues.add(value);
+	}
+
+	/**
+	 * @return the boolValues
+	 */
+	public List<Boolean> getBValues() {
+		return boolValues;
+	}
+
+	/**
+	 * @param boolValues the boolValues to set
+	 */
+	public void addBValue(boolean value) {
+		if (boolValues == null) {
+			boolValues = new ArrayList<>();
+		}
+		boolValues.add(value);
+	}
 
 }

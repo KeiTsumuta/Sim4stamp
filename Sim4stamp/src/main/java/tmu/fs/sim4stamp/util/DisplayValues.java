@@ -17,7 +17,6 @@
  */
 package tmu.fs.sim4stamp.util;
 
-
 /**
  * 部品にシミュレーション表示値を与えるクラス。
  *
@@ -25,29 +24,29 @@ package tmu.fs.sim4stamp.util;
  */
 public class DisplayValues {
 
-    private static final DisplayValues displayValues = new DisplayValues();
-    private DisplayItem displayItem = null;
+	private static final DisplayValues displayValues = new DisplayValues();
+	private DisplayItem displayItem = null;
 
-    private DisplayValues() {
+	private DisplayValues() {
 
-    }
+	}
 
-    public void inject(DisplayItem displayItem) {
-        this.displayItem = displayItem;
-    }
+	public void inject(DisplayItem displayItem) {
+		this.displayItem = displayItem;
+	}
 
-    public static DisplayValues getInstance() {
-        return displayValues;
-    }
+	public static DisplayValues getInstance() {
+		return displayValues;
+	}
 
-    public String getDisplayData(String nodeId, String id) {
-        StringBuilder sb = new StringBuilder();
-        if (displayItem != null) {
-            sb.append("(");
-            sb.append(displayItem.getValue(nodeId, id));
-            sb.append(")");
-        }
-        return sb.toString();
-    }
+	public String getDisplayData(String nodeId, String id) {
+		StringBuilder sb = new StringBuilder();
+		if (displayItem != null) {
+			sb.append("(");
+			sb.append(displayItem.getValue(nodeId, id));
+			sb.append(")");
+		}
+		return sb.toString();
+	}
 
 }

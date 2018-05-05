@@ -31,31 +31,31 @@ import javafx.scene.control.TextArea;
  */
 public class ExecuteLogPanel implements Initializable {
 
-    private final Button clearButton;
-    private final TextArea executeLog;
+	private final Button clearButton;
+	private final TextArea executeLog;
 
-    public ExecuteLogPanel(Button clearButton, TextArea executeLog) {
-        this.clearButton = clearButton;
-        this.executeLog = executeLog;
-    }
+	public ExecuteLogPanel(Button clearButton, TextArea executeLog) {
+		this.clearButton = clearButton;
+		this.executeLog = executeLog;
+	}
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        executeLog.setWrapText(true);
-        executeLog.setEditable(false);
-        clearButton.setOnAction((ActionEvent ev) -> {
-            clear();
-        });
-    }
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		executeLog.setWrapText(true);
+		executeLog.setEditable(false);
+		clearButton.setOnAction((ActionEvent ev) -> {
+			clear();
+		});
+	}
 
-    public void addLine(String s) {
-        Platform.runLater(() -> {
-            executeLog.appendText(s);
-        });
-    }
+	public void addLine(String s) {
+		Platform.runLater(() -> {
+			executeLog.appendText(s);
+		});
+	}
 
-    public void clear() {
-        executeLog.textProperty().set("");
-    }
+	public void clear() {
+		executeLog.textProperty().set("");
+	}
 
 }

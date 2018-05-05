@@ -12,48 +12,62 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="381.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tmu.fs.sim4stamp.gui.GraphDisplayDialog">
-    <children>
-        <BorderPane layoutX="14.0" layoutY="14.0" prefHeight="411.0" prefWidth="576.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-            <top>
-                <FlowPane prefHeight="33.0" prefWidth="576.0">
-                    <Label prefHeight="38.0" text="データ：" BorderPane.alignment="CENTER">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                        <padding>
-                            <Insets left="20.0" />
-                        </padding>
-                    </Label>
-                    <Label fx:id="graphTitle" prefHeight="20.0" prefWidth="260.0" text="Label">
-                        <font>
-                            <Font size="14.0" />
-                        </font>
-                    </Label>
-                </FlowPane>
-            </top>
-            <center>
-                <VBox prefHeight="322.0" prefWidth="576.0" BorderPane.alignment="CENTER">
-                    <children>
-                        <LineChart fx:id="displayedGraph">
-                            <xAxis>
-                                <NumberAxis prefHeight="25.0" prefWidth="432.0" side="BOTTOM" />
-                            </xAxis>
-                            <yAxis>
-                                <NumberAxis prefHeight="162.0" prefWidth="28.0" side="LEFT" />
-                            </yAxis>
-                        </LineChart>
-                        <AnchorPane prefHeight="47.0" prefWidth="600.0">
-                            <children>
-                                <Button mnemonicParsing="false" onAction="#okAction" text="OK" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="100.0" AnchorPane.topAnchor="0.0" />
-                            </children>
-                            <VBox.margin>
-                                <Insets bottom="10.0" />
-                            </VBox.margin>
-                        </AnchorPane>
-                    </children>
-                </VBox>
-            </center>
-        </BorderPane>
-    </children>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity"
+			minHeight="-Infinity" minWidth="-Infinity" prefHeight="381.0"
+			prefWidth="600.0" xmlns="http://javafx.com/javafx/10"
+			xmlns:fx="http://javafx.com/fxml/1"
+			fx:controller="tmu.fs.sim4stamp.gui.GraphDisplayDialog">
+	<children>
+		<BorderPane layoutX="14.0" layoutY="14.0"
+					prefHeight="411.0" prefWidth="576.0" AnchorPane.bottomAnchor="0.0"
+					AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+					AnchorPane.topAnchor="0.0">
+			<top>
+				<FlowPane prefHeight="33.0" prefWidth="576.0">
+					<Label prefHeight="38.0" text="データ："
+						   BorderPane.alignment="CENTER">
+						<font>
+							<Font size="14.0" />
+						</font>
+						<padding>
+							<Insets left="20.0" />
+						</padding>
+					</Label>
+					<Label fx:id="graphTitle" prefHeight="20.0" prefWidth="260.0"
+						   text="Label">
+						<font>
+							<Font size="14.0" />
+						</font>
+					</Label>
+				</FlowPane>
+			</top>
+			<center>
+				<VBox prefHeight="322.0" prefWidth="576.0"
+					  BorderPane.alignment="CENTER">
+					<children>
+						<LineChart fx:id="displayedGraph">
+							<xAxis>
+								<NumberAxis prefHeight="25.0" prefWidth="432.0"
+											side="BOTTOM" />
+							</xAxis>
+							<yAxis>
+								<NumberAxis prefHeight="162.0" prefWidth="28.0"
+											side="LEFT" />
+							</yAxis>
+						</LineChart>
+						<AnchorPane prefHeight="47.0" prefWidth="600.0">
+							<children>
+								<Button mnemonicParsing="false" onAction="#okAction"
+										text="OK" AnchorPane.bottomAnchor="0.0"
+										AnchorPane.leftAnchor="100.0" AnchorPane.topAnchor="0.0" />
+							</children>
+							<VBox.margin>
+								<Insets bottom="10.0" />
+							</VBox.margin>
+						</AnchorPane>
+					</children>
+				</VBox>
+			</center>
+		</BorderPane>
+	</children>
 </AnchorPane>

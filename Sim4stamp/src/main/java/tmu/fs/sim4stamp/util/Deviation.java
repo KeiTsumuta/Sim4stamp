@@ -23,30 +23,30 @@ package tmu.fs.sim4stamp.util;
  */
 public enum Deviation {
 
-    NORMAL("正常", 0),
-    NOT_PROVIDING("Not Providing", 10),
-    PROVIDING_MORE("Providing More", 21),
-    PROVIDING_LESS("Providing Less", 22),
-    TOO_EARLY("Too Early", 31),
-    TOO_LATE("Too Late", 32),
-    WRONG_ORDER("Wrong Order", 40),
-    STOPPING_TOO_SOON("Stopping Too Soon", 51),
-    APPLYING_TOO_LONG("Applying Too Long", 52);
+	NORMAL("正常", 0), //
+	NOT_PROVIDING("Not Providing", 10), //
+	PROVIDING_MORE("Providing More", 21), //
+	PROVIDING_LESS("Providing Less", 22), //
+	TOO_EARLY("Too Early", 31), //
+	TOO_LATE("Too Late", 32), //
+	WRONG_ORDER("Wrong Order", 40), //
+	STOPPING_TOO_SOON("Stopping Too Soon", 51), //
+	APPLYING_TOO_LONG("Applying Too Long", 52); //
 
-    private final String name;
-    private final int id;
+	private final String name;
+	private final int id;
 
-    private Deviation(String name, int id) {
-        this.name = name;
-        this.id = id;
-    }
+	private Deviation(String name, int id) {
+		this.name = name;
+		this.id = id;
+	}
 
-    public int getId() {
-        return id;
-    }
+	public int getId() {
+		return id;
+	}
 
-    public String toString() {
-        return name;
-    }
+	public String toString() {
+		return name;
+	}
 
 }

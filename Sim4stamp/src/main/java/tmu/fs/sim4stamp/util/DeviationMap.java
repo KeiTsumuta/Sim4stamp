@@ -27,48 +27,48 @@ import java.util.Map;
  */
 public class DeviationMap {
 
-    private static final Deviation[] DEVIATIONS = {
-        Deviation.NORMAL,
-        Deviation.NOT_PROVIDING,
-        Deviation.PROVIDING_MORE,
-        Deviation.PROVIDING_LESS,
-        Deviation.TOO_EARLY,
-        Deviation.TOO_LATE,
-        Deviation.WRONG_ORDER,
-        Deviation.STOPPING_TOO_SOON,
-        Deviation.APPLYING_TOO_LONG
-    };
+	private static final Deviation[] DEVIATIONS = { //
+			Deviation.NORMAL, //
+			Deviation.NOT_PROVIDING, //
+			Deviation.PROVIDING_MORE, //
+			Deviation.PROVIDING_LESS, //
+			Deviation.TOO_EARLY, //
+			Deviation.TOO_LATE, //
+			Deviation.WRONG_ORDER, //
+			Deviation.STOPPING_TOO_SOON, //
+			Deviation.APPLYING_TOO_LONG //
+	};
 
-    private static final Map<Integer, Deviation> dmap = new HashMap<Integer, Deviation>();
+	private static final Map<Integer, Deviation> dmap = new HashMap<Integer, Deviation>();
 
-    static {
-        for (Deviation d : DEVIATIONS) {
-            dmap.put(new Integer(d.getId()), d);
-        }
-    }
+	static {
+		for (Deviation d : DEVIATIONS) {
+			dmap.put(new Integer(d.getId()), d);
+		}
+	}
 
-    public static Deviation getDeviation(int id) {
-        return dmap.get(id);
-    }
+	public static Deviation getDeviation(int id) {
+		return dmap.get(id);
+	}
 
-    public static Deviation getDeviation(String sid) {
-        try {
-            return getDeviation(Integer.parseInt(sid));
-        } catch (Exception ex) {
-        }
-        return Deviation.NORMAL;
-    }
+	public static Deviation getDeviation(String sid) {
+		try {
+			return getDeviation(Integer.parseInt(sid));
+		} catch (Exception ex) {
+		}
+		return Deviation.NORMAL;
+	}
 
-    public static Deviation getNameToDeviation(String name) {
-        Iterator<Integer> it = dmap.keySet().iterator();
-        while (it.hasNext()) {
-            int id = it.next();
-            Deviation d = dmap.get(id);
-            if (d.toString().equals(name)) {
-                return d;
-            }
-        }
-        return Deviation.NORMAL;
-    }
+	public static Deviation getNameToDeviation(String name) {
+		Iterator<Integer> it = dmap.keySet().iterator();
+		while (it.hasNext()) {
+			int id = it.next();
+			Deviation d = dmap.get(id);
+			if (d.toString().equals(name)) {
+				return d;
+			}
+		}
+		return Deviation.NORMAL;
+	}
 
 }
