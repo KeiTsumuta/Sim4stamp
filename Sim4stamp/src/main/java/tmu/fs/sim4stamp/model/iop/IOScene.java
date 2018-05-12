@@ -26,6 +26,7 @@ import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import tmu.fs.sim4stamp.SimService;
+import tmu.fs.sim4stamp.gui.util.GraphData;
 import tmu.fs.sim4stamp.model.ConnectorManager;
 import tmu.fs.sim4stamp.model.IOParamManager;
 import tmu.fs.sim4stamp.model.co.Connector;
@@ -508,35 +509,22 @@ public class IOScene implements JSONConvert {
 		return new boolean[size];
 	}
 
-	public double[] getGraphData(String elementId, String paramId) {
+	public GraphData getGraphData(String elementId, String paramId) {
+		GraphData gd = new GraphData();
 		IOValue iv = getIOData(elementId, paramId);
 		if (iv != null) {
 			IOParam.ValueType type = iv.getType();
 			if (type == IOParam.ValueType.REAL) {
-				return iv.getDoubleValues();
+				gd.setDoubleData(iv.getDoubleValues());
 			}
 			if (type == IOParam.ValueType.INT) {
-				int[] vals = iv.getIntValues();
-				double[] dVals = new double[size];
-				for (int i = 0; i < size; i++) {
-					dVals[i] = (int) vals[i];
-				}
-				return dVals;
+				gd.setIntData(iv.getIntValues());
 			}
-			if (type == IOParam.ValueType.INT) {
-				boolean[] bVals = iv.getBoolValues();
-				double[] dVals = new double[size];
-				for (int i = 0; i < size; i++) {
-					if (bVals[i]) {
-						dVals[i] = 1.0;
-					} else {
-						dVals[i] = 0.0;
-					}
-				}
-				return dVals;
+			if (type == IOParam.ValueType.BOOL) {
+				gd.setBoolData(iv.getBoolValues());
 			}
 		}
-		return new double[size];
+		return gd;
 	}
 
 	@Override

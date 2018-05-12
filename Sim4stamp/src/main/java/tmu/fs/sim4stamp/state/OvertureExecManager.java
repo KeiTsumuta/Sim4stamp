@@ -220,7 +220,7 @@ public class OvertureExecManager implements DisplayItem {
 		if (displayCount > 0) {
 			try {
 				IOValue ioValue = executeScene.getIOData(elemId, dataId);
-				if (ioValue.getSize() >= displayCount) {
+				if (ioValue != null && ioValue.getSize() >= displayCount) {
 					IOParam.ValueType type = ioValue.getType();
 					if (type == IOParam.ValueType.REAL) {
 						double[] dVals = ioValue.getDoubleValues();

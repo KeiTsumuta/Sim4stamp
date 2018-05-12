@@ -33,6 +33,7 @@ import javafx.scene.control.Control;
 import javafx.scene.control.TableView;
 import tmu.fs.sim4stamp.PanelManager;
 import tmu.fs.sim4stamp.SimService;
+import tmu.fs.sim4stamp.gui.util.GraphData;
 import tmu.fs.sim4stamp.model.IOParamManager;
 import tmu.fs.sim4stamp.model.em.Element;
 import tmu.fs.sim4stamp.model.iop.AppendParams;
@@ -226,7 +227,7 @@ public class ResultPanel implements Initializable {
 		int i = 1;
 		for (IOScene ios : resultScenes) {
 			if (currentSelectParentIds[i - 1] != null) {
-				double[] data = ios.getGraphData(parentId, id);
+				GraphData data = ios.getGraphData(parentId, id);
 				graph.addData(i + ":" + ios.getDeviation().toString(), data);
 			}
 			i++;

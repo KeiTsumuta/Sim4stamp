@@ -67,13 +67,13 @@ public class ConditionPanel implements Initializable {
 
 	private static final DecimalFormat D_FORMAT = new DecimalFormat("#0.00");
 	private static final Deviation[] CONNECTOR_DEVIATIONS = { //
-			Deviation.NORMAL, //
-			Deviation.NOT_PROVIDING, //
-			Deviation.PROVIDING_MORE, //
-			Deviation.PROVIDING_LESS, //
-			Deviation.TOO_LATE, //
-			Deviation.STOPPING_TOO_SOON, //
-			Deviation.APPLYING_TOO_LONG }; //
+		Deviation.NORMAL, //
+		Deviation.NOT_PROVIDING, //
+		Deviation.PROVIDING_MORE, //
+		Deviation.PROVIDING_LESS, //
+		Deviation.TOO_LATE, //
+		Deviation.STOPPING_TOO_SOON, //
+		Deviation.APPLYING_TOO_LONG}; //
 
 	private final TextField sceneTitle;
 	private final TableView simItemParamView; // 構成要素パラメータテーブル
@@ -212,6 +212,10 @@ public class ConditionPanel implements Initializable {
 				eis.stream().filter((ei) -> (ei.isSelected())).forEachOrdered((ei) -> {
 					initList.add(ei);
 				});
+				eis.stream().filter((ei) -> (!ei.isSelected())).forEachOrdered((ei) -> {
+					clearInitValues(ei);
+				});
+
 				List<String> hs = new ArrayList<>();
 				hs.add("No."); // No列
 				for (ElementItem e : initList) { // 初期値設置列
@@ -368,6 +372,29 @@ public class ConditionPanel implements Initializable {
 		return b;
 	}
 
+	private void clearInitValues(ElementItem ei) {
+		IOParamManager iom = SimService.getInstance().getIoParamManager();
+		IOScene ioScene = iom.getCurrentScene();
+		IOValue ioValue = ioScene.getIOData(ei.getElementId(), ei.getParamId());
+		IOParam.ValueType type = ioValue.getType();
+		if (type == IOParam.ValueType.REAL) {
+			double[] d = ioScene.getData(ei.getElementId(), ei.getParamId());
+			for (int i = 0; i < d.length; i++) {
+				d[i] = 0.0;
+			}
+		} else if (type == IOParam.ValueType.INT) {
+			int[] n = ioScene.getIntData(ei.getElementId(), ei.getParamId());
+			for (int i = 0; i < n.length; i++) {
+				n[i] = 0;
+			}
+		} else if (type == IOParam.ValueType.BOOL) {
+			boolean[] b = ioScene.getBoolData(ei.getElementId(), ei.getParamId());
+			for (int i = 0; i < b.length; i++) {
+				b[i] = false;
+			}
+		}
+	}
+
 	public class ElementItem {
 
 		private SimpleStringProperty elementId;
@@ -421,8 +448,7 @@ public class ConditionPanel implements Initializable {
 		}
 
 		/**
-		 * @param select
-		 *            the select to set
+		 * @param select the select to set
 		 */
 		public void setSelected(boolean select) {
 			this.selected.set(select);
@@ -456,8 +482,7 @@ public class ConditionPanel implements Initializable {
 		}
 
 		/**
-		 * @param fromId
-		 *            the fromId to set
+		 * @param fromId the fromId to set
 		 */
 		public void setFromId(SimpleStringProperty fromId) {
 			this.fromId = fromId;
@@ -475,8 +500,7 @@ public class ConditionPanel implements Initializable {
 		}
 
 		/**
-		 * @param toId
-		 *            the toId to set
+		 * @param toId the toId to set
 		 */
 		public void setToId(SimpleStringProperty toId) {
 			this.toId = toId;
@@ -509,8 +533,7 @@ public class ConditionPanel implements Initializable {
 		}
 
 		/**
-		 * @param selected
-		 *            the selected to set
+		 * @param selected the selected to set
 		 */
 		public void setSelected(SimpleBooleanProperty selected) {
 			this.selected = selected;

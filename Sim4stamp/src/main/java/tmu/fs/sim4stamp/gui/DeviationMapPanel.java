@@ -44,6 +44,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import tmu.fs.sim4stamp.SimService;
+import tmu.fs.sim4stamp.gui.util.GraphData;
 import tmu.fs.sim4stamp.gui.util.GuiUtil;
 import tmu.fs.sim4stamp.model.IOParamManager;
 import tmu.fs.sim4stamp.model.co.Connector;
@@ -238,7 +239,7 @@ public class DeviationMapPanel implements Initializable {
 					gdd.reset(selectedConnector.getNodeToId() + "." + aps.get(0).getId());
 					int i = 1;
 					for (IOScene ios : resultScenes) {
-						double[] data = ios.getGraphData(selectedConnector.getNodeToId(), aps.get(0).getId());
+						GraphData data = ios.getGraphData(selectedConnector.getNodeToId(), aps.get(0).getId());
 						gdd.addData(ios.getDeviation().toString(), data);
 						i++;
 					}

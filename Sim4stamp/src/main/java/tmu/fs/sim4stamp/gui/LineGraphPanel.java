@@ -22,8 +22,10 @@ import java.util.ResourceBundle;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
+import tmu.fs.sim4stamp.gui.util.GraphData;
 
 /**
+ * 時系列グラフの表示
  *
  * @author Keiichi Tsumuta
  */
@@ -44,25 +46,61 @@ public class LineGraphPanel implements Initializable {
 		lineChart.setTitle(title);
 	}
 
-	public void setData(String seriesName, double[] data) {
-		// defining a series
+	/**
+	 * 表示データの追加
+	 */
+	public void addData(String seriesName, GraphData data) {
 		XYChart.Series series = new XYChart.Series();
 		series.setName(seriesName);
 		// populating the series with data
-		for (int i = 0; i < data.length; i++) {
-			series.getData().add(new XYChart.Data(i + 1, data[i]));
-		}
-		lineChart.getData().setAll(series);
-	}
-
-	public void addData(String seriesName, double[] data) {
-		XYChart.Series series = new XYChart.Series();
-		series.setName(seriesName);
-		// populating the series with data
-		for (int i = 0; i < data.length; i++) {
-			series.getData().add(new XYChart.Data(i + 1, data[i]));
+		GraphData.GhType ghType = data.getGhType();
+		if (ghType == GraphData.GhType.DOUBLE) {
+			lineChart.setCreateSymbols(true);
+			double[] dVals = data.getDoubleData();
+			for (int i = 0; i < dVals.length; i++) {
+				series.getData().add(new XYChart.Data(i + 1, dVals[i]));
+			}
+		} else if (ghType == GraphData.GhType.INT) {
+			lineChart.setCreateSymbols(false);
+			int[] iVals = data.getIntData();
+			if (iVals.length > 0) {
+				int iOld = iVals[0];
+				series.getData().add(new XYChart.Data(1, iOld));
+				for (int i = 1; i < iVals.length; i++) {
+					if (iVals[i] == iOld) {
+						series.getData().add(new XYChart.Data(i + 1, iVals[i]));
+					} else {
+						series.getData().add(new XYChart.Data(i + 1, iOld));
+						series.getData().add(new XYChart.Data(i + 1, iVals[i]));
+					}
+					iOld = iVals[i];
+				}
+			}
+		} else if (ghType == GraphData.GhType.BOOL) {
+			lineChart.setCreateSymbols(false);
+			boolean[] bVals = data.getBoolData();
+			if (bVals.length > 0) {
+				boolean old = bVals[0];
+				series.getData().add(new XYChart.Data(1, convBoolToInt(old)));
+				for (int i = 1; i < bVals.length; i++) {
+					if (bVals[i] == old) {
+						series.getData().add(new XYChart.Data(i + 1, convBoolToInt(bVals[i])));
+					} else {
+						series.getData().add(new XYChart.Data(i + 1, convBoolToInt(old)));
+						series.getData().add(new XYChart.Data(i + 1, convBoolToInt(bVals[i])));
+					}
+					old = bVals[i];
+				}
+			}
 		}
 		lineChart.getData().add(series);
+	}
+
+	private int convBoolToInt(boolean b) {
+		if (b) {
+			return 1;
+		}
+		return 0;
 	}
 
 	public void reset() {

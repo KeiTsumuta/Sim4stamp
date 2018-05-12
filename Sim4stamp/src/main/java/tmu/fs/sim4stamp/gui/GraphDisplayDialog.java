@@ -34,6 +34,7 @@ import javafx.scene.control.Label;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import tmu.fs.sim4stamp.SimService;
+import tmu.fs.sim4stamp.gui.util.GraphData;
 
 /**
  * グラフ表示ダイアログ
@@ -51,7 +52,7 @@ public class GraphDisplayDialog implements Initializable {
 
 	private static String mainTitle;
 	private static List<String> subTitles;
-	private static List<double[]> gdata;
+	private static List<GraphData> gdata;
 
 	private Stage stage;
 
@@ -75,7 +76,7 @@ public class GraphDisplayDialog implements Initializable {
 		gdata = new ArrayList<>();
 	}
 
-	public void addData(String title, double[] data) {
+	public void addData(String title, GraphData data) {
 		subTitles.add(title);
 		gdata.add(data);
 	}

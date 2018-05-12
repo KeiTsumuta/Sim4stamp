@@ -36,9 +36,11 @@ import tmu.fs.sim4stamp.state.OvertureExecManager;
 public class SimListener implements Runnable {
 
 	private final Socket client;
+	private static OvertureExecManager oeManager;
 
 	public SimListener(Socket client) {
 		this.client = client;
+		oeManager = OvertureExecManager.getInstance();
 	}
 
 	@Override
@@ -61,11 +63,10 @@ public class SimListener implements Runnable {
 					oo.writeObject(sendObj);
 					oo.flush();
 					break;
-				} else {
-					sendObj = getReply(id, inObj);
-					oo.writeObject(sendObj);
-					oo.flush();
 				}
+				sendObj = getReply(id, inObj);
+				oo.writeObject(sendObj);
+				oo.flush();
 			}
 		} catch (EOFException eoe) {
 			// System.out.println("conection close!!");
@@ -80,15 +81,14 @@ public class SimListener implements Runnable {
 		// System.out.println("conection out");
 	}
 
-	private static TransObject getReply(String id, TransObject inObj) {
-		OvertureExecManager oem = OvertureExecManager.getInstance();
+	private static TransObject getReply(String id, TransObject inObj) {	
 		TransObject tobj = new TransObject(id);
 		switch (id) {
 		case "init_start":
-			oem.calcInit();
+			oeManager.calcInit();
 			break;
 		case "is_loop":
-			if (oem.hasNext()) {
+			if (oeManager.hasNext()) {
 				tobj.addStValue("y");
 			} else {
 				tobj.addStValue("n");
@@ -110,52 +110,49 @@ public class SimListener implements Runnable {
 	}
 
 	private static void setOrder(TransObject tobj) {
-		OvertureExecManager oem = OvertureExecManager.getInstance();
-		List<String> list = oem.getElementOrders();
+		List<String> list = oeManager.getElementOrders();
 		for (int i = 0; i < list.size(); i++) {
 			tobj.addStValue(list.get(i));
 		}
 	}
 
 	private static void getReadData(TransObject inObj, TransObject tobj) {
-		OvertureExecManager oem = OvertureExecManager.getInstance();
 		String elemId = inObj.getStValues().get(0);
 		String dataId = inObj.getStValues().get(1);
 		tobj.addStValue(dataId);
-		IOScene ios = oem.getExecuteScene();
+		IOScene ios = oeManager.getExecuteScene();
 		IOValue iov = ios.getIOData(elemId, dataId);
 		if (iov != null) {
 			IOParam.ValueType type = iov.getType();
 			if (type == IOParam.ValueType.REAL) {
-				tobj.addDValue(oem.getData(elemId, dataId));
+				tobj.addDValue(oeManager.getData(elemId, dataId));
 			} else if (type == IOParam.ValueType.INT) {
-				tobj.addIValue(oem.getIntData(elemId, dataId));
+				tobj.addIValue(oeManager.getIntData(elemId, dataId));
 			} else if (type == IOParam.ValueType.BOOL) {
-				tobj.addBValue(oem.getBoolData(elemId, dataId));
+				tobj.addBValue(oeManager.getBoolData(elemId, dataId));
 			}
 		} else { // 未定義データは実数としてとりあえず設定する。
-			tobj.addDValue(oem.getData(elemId, dataId));
+			tobj.addDValue(oeManager.getData(elemId, dataId));
 		}
 	}
 
 	private static void getWriteData(TransObject inObj, TransObject tobj) {
-		OvertureExecManager oem = OvertureExecManager.getInstance();
 		String elemId = inObj.getStValues().get(0);
 		String dataId = inObj.getStValues().get(1);
-		IOScene ios = oem.getExecuteScene();
+		IOScene ios = oeManager.getExecuteScene();
 		IOValue iov = ios.getIOData(elemId, dataId);
 		if (iov != null) {
 			IOParam.ValueType type = iov.getType();
 			if (type == IOParam.ValueType.REAL && inObj.getDValues() != null) {
-				oem.setData(elemId, dataId, inObj.getDValues().get(0));
+				oeManager.setData(elemId, dataId, inObj.getDValues().get(0));
 			} else if (type == IOParam.ValueType.INT && inObj.getIValues() != null) {
-				oem.setIntData(elemId, dataId, inObj.getIValues().get(0));
+				oeManager.setIntData(elemId, dataId, inObj.getIValues().get(0));
 			} else if (type == IOParam.ValueType.BOOL && inObj.getBValues() != null) {
-				oem.setBoolData(elemId, dataId, inObj.getBValues().get(0));
+				oeManager.setBoolData(elemId, dataId, inObj.getBValues().get(0));
 			}
 		} else { // 未定義データは実数としてとりあえず処理する。
 			if (inObj.getDValues() != null) {
-				oem.setData(elemId, dataId, inObj.getDValues().get(0));
+				oeManager.setData(elemId, dataId, inObj.getDValues().get(0));
 			}
 		}
 		// tobj.addStValue("status");
