@@ -37,6 +37,10 @@ operations
 	public isLoop : () ==> bool
 	isLoop() ==
 		is not yet specified;
+
+	public breakLine : seq of char ==> ()
+	breakLine(elementId) ==
+		is not yet specified;
 		
 	public getElementOrder : () ==> seq of seq of char
 	getElementOrder() ==

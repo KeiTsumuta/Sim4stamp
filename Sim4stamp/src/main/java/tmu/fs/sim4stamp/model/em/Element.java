@@ -67,7 +67,7 @@ public abstract class Element implements JSONConvert, DisplayLevel {
 	private volatile double pointXDelta = 0L;
 	private volatile double pointYDelta = 0L;
 
-	private Level displayLevel = Level.Base;
+	private volatile Level displayLevel = Level.Base;
 
 	public Element(EType et, String id, String title, double width, double height) {
 		etype = et;
@@ -206,7 +206,7 @@ public abstract class Element implements JSONConvert, DisplayLevel {
 					continue;
 				}
 				String id = ioParam.getId();
-				if (displayLevel != Level.PROGRESS) {
+				if (displayLevel != Level.Progress) {
 					IOParam.ValueType type = ioParam.getType();
 					if (type == IOParam.ValueType.REAL) {
 						id += "<R>";
@@ -217,7 +217,7 @@ public abstract class Element implements JSONConvert, DisplayLevel {
 						id += "<B>";
 					}
 				}
-				if (displayLevel == Level.PROGRESS) {
+				if (displayLevel == Level.Progress) {
 					id += DisplayValues.getInstance().getDisplayData(nodeId, id);
 				}
 				double width = getFontWidth(gc, id);

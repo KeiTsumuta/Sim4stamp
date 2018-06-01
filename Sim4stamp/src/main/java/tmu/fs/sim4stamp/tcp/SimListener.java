@@ -76,12 +76,12 @@ public class SimListener implements Runnable {
 		try {
 			client.close();
 		} catch (Exception ex) {
-
+			ex.printStackTrace();
 		}
 		// System.out.println("conection out");
 	}
 
-	private static TransObject getReply(String id, TransObject inObj) {	
+	private static TransObject getReply(String id, TransObject inObj) {
 		TransObject tobj = new TransObject(id);
 		switch (id) {
 		case "init_start":
@@ -92,6 +92,12 @@ public class SimListener implements Runnable {
 				tobj.addStValue("y");
 			} else {
 				tobj.addStValue("n");
+			}
+			break;
+		case "breakline":
+			if (!oeManager.isStopRequest()) {
+				String elemId = inObj.getStValues().get(0);
+				oeManager.waitStepExecute(elemId);
 			}
 			break;
 		case "elem_order":
@@ -113,6 +119,9 @@ public class SimListener implements Runnable {
 		List<String> list = oeManager.getElementOrders();
 		for (int i = 0; i < list.size(); i++) {
 			tobj.addStValue(list.get(i));
+		}
+		if (oeManager.isStepExecute()) {
+			tobj.addBValue(true);
 		}
 	}
 

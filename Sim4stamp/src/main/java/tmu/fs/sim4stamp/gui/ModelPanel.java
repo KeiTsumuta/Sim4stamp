@@ -18,6 +18,7 @@
 package tmu.fs.sim4stamp.gui;
 
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import tmu.fs.sim4stamp.model.co.Connector;
 import tmu.fs.sim4stamp.model.em.Element;
 import java.net.URL;
@@ -59,8 +60,10 @@ public class ModelPanel implements Initializable {
 	private static final Color FILL_BACK_COLOR = Color.CORNSILK;
 
 	private final Canvas modelCanvas;
-	private double initDfWidth;
-	private double initDfHeight;
+	private double modelCanvasWidth;
+	private double modelCanvasHeight;
+	private double modelCanvasInitWidth;
+	private double modelCanvasInitHeight;
 	private String selectNodeId = null;
 	private Connector selectJointConnector = null;
 	private final CheckBox modelDitailDisplayCheckbox;
@@ -104,6 +107,8 @@ public class ModelPanel implements Initializable {
 			isJointDisplayMode = !isJointDisplayMode;
 			drawCanvasPanel();
 		});
+		modelCanvasInitWidth = modelCanvas.getWidth();
+		modelCanvasInitHeight = modelCanvas.getHeight();
 		initPopupMenus();
 	}
 
@@ -221,13 +226,13 @@ public class ModelPanel implements Initializable {
 		Connector connector = new Connector();
 		List<Point2D.Double> points = new ArrayList<>();
 		if (left) {
-			points.add(new Point2D.Double(50, 55));
-			points.add(new Point2D.Double(150, 50));
-			points.add(new Point2D.Double(250, 75));
+			points.add(new Point2D.Double(popupX, popupY + 5));
+			points.add(new Point2D.Double(popupX + 100, popupY));
+			points.add(new Point2D.Double(popupX + 200, popupY + 25));
 		} else {
-			points.add(new Point2D.Double(250, 65));
-			points.add(new Point2D.Double(150, 70));
-			points.add(new Point2D.Double(50, 60));
+			points.add(new Point2D.Double(popupX + 200, popupY));
+			points.add(new Point2D.Double(popupX + 100, popupY + 5));
+			points.add(new Point2D.Double(popupX, popupY));
 		}
 		connector.setPoints(points);
 		cm.add(connector);
@@ -305,12 +310,22 @@ public class ModelPanel implements Initializable {
 	public void initSize() {
 		double initWidth = modelCanvas.getWidth();
 		double initHeight = modelCanvas.getHeight();
-		Scene scene = MainApp.getStage().getScene();
-		double initFrameWidth = scene.getWidth();
-		double initFrameHeight = scene.getHeight();
-		initDfWidth = initFrameWidth - initWidth;
-		initDfHeight = initFrameHeight - initHeight;
-
+		modelCanvasWidth = Math.max(modelCanvasInitWidth, initWidth);
+		modelCanvasHeight = Math.max(modelCanvasInitHeight, initHeight);
+		List<Element> elements = SimService.getInstance().getElements();
+		for (Element el : elements) {
+			Rectangle2D.Double rect = el.getBaseRect();
+			modelCanvasWidth = Math.max(modelCanvasWidth, rect.x + rect.width + 50.0);
+			modelCanvasHeight = Math.max(modelCanvasHeight, rect.y + rect.height + 50.0);
+		}
+		List<Connector> connectors = SimService.getInstance().getConnectors();
+		for (Connector c : connectors) {
+			List<Point2D.Double> ps = c.getPoints();
+			for (Point2D.Double p2 : ps) {
+				modelCanvasWidth = Math.max(modelCanvasWidth, p2.getX() + 50.0);
+				modelCanvasHeight = Math.max(modelCanvasHeight, p2.getY() + 50.0);
+			}
+		}
 	}
 
 	public void drawCanvasPanel() {
@@ -325,11 +340,8 @@ public class ModelPanel implements Initializable {
 
 	private void drawCanvas(Canvas canvas) {
 		GraphicsContext gc = canvas.getGraphicsContext2D();
-		Scene scene = MainApp.getStage().getScene();
-		double frameWidth = scene.getWidth();
-		double frameHeight = scene.getHeight();
-		canvas.setWidth(frameWidth - initDfWidth);
-		canvas.setHeight(frameHeight - initDfHeight);
+		canvas.setWidth(modelCanvasWidth);
+		canvas.setHeight(modelCanvasHeight);
 		double wMax = canvas.getWidth();
 		double hMax = canvas.getHeight();
 		// log.info("drawCanvas:" + wMax + "," + hMax);
@@ -457,6 +469,7 @@ public class ModelPanel implements Initializable {
 		}
 		selectNodeId = null;
 		selectJointConnector = null;
+		initSize();
 		drawCanvasPanel();
 	}
 

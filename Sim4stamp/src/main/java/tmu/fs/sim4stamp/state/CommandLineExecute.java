@@ -49,17 +49,31 @@ public class CommandLineExecute implements Runnable {
 	private static final String VDMJ = "org.overture.interpreter.VDMJ";
 	private static volatile boolean runStatus = false;
 	private static LogQueue logQue;
+	
+	private static VdmRunStatus exeComp = null;
 
-	public CommandLineExecute() {
+	public CommandLineExecute(VdmRunStatus ec) {
+		exeComp = ec;
 		if (logQue == null) {
 			logQue = new LogQueue();
 		}
 	}
 
 	public void start() {
+		if(exeComp != null){
+			exeComp.startExec();
+		}
 		if (!runStatus) {
 			runStatus = true;
 			new Thread(this).start();
+		}else{
+			runEnd();
+		}
+	}
+	
+	private void runEnd(){
+		if(exeComp != null){
+			exeComp.complete();
 		}
 	}
 
@@ -95,6 +109,7 @@ public class CommandLineExecute implements Runnable {
 		} finally {
 			runStatus = false;
 		}
+		runEnd();
 	}
 
 	public void displayInputStream(InputStream is) throws IOException {

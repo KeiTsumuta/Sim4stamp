@@ -22,15 +22,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 import tmu.fs.sim4stamp.PanelManager;
 import tmu.fs.sim4stamp.SimService;
 import tmu.fs.sim4stamp.gui.DeviationMapPanel;
 import tmu.fs.sim4stamp.model.IOParamManager;
+import tmu.fs.sim4stamp.model.co.Connector;
 import tmu.fs.sim4stamp.model.em.Element;
 import tmu.fs.sim4stamp.model.iop.IOParam;
 import tmu.fs.sim4stamp.model.iop.IOScene;
 import tmu.fs.sim4stamp.model.iop.IOValue;
 import tmu.fs.sim4stamp.util.DisplayItem;
+import tmu.fs.sim4stamp.util.DisplayLevel;
 import tmu.fs.sim4stamp.util.DisplayValues;
 
 /**
@@ -47,6 +51,9 @@ public class OvertureExecManager implements DisplayItem {
 	private Map<String, Element> elmMap = null;
 	private List<String> idOrders = null;
 	private List<String> nodeIds;
+	private volatile boolean stopRequest = false;
+	private volatile boolean stepExecute = false;
+	private BlockingQueue<String> stepExeQue = new LinkedBlockingDeque<>();
 
 	private IOScene executeScene = null;
 
@@ -67,6 +74,8 @@ public class OvertureExecManager implements DisplayItem {
 	}
 
 	public void calcInit() {
+		stopRequest = false;
+		stepExeQue.clear();
 		loopCounter = -1;
 		displayCount = loopCounter + 1;
 		SimService ss = SimService.getInstance();
@@ -101,7 +110,7 @@ public class OvertureExecManager implements DisplayItem {
 		loopCounter++;
 		DeviationMapPanel dpanel = PanelManager.get().getDeviationMapPanel();
 		IOParamManager ioParamManager = SimService.getInstance().getIoParamManager();
-		if (loopCounter < loopMax) {
+		if (!stopRequest && loopCounter < loopMax) {
 			displayCount = loopCounter + 1;
 			if (loopCounter > 0) {
 				try {
@@ -256,5 +265,58 @@ public class OvertureExecManager implements DisplayItem {
 
 	public IOScene getExecuteScene() {
 		return executeScene;
+	}
+
+	/**
+	 * @return the stopRequest
+	 */
+	public boolean isStopRequest() {
+		return stopRequest;
+	}
+
+	/**
+	 * @param stopRequest the stopRequest to set
+	 */
+	public void setStopRequest(boolean stopRequest) {
+		this.stopRequest = stopRequest;
+		goStepExecute();
+	}
+
+	/**
+	 * @return the stepExecute
+	 */
+	public boolean isStepExecute() {
+		return stepExecute;
+	}
+
+	/**
+	 * @param stepExecute the stepExecute to set
+	 */
+	public void setStepExecute(boolean stepExecute) {
+		this.stepExecute = stepExecute;
+	}
+
+	public void waitStepExecute(String elemId) {
+		if (isStepExecute()) {
+			try {
+				PanelManager.get().getDeviationMapPanel().stepSelect(elemId);
+				PanelManager.get().getDeviationMapPanel().drawMapPanel();
+				String s = stepExeQue.take();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+
+	public void goStepExecute() {
+		if (isStepExecute()) {
+			try {
+				if (stepExeQue.peek() == null) {
+					stepExeQue.put("go");
+				}
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
 	}
 }

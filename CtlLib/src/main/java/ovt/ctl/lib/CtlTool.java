@@ -22,15 +22,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 import org.overture.interpreter.runtime.ValueException;
 import org.overture.interpreter.values.BooleanValue;
-import org.overture.interpreter.values.CharacterValue;
 import org.overture.interpreter.values.IntegerValue;
-import org.overture.interpreter.values.ObjectValue;
-import org.overture.interpreter.values.QuoteValue;
+import org.overture.interpreter.values.NilValue;
 import org.overture.interpreter.values.RealValue;
 import org.overture.interpreter.values.SeqValue;
 import org.overture.interpreter.values.Value;
@@ -50,6 +46,7 @@ public class CtlTool {
 	private static Socket socket = null;
 	private static ObjectOutputStream objOutStream = null;
 	private static ObjectInputStream objInStream = null;
+	private static boolean isStepExecute = false;
 
 	private void openConnection() {
 		closeConnection();
@@ -131,15 +128,31 @@ public class CtlTool {
 		return new BooleanValue(false);
 	}
 
+	public Value breakLine(Value elementId) throws ValueException {
+		if (isStepExecute) {
+			String elemId = elementId.stringValue(null);
+			TransObject sObj = new TransObject("breakline");
+			sObj.addStValue(elemId);
+			TransObject rObj = sendObject(sObj);
+			List<String> values = rObj.getStValues();
+		}
+		return new VoidValue();
+	}
+
 	public Value getElementOrder() throws ValueException {
+		isStepExecute = false;
 		TransObject sObj = new TransObject("elem_order");
 		TransObject rObj = sendObject(sObj);
 		List<String> orders = rObj.getStValues();
+		List<Boolean> bVals = rObj.getBValues();
 		ValueList list = new ValueList();
 		try {
 			for (String order : orders) {
 				// print("---:" + order);
 				list.add(new SeqValue(order));
+			}
+			if (bVals != null && bVals.size() == 1 && bVals.get(0)) {
+				isStepExecute = true;
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();

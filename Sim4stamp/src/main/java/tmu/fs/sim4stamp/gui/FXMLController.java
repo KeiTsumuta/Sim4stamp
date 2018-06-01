@@ -110,6 +110,9 @@ public class FXMLController implements Initializable {
 	private ComboBox deviationSelectionByType;
 
 	@FXML
+	private ComboBox executeTypeSelection;
+
+	@FXML
 	private ChoiceBox resultChoice;
 
 	@FXML
@@ -132,6 +135,10 @@ public class FXMLController implements Initializable {
 	@FXML
 	private Button executeSimButton;
 	@FXML
+	private Button stepExecuteSimButton;
+	@FXML
+	private Button executeStopButton;
+	@FXML
 	private Button loopDisplayButton;
 	@FXML
 	private Button loopDisplayDownButton;
@@ -149,19 +156,20 @@ public class FXMLController implements Initializable {
 	public void initialize(URL url, ResourceBundle rb) {
 		PanelManager pm = PanelManager.get();
 
-		Control[] modelPanelControls = new Control[] { modelDitailDisplayCheckbox, connectorJointDisplayCheckbox };
+		Control[] modelPanelControls = new Control[]{modelDitailDisplayCheckbox, connectorJointDisplayCheckbox};
 		ModelPanel modelPanel = new ModelPanel(modelCanvas, modelPanelControls);
 		modelPanel.initialize(url, rb);
 		pm.setModelPanel(modelPanel);
 
-		Control[] conditonPanelControls = new Control[] { sceneTitle, itemParamTable, null, simInitSeqSize, null,
-				deviationStartIndex, conditionSetButton, initDataTable };
+		Control[] conditonPanelControls = new Control[]{sceneTitle, itemParamTable, null, simInitSeqSize, null,
+			deviationStartIndex, conditionSetButton, initDataTable};
 		ConditionPanel conditionPanel = new ConditionPanel(conditonPanelControls);
 		conditionPanel.initialize(url, rb);
 		pm.setConditionPanel(conditionPanel);
 
-		Control[] devMapPanelControls = new Control[] { deviationSelectionByType, executeSimButton, loopDisplayButton,
-				loopDisplayDownButton, loopDisplayUpButton, loopDisplayCount };
+		Control[] devMapPanelControls = new Control[]{deviationSelectionByType,
+			executeTypeSelection, executeSimButton, stepExecuteSimButton, executeStopButton,
+			loopDisplayButton, loopDisplayDownButton, loopDisplayUpButton, loopDisplayCount};
 		DeviationMapPanel devMapPanel = new DeviationMapPanel(deviationCanvas, devMapPanelControls);
 		devMapPanel.initialize(url, rb);
 		pm.setDeviationMapPanel(devMapPanel);
@@ -170,9 +178,9 @@ public class FXMLController implements Initializable {
 		executeLogPanel.initialize(url, rb);
 		pm.setExecuteLogPanel(executeLogPanel);
 
-		Control[] resultPanelControls = new Control[] { resultChoice, graph1ChoiseBox, graph2ChoiseBox, graph3ChoiseBox,
-				graph4ChoiseBox, resultTable };
-		LineChart[] lineCharts = new LineChart[] { lineChart1, lineChart2, lineChart3, lineChart4 };
+		Control[] resultPanelControls = new Control[]{resultChoice, graph1ChoiseBox, graph2ChoiseBox, graph3ChoiseBox,
+			graph4ChoiseBox, resultTable};
+		LineChart[] lineCharts = new LineChart[]{lineChart1, lineChart2, lineChart3, lineChart4};
 		ResultPanel resultPanel = new ResultPanel(resultPanelControls, lineCharts);
 		resultPanel.initialize(url, rb);
 		pm.setResutPanel(resultPanel);
@@ -297,7 +305,8 @@ public class FXMLController implements Initializable {
 		log.info("overtureExecuteAction:--");
 		// Platform.runLater(() -> {
 		try {
-			CommandLineExecute ce = new CommandLineExecute();
+			DeviationMapPanel dm = PanelManager.get().getDeviationMapPanel();
+			CommandLineExecute ce = new CommandLineExecute(dm);
 			ce.start();
 		} catch (Exception ex) {
 			ex.printStackTrace();

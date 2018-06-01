@@ -42,7 +42,7 @@ import tmu.fs.sim4stamp.model.iop.IOScene;
 
 /**
  * 結果の表示（グラフと表）に用いるデータを編集する。
- * 
+ *
  * @author Keiichi Tsumuta
  */
 public class ResultPanel implements Initializable {
@@ -226,6 +226,9 @@ public class ResultPanel implements Initializable {
 		graph.reset();
 		int i = 1;
 		for (IOScene ios : resultScenes) {
+			if (i > GRAPH_SIZE) {
+				break;
+			}
 			if (currentSelectParentIds[i - 1] != null) {
 				GraphData data = ios.getGraphData(parentId, id);
 				graph.addData(i + ":" + ios.getDeviation().toString(), data);

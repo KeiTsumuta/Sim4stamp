@@ -64,7 +64,7 @@ public class Connector implements JSONConvert, DisplayLevel {
 	private volatile boolean marked = false;
 	private volatile String markedComment = null;
 
-	private Level displayLevel = Level.Base;
+	private volatile Level displayLevel = Level.Base;
 
 	public Connector() {
 
@@ -85,6 +85,10 @@ public class Connector implements JSONConvert, DisplayLevel {
 
 	public void setPoints(List<Point2D.Double> points) {
 		this.points = points;
+	}
+
+	public List<Point2D.Double> getPoints() {
+		return this.points;
 	}
 
 	/**
@@ -267,7 +271,7 @@ public class Connector implements JSONConvert, DisplayLevel {
 			int i = 0;
 			for (IOParam ioParam : ioParams) {
 				String id = ioParam.getId();
-				if (displayLevel != Level.PROGRESS) {
+				if (displayLevel != Level.Progress) {
 					IOParam.ValueType type = ioParam.getType();
 					if (type == IOParam.ValueType.REAL) {
 						id += "<R>";
@@ -278,7 +282,7 @@ public class Connector implements JSONConvert, DisplayLevel {
 						id += "<B>";
 					}
 				}
-				if (displayLevel == Level.PROGRESS) {
+				if (displayLevel == Level.Progress) {
 					id += DisplayValues.getInstance().getDisplayData(nodeToId, id);
 				}
 				Color color = STROKE_COLOR;

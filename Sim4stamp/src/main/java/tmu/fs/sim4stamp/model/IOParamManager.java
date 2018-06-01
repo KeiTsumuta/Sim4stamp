@@ -85,7 +85,7 @@ public class IOParamManager implements JSONConvert {
 	}
 
 	public void setItems() {
-		System.out.println("IOParamManager setItems:---");
+		//System.out.println("IOParamManager setItems:---");
 		nodeParamMap = new HashMap<>();
 		setElements();
 		setConnectors();

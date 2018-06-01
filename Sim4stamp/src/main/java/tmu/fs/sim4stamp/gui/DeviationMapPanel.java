@@ -61,13 +61,14 @@ import tmu.fs.sim4stamp.state.CommandLineExecute;
 import tmu.fs.sim4stamp.state.OvertureExecManager;
 import tmu.fs.sim4stamp.util.Deviation;
 import tmu.fs.sim4stamp.util.DisplayLevel;
+import tmu.fs.sim4stamp.state.VdmRunStatus;
 
 /**
  * 偏差設定を行うパネル。
  *
  * @author Keiichi Tsumuta
  */
-public class DeviationMapPanel implements Initializable {
+public class DeviationMapPanel implements Initializable, VdmRunStatus {
 
 	private static final Logger log = Logger.getLogger(DeviationMapPanel.class.getPackage().getName());
 	private static final double DISTANCE_CLOSED = 10.0;
@@ -80,17 +81,43 @@ public class DeviationMapPanel implements Initializable {
 	private static final double ELEMENT_Y_DS = 40;
 
 	private static final Deviation[] CONNECTOR_DEVIATIONS = { //
-			Deviation.NORMAL, //
-			Deviation.NOT_PROVIDING, //
-			Deviation.PROVIDING_MORE, //
-			Deviation.PROVIDING_LESS, //
-			Deviation.TOO_LATE, //
-			Deviation.STOPPING_TOO_SOON, //
-			Deviation.APPLYING_TOO_LONG }; //
+		Deviation.NORMAL, //
+		Deviation.NOT_PROVIDING, //
+		Deviation.PROVIDING_MORE, //
+		Deviation.PROVIDING_LESS, //
+		Deviation.TOO_LATE, //
+		Deviation.STOPPING_TOO_SOON, //
+		Deviation.APPLYING_TOO_LONG}; //
+
+	public enum ExecuteMode {
+
+		NORMAL("連続実行", 0), //
+		STEP("ステップ実行", 10); //
+
+		private final String name;
+		private final int id;
+
+		private ExecuteMode(String name, int id) {
+			this.name = name;
+			this.id = id;
+		}
+
+		public int getId() {
+			return id;
+		}
+
+		public String toString() {
+			return name;
+		}
+	}
+	private static final ExecuteMode[] EXEC_MODES = {ExecuteMode.NORMAL, ExecuteMode.STEP};
 
 	private final Canvas mapCanvas;
 	private final ComboBox deviationSelectionByType;
+	private final ComboBox executeTypeSelection;
 	private final Button executeButton;
+	private final Button stepExecuteSimButton;
+	private final Button executeStopButton;
 	private final Button loopDisplayButton;
 	private final Button loopDisplayDownButton;
 	private final Button loopDisplayUpButton;
@@ -107,21 +134,35 @@ public class DeviationMapPanel implements Initializable {
 
 	private ContextMenu popupDeviationMenu; // 偏差設定メニュー
 	private Deviation selectedConnectorDeviation = Deviation.NORMAL;
+	private ExecuteMode selectEcecuteMode = ExecuteMode.NORMAL;
+	
+	private String oldStepSelect = "";
 
 	public DeviationMapPanel(Canvas mapCanvas, Control[] controls) {
 		this.mapCanvas = mapCanvas;
 		this.deviationSelectionByType = (ComboBox) controls[0];
-		this.executeButton = (Button) controls[1];
-		this.loopDisplayButton = (Button) controls[2];
-		this.loopDisplayDownButton = (Button) controls[3];
-		this.loopDisplayUpButton = (Button) controls[4];
-		this.loopDisplayCount = (TextField) controls[5];
+		this.executeTypeSelection = (ComboBox) controls[1];
+		this.executeButton = (Button) controls[2];
+		this.stepExecuteSimButton = (Button) controls[3];
+		this.executeStopButton = (Button) controls[4];
+		this.loopDisplayButton = (Button) controls[5];
+		this.loopDisplayDownButton = (Button) controls[6];
+		this.loopDisplayUpButton = (Button) controls[7];
+		this.loopDisplayCount = (TextField) controls[8];
 	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		executeButton.setOnAction((ActionEvent event) -> {
 			executeSim();
+		});
+		stepExecuteSimButton.setDisable(true);
+		stepExecuteSimButton.setOnAction((ActionEvent event) -> {
+			stepExecute();
+		});
+
+		executeStopButton.setOnAction((ActionEvent event) -> {
+			executeStop();
 		});
 		ObservableList<Deviation> list = FXCollections.observableArrayList(CONNECTOR_DEVIATIONS);
 		deviationSelectionByType.getItems().addAll(list);
@@ -132,6 +173,18 @@ public class DeviationMapPanel implements Initializable {
 			SimService.getInstance().getIoParamManager().getCurrentScene().setDeviation(deviation);
 			drawPanel();
 		});
+		ObservableList<ExecuteMode> exelist = FXCollections.observableArrayList(EXEC_MODES);
+		executeTypeSelection.getItems().addAll(exelist);
+		executeTypeSelection.getSelectionModel().select(0);
+		executeTypeSelection.setOnAction((Event ev) -> {
+			selectEcecuteMode = (ExecuteMode) executeTypeSelection.getSelectionModel().getSelectedItem();
+			if (selectEcecuteMode == ExecuteMode.NORMAL) {
+				OvertureExecManager.getInstance().setStepExecute(false);
+			} else if (selectEcecuteMode == ExecuteMode.STEP) {
+				OvertureExecManager.getInstance().setStepExecute(true);
+			}
+		});
+
 		// mapCanvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, (MouseEvent e) -> {
 		// mouseDragged(e);
 		// });
@@ -174,15 +227,42 @@ public class DeviationMapPanel implements Initializable {
 	}
 
 	private void executeSim() {
-		log.info("overtureExecuteAction:--");
+		log.info("overtureExecuteAction: " + OvertureExecManager.getInstance().isStepExecute());
 		// Platform.runLater(() -> {
 		try {
-			CommandLineExecute ce = new CommandLineExecute();
+			clearSstepSelect();
+			if (selectEcecuteMode == ExecuteMode.STEP) {
+				stepExecuteSimButton.setDisable(false);
+			}
+			CommandLineExecute ce = new CommandLineExecute(this);
 			ce.start();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 		// });
+	}
+
+	private void stepExecute() {
+		OvertureExecManager.getInstance().goStepExecute();
+	}
+
+	private void executeStop() {
+		log.info("overtureExecute StopAction:--");
+		clearSstepSelect();
+		OvertureExecManager.getInstance().setStopRequest(true);
+		executeButton.setDisable(false);
+		stepExecuteSimButton.setDisable(true);
+	}
+
+	@Override
+	public void startExec() {
+		executeButton.setDisable(true);
+	}
+
+	@Override
+	public void complete() {
+		executeButton.setDisable(false);
+		stepExecuteSimButton.setDisable(true);
 	}
 
 	private void initPopupMenu() {
@@ -268,10 +348,38 @@ public class DeviationMapPanel implements Initializable {
 				continue;
 			}
 			Connector cc = c.clone();
-			cc.setLevel(DisplayLevel.Level.PROGRESS);
+			cc.setLevel(DisplayLevel.Level.Progress);
 			cons.add(cc);
 		}
 		connectors = cons;
+	}
+	
+	public void stepSelect(String nodeId) {
+		for (Element e : elementDisplays) {
+			if (e.getNodeId().equals(nodeId)) {
+				e.setSelect(true);
+			} else {
+				e.setSelect(false);
+			}
+		}
+		for (Connector c : connectorDrawInfos) {
+			if (c.getNodeFromId().equals(oldStepSelect)) {
+				c.setPointed(true);
+			} else {
+				c.setPointed(false);
+			}
+		}
+		oldStepSelect = nodeId;
+	}
+
+	public void clearSstepSelect() {
+		oldStepSelect = "";
+		for (Element e : elementDisplays) {
+			e.setSelect(false);
+		}
+		for (Connector c : connectorDrawInfos) {
+			c.setPointed(false);
+		}
 	}
 
 	public void drawPanel() {
@@ -340,7 +448,7 @@ public class DeviationMapPanel implements Initializable {
 					et = ((Injector) e).clone();
 					break;
 				}
-				et.setLevel(DisplayLevel.Level.PROGRESS);
+				et.setLevel(DisplayLevel.Level.Progress);
 				elementDisplays.add(et);
 				map.put(et.getNodeId(), et);
 			}
