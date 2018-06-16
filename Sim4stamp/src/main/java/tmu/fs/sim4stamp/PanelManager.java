@@ -65,8 +65,7 @@ public class PanelManager {
 	}
 
 	/**
-	 * @param modelPanel
-	 *            the modelPanel to set
+	 * @param modelPanel the modelPanel to set
 	 */
 	public void setModelPanel(ModelPanel modelPanel) {
 		this.modelPanel = modelPanel;
@@ -80,8 +79,7 @@ public class PanelManager {
 	}
 
 	/**
-	 * @param conditionPanel
-	 *            the conditionPanel to set
+	 * @param conditionPanel the conditionPanel to set
 	 */
 	public void setConditionPanel(ConditionPanel conditionPanel) {
 		this.conditionPanel = conditionPanel;
@@ -95,8 +93,7 @@ public class PanelManager {
 	}
 
 	/**
-	 * @param deviationMapPanel
-	 *            the deviationMapPanel to set
+	 * @param deviationMapPanel the deviationMapPanel to set
 	 */
 	public void setDeviationMapPanel(DeviationMapPanel deviationMapPanel) {
 		this.deviationMapPanel = deviationMapPanel;
@@ -110,8 +107,7 @@ public class PanelManager {
 	}
 
 	/**
-	 * @param executeLogPanel
-	 *            the executeLogPanel to set
+	 * @param executeLogPanel the executeLogPanel to set
 	 */
 	public void setExecuteLogPanel(ExecuteLogPanel executeLogPanel) {
 		this.executeLogPanel = executeLogPanel;
@@ -139,8 +135,7 @@ public class PanelManager {
 	}
 
 	/**
-	 * @param resultTablePanel
-	 *            the resultTablePanel to set
+	 * @param resultTablePanel the resultTablePanel to set
 	 */
 	public void setResultTablePanel(ResultTablePanel resultTablePanel) {
 		this.resultTablePanel = resultTablePanel;
@@ -150,9 +145,10 @@ public class PanelManager {
 		Platform.runLater(() -> {
 			try {
 				SimService ss = SimService.getInstance();
+				getModelPanel().initDsplayMode();
+				getModelPanel().initSize();
 				getModelPanel().drawCanvasPanel();
 				getConditionPanel().setInitDisplay();
-				getModelPanel().initDsplayMode();
 				if (selectedProjectName != null) {
 					selectedProjectName.setText(ss.getCurrentProjectId());
 				}

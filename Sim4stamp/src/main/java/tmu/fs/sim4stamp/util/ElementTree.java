@@ -79,7 +79,7 @@ public class ElementTree {
 		flags = new boolean[connectors.size()];
 		root.element.setTempFlag(true);
 		findChildren(root);
-		log.info("tree make:" + root.toString());
+		log.fine("tree make:" + root.toString());
 		series = new ArrayList<>();
 		List<Element> temp = new ArrayList<>();
 		List<Tree> rootChildren = root.getChildren();

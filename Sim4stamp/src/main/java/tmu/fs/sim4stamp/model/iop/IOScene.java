@@ -151,13 +151,13 @@ public class IOScene implements JSONConvert {
 					}
 				}
 				int[] iVals = getIntData(nodeId, iop.getId());
-				if(iVals != null){
+				if (iVals != null) {
 					for (int i = 0; i < iVals.length; i++) {
 						icIoValue.set(i, iVals[i]);
 					}
 				}
 				boolean[] bVals = getBoolData(nodeId, iop.getId());
-				if(bVals != null){
+				if (bVals != null) {
 					for (int i = 0; i < bVals.length; i++) {
 						icIoValue.set(i, bVals[i]);
 					}
@@ -179,7 +179,7 @@ public class IOScene implements JSONConvert {
 		ic.deviationStartIndex = deviationStartIndex;
 		return ic;
 	}
-	
+
 	public int getSize() {
 		return size;
 	}
@@ -435,10 +435,18 @@ public class IOScene implements JSONConvert {
 			}
 			break;
 		case PROVIDING_MORE:
-			val = false;
+			if (index == 0) {
+				devWorkInitBoolValue = val;
+			} else {
+				val = !devWorkInitBoolValue;
+			}
 			break;
 		case PROVIDING_LESS:
-			val = true;
+			if (index == 0) {
+				devWorkInitBoolValue = val;
+			} else {
+				val = !devWorkInitBoolValue;
+			}
 			break;
 		case TOO_EARLY:
 			break;

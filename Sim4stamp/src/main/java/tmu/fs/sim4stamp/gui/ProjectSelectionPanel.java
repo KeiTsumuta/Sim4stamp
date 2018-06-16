@@ -208,7 +208,7 @@ public class ProjectSelectionPanel implements Initializable {
 		if (dir != null) {
 			String dirPath = dir.getAbsolutePath();
 			selectedProjectId = dir.getName();
-			;
+
 			createProjectId.textProperty().set(dir.getName());
 			createPjHome.textProperty().set(dirPath);
 		}

@@ -78,7 +78,7 @@ public class DeviationMapPanel implements Initializable, VdmRunStatus {
 	private static final double ELEMENT_INTERVAL = 160;
 	private static final double ELEMENT_Y_POS = 20;
 	private static final double ELEMENT_Y_ST = 150;
-	private static final double ELEMENT_Y_DS = 40;
+	private static final double ELEMENT_Y_DS = 34;
 
 	private static final Deviation[] CONNECTOR_DEVIATIONS = { //
 		Deviation.NORMAL, //
@@ -234,6 +234,7 @@ public class DeviationMapPanel implements Initializable, VdmRunStatus {
 			if (selectEcecuteMode == ExecuteMode.STEP) {
 				stepExecuteSimButton.setDisable(false);
 			}
+			drawMapPanel();
 			CommandLineExecute ce = new CommandLineExecute(this);
 			ce.start();
 		} catch (Exception ex) {
@@ -355,13 +356,13 @@ public class DeviationMapPanel implements Initializable, VdmRunStatus {
 	}
 	
 	public void stepSelect(String nodeId) {
-		for (Element e : elementDisplays) {
-			if (e.getNodeId().equals(nodeId)) {
-				e.setSelect(true);
-			} else {
-				e.setSelect(false);
-			}
-		}
+		//for (Element e : elementDisplays) {
+		//	if (e.getNodeId().equals(nodeId)) {
+	//			e.setSelect(true);
+	//		} else {
+	//			e.setSelect(false);
+	//		}
+	//	}
 		for (Connector c : connectorDrawInfos) {
 			if (c.getNodeFromId().equals(oldStepSelect)) {
 				c.setPointed(true);

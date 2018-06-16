@@ -267,7 +267,7 @@ public class Connector implements JSONConvert, DisplayLevel {
 		}
 		if (appendParams != null) {
 			List<IOParam> ioParams = appendParams.getParams();
-			double height = getFontHight(gc) + (float) 2.0;
+			double height = getFontHight(gc) + (float) 0.5;
 			int i = 0;
 			for (IOParam ioParam : ioParams) {
 				String id = ioParam.getId();
@@ -297,7 +297,7 @@ public class Connector implements JSONConvert, DisplayLevel {
 				gc.setFill(color);
 				gc.fillText(id, xp - width / 2, yp + height * i - 2);
 				if (marked) {
-					gc.fillText(markedComment, xp - width / 2, yp + height * (i + 1));
+					gc.fillText(markedComment, xp - width / 2, yp - 2.0 + height * (i + 1));
 				}
 				i++;
 			}
