@@ -40,6 +40,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import org.json.JSONObject;
 import tmu.fs.sim4stamp.MainApp;
@@ -69,24 +72,7 @@ public class FXMLController implements Initializable {
 	private Canvas deviationCanvas;
 
 	@FXML
-	private ChoiceBox graph1ChoiseBox;
-	@FXML
-	private LineChart lineChart1;
-
-	@FXML
-	private ChoiceBox graph2ChoiseBox;
-	@FXML
-	private LineChart lineChart2;
-
-	@FXML
-	private ChoiceBox graph3ChoiseBox;
-	@FXML
-	private LineChart lineChart3;
-
-	@FXML
-	private ChoiceBox graph4ChoiseBox;
-	@FXML
-	private LineChart lineChart4;
+	private GridPane resultGraphGrid;
 
 	@FXML
 	private TableView itemParamTable;
@@ -178,10 +164,9 @@ public class FXMLController implements Initializable {
 		executeLogPanel.initialize(url, rb);
 		pm.setExecuteLogPanel(executeLogPanel);
 
-		Control[] resultPanelControls = new Control[]{resultChoice, graph1ChoiseBox, graph2ChoiseBox, graph3ChoiseBox,
-			graph4ChoiseBox, resultTable};
-		LineChart[] lineCharts = new LineChart[]{lineChart1, lineChart2, lineChart3, lineChart4};
-		ResultPanel resultPanel = new ResultPanel(resultPanelControls, lineCharts);
+		Control[] resultPanelControls = new Control[]{resultChoice, resultTable};
+		//LineChart[] lineCharts = new LineChart[]{lineChart1, lineChart2, lineChart3, lineChart4};
+		ResultPanel resultPanel = new ResultPanel(resultPanelControls, resultGraphGrid);
 		resultPanel.initialize(url, rb);
 		pm.setResutPanel(resultPanel);
 

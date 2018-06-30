@@ -28,9 +28,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Control;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import tmu.fs.sim4stamp.PanelManager;
 import tmu.fs.sim4stamp.SimService;
 import tmu.fs.sim4stamp.gui.util.GraphData;
@@ -53,6 +59,7 @@ public class ResultPanel implements Initializable {
 
 	private final ChoiceBox<String> resultChoice;
 
+	private final GridPane resultGraphGrid;
 	private final ChoiceBox<String>[] graphChoiseBoxs = new ChoiceBox[GRAPH_SIZE];
 	private final LineChart[] lineCharts = new LineChart[GRAPH_SIZE];
 	private final LineGraphPanel[] linePanels = new LineGraphPanel[GRAPH_SIZE];
@@ -65,25 +72,27 @@ public class ResultPanel implements Initializable {
 
 	private final ResultTablePanel resultTable;
 
-	public ResultPanel(Control[] controls, LineChart[] lineCharts) {
+	public ResultPanel(Control[] controls, GridPane resultGraphGrid) {
 		this.resultChoice = (ChoiceBox) controls[0];
-		graphChoiseBoxs[0] = (ChoiceBox) controls[1];
-		graphChoiseBoxs[1] = (ChoiceBox) controls[2];
-		graphChoiseBoxs[2] = (ChoiceBox) controls[3];
-		graphChoiseBoxs[3] = (ChoiceBox) controls[4];
-		this.lineCharts[0] = lineCharts[0];
-		this.lineCharts[1] = lineCharts[1];
-		this.lineCharts[2] = lineCharts[2];
-		this.lineCharts[3] = lineCharts[3];
-		this.resultTable = new ResultTablePanel((TableView) controls[5]);
+		this.resultGraphGrid = resultGraphGrid;
+		this.resultTable = new ResultTablePanel((TableView) controls[1]);
 	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		for (int i = 0; i < GRAPH_SIZE; i++) {
-			linePanels[i] = new LineGraphPanel(lineCharts[i]);
+			BorderPane bp = new BorderPane();
+			graphChoiseBoxs[i] = new ChoiceBox();
+			bp.setTop(graphChoiseBoxs[i]);
+			NumberAxis xa = new NumberAxis();
+			NumberAxis ya = new NumberAxis();
+			LineChart chart = new LineChart(xa, ya);
+			chart.setAnimated(false);
+			bp.setCenter(chart);
+			lineCharts[i] = chart;
+			linePanels[i] = new LineGraphPanel(chart);
+			resultGraphGrid.add(bp, i / 2, i % 2);
 		}
-
 		getResultTable().initialize(location, resources);
 		PanelManager.get().setResultTablePanel(getResultTable());
 	}
@@ -194,6 +203,7 @@ public class ResultPanel implements Initializable {
 		// グラフ
 		for (int i = 0; i < GRAPH_SIZE; i++) {
 			if (currentSelectParentIds[i] != null) {
+				//lineCharts[i].setPrefSize(gw, gh);
 				addGraphDisplay(linePanels[i], currentSelectIds[i], currentSelectParentIds[i], currentSelectIds[i]);
 			}
 		}
