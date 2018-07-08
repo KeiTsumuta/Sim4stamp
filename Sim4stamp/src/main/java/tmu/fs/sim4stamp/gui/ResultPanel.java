@@ -31,12 +31,17 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Control;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import tmu.fs.sim4stamp.PanelManager;
 import tmu.fs.sim4stamp.SimService;
 import tmu.fs.sim4stamp.gui.util.GraphData;
@@ -54,36 +59,63 @@ import tmu.fs.sim4stamp.model.iop.IOScene;
 public class ResultPanel implements Initializable {
 
 	private static final Logger log = Logger.getLogger(ResultPanel.class.getPackage().getName());
-	private static final int GRAPH_SIZE = 4;
+
+	private static final String[] GRAPH_LINE_COLORS = {"#32cd32", "#ffa500", "#ff0000", "#4d66cc",
+		"#b22222", "#0000ff", "#daa520", "#40e0d0"};
+
+	private static final double CHART_INIT_WIDTH = 400.0;
+	private static final double CHART_INIT_HEIGHT = 200.0;
 	private static final DecimalFormat D_FORMAT = new DecimalFormat("#0.00");
 
 	private final ChoiceBox<String> resultChoice;
 
-	private final GridPane resultGraphGrid;
-	private final ChoiceBox<String>[] graphChoiseBoxs = new ChoiceBox[GRAPH_SIZE];
-	private final LineChart[] lineCharts = new LineChart[GRAPH_SIZE];
-	private final LineGraphPanel[] linePanels = new LineGraphPanel[GRAPH_SIZE];
-	private final String initSelectParentIds[] = new String[GRAPH_SIZE];
-	private final String initSelectIds[] = new String[GRAPH_SIZE];
-	private final String currentSelectParentIds[] = new String[GRAPH_SIZE];
-	private final String currentSelectIds[] = new String[GRAPH_SIZE];
+	private int graphSize = 0;
+	private VBox graphInfoPane;
+	private AnchorPane lineChartPane;
+	private GridPane resultGraphGrid;
+	private LineChart[] lineCharts = new LineChart[graphSize];
+	private LineGraphPanel[] linePanels = new LineGraphPanel[graphSize];
+	private String initSelectParentIds[] = new String[graphSize];
+	private String initSelectIds[] = new String[graphSize];
+	private String currentSelectParentIds[] = new String[graphSize];
+	private String currentSelectIds[] = new String[graphSize];
 
 	private int selectResultIndex = -1;
+	private double chartWidth = CHART_INIT_WIDTH;
 
 	private final ResultTablePanel resultTable;
 
-	public ResultPanel(Control[] controls, GridPane resultGraphGrid) {
+	public ResultPanel(Control[] controls, VBox graphInfoPane, AnchorPane lineChartPanel, GridPane resultGraphGrid) {
 		this.resultChoice = (ChoiceBox) controls[0];
+		this.graphInfoPane = graphInfoPane;
+		this.lineChartPane = lineChartPanel;
 		this.resultGraphGrid = resultGraphGrid;
 		this.resultTable = new ResultTablePanel((TableView) controls[1]);
 	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		for (int i = 0; i < GRAPH_SIZE; i++) {
+		initGraphSize();
+		getResultTable().initialize(location, resources);
+		PanelManager.get().setResultTablePanel(getResultTable());
+	}
+
+	private void initGraphSize() {
+		graphSize = getGraphSize();
+		System.out.println("graph size=" + graphSize);
+		resultGraphGrid.getChildren().clear();
+
+		//graphChoiseBoxs = new ChoiceBox[graphSize];
+		lineCharts = new LineChart[graphSize];
+		linePanels = new LineGraphPanel[graphSize];
+		initSelectParentIds = new String[graphSize];
+		initSelectIds = new String[graphSize];
+		currentSelectParentIds = new String[graphSize];
+		currentSelectIds = new String[graphSize];
+		for (int i = 0; i < graphSize; i++) {
 			BorderPane bp = new BorderPane();
-			graphChoiseBoxs[i] = new ChoiceBox();
-			bp.setTop(graphChoiseBoxs[i]);
+			//graphChoiseBoxs[i] = new ChoiceBox();
+			//bp.setTop(graphChoiseBoxs[i]);
 			NumberAxis xa = new NumberAxis();
 			NumberAxis ya = new NumberAxis();
 			LineChart chart = new LineChart(xa, ya);
@@ -91,20 +123,41 @@ public class ResultPanel implements Initializable {
 			bp.setCenter(chart);
 			lineCharts[i] = chart;
 			linePanels[i] = new LineGraphPanel(chart);
-			resultGraphGrid.add(bp, i / 2, i % 2);
+			linePanels[i].setChartSize(chartWidth, CHART_INIT_HEIGHT);
+			resultGraphGrid.add(bp, i % 2, i / 2);
 		}
-		getResultTable().initialize(location, resources);
-		PanelManager.get().setResultTablePanel(getResultTable());
+	}
+
+	private int getGraphSize() {
+		int count = 0;
+		List<Element> elements = SimService.getInstance().getElementManger().getElements();
+		for (Element e : elements) {
+			AppendParams ap = e.getAppendParams();
+			if (!(ap == null)) {
+				List<IOParam> ios = ap.getParams();
+				for (IOParam ip : ios) {
+					if (ip.getParamType() == AppendParams.ParamType.Element) {
+						count++;
+					}
+				}
+			}
+		}
+		return count;
 	}
 
 	public void initDisplay() {
+		if (getGraphSize() != graphSize) {
+			initGraphSize();
+		}
+		graphInfoPane.getChildren().clear();
+		resultGraphGrid.setStyle("-fx-background-color: #eaf0f0;");
 		resetData();
 		resultTable.initData();
 		setGraphSelections();
 	}
 
 	private void setGraphSelections() {
-		for (int i = 0; i < GRAPH_SIZE; i++) {
+		for (int i = 0; i < graphSize; i++) {
 			initSelectParentIds[i] = null;
 			initSelectIds[i] = null;
 		}
@@ -129,8 +182,8 @@ public class ResultPanel implements Initializable {
 				});
 		//
 		ObservableList<String> eis = FXCollections.observableArrayList();
-		List<Element> elments = SimService.getInstance().getElementManger().getElements();
-		elments.forEach((e) -> {
+		List<Element> elements = SimService.getInstance().getElementManger().getElements();
+		elements.forEach((e) -> {
 			Element.EType eType = e.getType();
 			AppendParams ap = e.getAppendParams();
 			if (!(ap == null)) {
@@ -140,7 +193,7 @@ public class ResultPanel implements Initializable {
 				for (IOParam ip : ios) {
 					if (ip.getParamType() == AppendParams.ParamType.Element) {
 						eis.add(ip.getId());
-						for (int i = 0; i < GRAPH_SIZE; i++) {
+						for (int i = 0; i < graphSize; i++) {
 							if (initSelectIds[i] == null) {
 								if (i == 0 && eType == Element.EType.INJECTOR) {
 									initSelectParentIds[i] = nodeId;
@@ -157,32 +210,7 @@ public class ResultPanel implements Initializable {
 			}
 		});
 
-		for (int i = 0; i < GRAPH_SIZE; i++) {
-			graphChoiseBoxs[i].setItems(eis);
-			if (initSelectIds[i] != null) {
-				graphChoiseBoxs[i].getSelectionModel().select(initSelectIds[i]);
-			}
-			final int idx = i;
-			graphChoiseBoxs[i].getSelectionModel().selectedItemProperty()
-					.addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
-						// System.out.println(newValue);
-						IOParamManager iom = SimService.getInstance().getIoParamManager();
-						List<String> elemIds = iom.getNodeIds();
-						for (String elemId : elemIds) {
-							String parentId = elemId;
-							List<IOParam> iops = iom.getParamMap().get(elemId);
-							for (IOParam iop : iops) {
-								String id = iop.getId();
-								if (id.equals(newValue)) {
-									linePanels[idx].reset();
-									addGraphDisplay(linePanels[idx], id, parentId, id);
-									currentSelectParentIds[idx] = parentId;
-									currentSelectIds[idx] = id;
-									return;
-								}
-							}
-						}
-					});
+		for (int i = 0; i < graphSize; i++) {
 			currentSelectParentIds[i] = initSelectParentIds[i];
 			currentSelectIds[i] = initSelectIds[i];
 		}
@@ -201,7 +229,7 @@ public class ResultPanel implements Initializable {
 		// 結果データのプルダウンリスト
 		makeResultSelect();
 		// グラフ
-		for (int i = 0; i < GRAPH_SIZE; i++) {
+		for (int i = 0; i < graphSize; i++) {
 			if (currentSelectParentIds[i] != null) {
 				//lineCharts[i].setPrefSize(gw, gh);
 				addGraphDisplay(linePanels[i], currentSelectIds[i], currentSelectParentIds[i], currentSelectIds[i]);
@@ -233,15 +261,29 @@ public class ResultPanel implements Initializable {
 		if (resultScenes.size() == 0) {
 			return;
 		}
+		graphInfoPane.getChildren().clear();
 		graph.reset();
 		int i = 1;
 		for (IOScene ios : resultScenes) {
-			if (i > GRAPH_SIZE) {
+			if (i > graphSize) {
 				break;
 			}
 			if (currentSelectParentIds[i - 1] != null) {
+				FlowPane fp = new FlowPane();
+				String deviation = i + ":" + ios.getDeviation().toString();
+				Label li = new Label();
+				li.setText("●");
+				li.setTextFill(Color.web(GRAPH_LINE_COLORS[(i - 1) % GRAPH_LINE_COLORS.length]));
+				li.setFont(new Font("Arial", 15));
+				Label la = new Label();
+				la.setText(deviation);
+				//la.setTextFill(Color.web(GRAPH_LINE_COLORS[(i - 1) % GRAPH_LINE_COLORS.length]));
+				la.setFont(new Font("Arial", 15));
+				fp.getChildren().addAll(li, la);
+				graphInfoPane.getChildren().add(fp);
 				GraphData data = ios.getGraphData(parentId, id);
-				graph.addData(i + ":" + ios.getDeviation().toString(), data);
+				graph.setTitle(id);
+				graph.addData(null, data);
 			}
 			i++;
 		}
@@ -289,7 +331,7 @@ public class ResultPanel implements Initializable {
 	}
 
 	public void resetData() {
-		for (int i = 0; i < GRAPH_SIZE; i++) {
+		for (int i = 0; i < graphSize; i++) {
 			linePanels[i].reset();
 		}
 	}
@@ -299,35 +341,13 @@ public class ResultPanel implements Initializable {
 		if (resultScenes.size() > 0) {
 			displayResultTable(resultScenes.get(0));
 			// グラフ
-			for (int i = 0; i < GRAPH_SIZE; i++) {
+			for (int i = 0; i < graphSize; i++) {
 				if (currentSelectParentIds[i] != null) {
 					addGraphDisplay(linePanels[i], currentSelectIds[i], currentSelectParentIds[i], currentSelectIds[i]);
 				}
 			}
 		}
 		makeResultSelect();
-	}
-
-	/**
-	 * @return the linePanel1
-	 */
-	public LineGraphPanel getLinePanel1() {
-		return linePanels[0];
-	}
-
-	/**
-	 * @return the linePanel2
-	 */
-	public LineGraphPanel getLinePanel2() {
-		return linePanels[1];
-	}
-
-	public LineGraphPanel getLinePanel3() {
-		return linePanels[2];
-	}
-
-	public LineGraphPanel getLinePanel4() {
-		return linePanels[3];
 	}
 
 	/**

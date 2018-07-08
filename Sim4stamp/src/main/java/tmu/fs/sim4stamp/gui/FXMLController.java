@@ -43,6 +43,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import org.json.JSONObject;
 import tmu.fs.sim4stamp.MainApp;
@@ -70,6 +71,12 @@ public class FXMLController implements Initializable {
 
 	@FXML
 	private Canvas deviationCanvas;
+
+	@FXML
+	private VBox graphInfoPane;
+
+	@FXML
+	private AnchorPane lineChartPanel;
 
 	@FXML
 	private GridPane resultGraphGrid;
@@ -166,7 +173,7 @@ public class FXMLController implements Initializable {
 
 		Control[] resultPanelControls = new Control[]{resultChoice, resultTable};
 		//LineChart[] lineCharts = new LineChart[]{lineChart1, lineChart2, lineChart3, lineChart4};
-		ResultPanel resultPanel = new ResultPanel(resultPanelControls, resultGraphGrid);
+		ResultPanel resultPanel = new ResultPanel(resultPanelControls, graphInfoPane, lineChartPanel, resultGraphGrid);
 		resultPanel.initialize(url, rb);
 		pm.setResutPanel(resultPanel);
 

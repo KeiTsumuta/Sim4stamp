@@ -316,14 +316,14 @@ public class ModelPanel implements Initializable {
 		for (Element el : elements) {
 			Rectangle2D.Double rect = el.getBaseRect();
 			modelCanvasWidth = Math.max(modelCanvasWidth, rect.x + rect.width + 50.0);
-			modelCanvasHeight = Math.max(modelCanvasHeight, rect.y + rect.height + 50.0);
+			modelCanvasHeight = Math.max(modelCanvasHeight, rect.y + rect.height + 20.0);
 		}
 		List<Connector> connectors = SimService.getInstance().getConnectors();
 		for (Connector c : connectors) {
 			List<Point2D.Double> ps = c.getPoints();
 			for (Point2D.Double p2 : ps) {
 				modelCanvasWidth = Math.max(modelCanvasWidth, p2.getX() + 50.0);
-				modelCanvasHeight = Math.max(modelCanvasHeight, p2.getY() + 50.0);
+				modelCanvasHeight = Math.max(modelCanvasHeight, p2.getY() + 20.0);
 			}
 		}
 	}

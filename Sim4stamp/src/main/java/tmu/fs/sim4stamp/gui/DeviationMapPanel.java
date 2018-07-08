@@ -91,8 +91,8 @@ public class DeviationMapPanel implements Initializable, VdmRunStatus {
 
 	public enum ExecuteMode {
 
-		NORMAL("連続実行", 0), //
-		STEP("ステップ実行", 10); //
+		NORMAL("連続", 0), //
+		STEP("ステップ", 10); //
 
 		private final String name;
 		private final int id;

@@ -46,12 +46,20 @@ public class LineGraphPanel implements Initializable {
 		lineChart.setTitle(title);
 	}
 
+	public void setWidth(double w) {
+		lineChart.setMaxWidth(w);
+	}
+
 	/**
 	 * 表示データの追加
 	 */
 	public void addData(String seriesName, GraphData data) {
 		XYChart.Series series = new XYChart.Series();
-		series.setName(seriesName);
+		if (seriesName != null) {
+			series.setName(seriesName);
+		} else {
+			lineChart.legendVisibleProperty().set(false);
+		}
 		// populating the series with data
 		GraphData.GhType ghType = data.getGhType();
 		if (ghType == GraphData.GhType.DOUBLE) {
@@ -105,6 +113,11 @@ public class LineGraphPanel implements Initializable {
 
 	public void reset() {
 		lineChart.getData().removeAll(lineChart.getData().toArray());
+	}
+
+	public void setChartSize(double width, double height) {
+		lineChart.setMaxSize(width, height);
+		lineChart.setMinSize(width, height);
 	}
 
 }
