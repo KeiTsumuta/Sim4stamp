@@ -135,7 +135,7 @@ public class DeviationMapPanel implements Initializable, VdmRunStatus {
 	private ContextMenu popupDeviationMenu; // 偏差設定メニュー
 	private Deviation selectedConnectorDeviation = Deviation.NORMAL;
 	private ExecuteMode selectEcecuteMode = ExecuteMode.NORMAL;
-	
+
 	private String oldStepSelect = "";
 
 	public DeviationMapPanel(Canvas mapCanvas, Control[] controls) {
@@ -317,10 +317,11 @@ public class DeviationMapPanel implements Initializable, VdmRunStatus {
 				GraphDisplayDialog gdd = new GraphDisplayDialog();
 				List<IOScene> resultScenes = SimService.getInstance().getIoParamManager().getResultScenes();
 				if (resultScenes.size() > 0) {
-					gdd.reset(selectedConnector.getNodeToId() + "." + aps.get(0).getId());
+					IOParam iop = aps.get(0);
+					gdd.reset(selectedConnector.getNodeToId() + "." + iop.getId());
 					int i = 1;
 					for (IOScene ios : resultScenes) {
-						GraphData data = ios.getGraphData(selectedConnector.getNodeToId(), aps.get(0).getId());
+						GraphData data = ios.getGraphData(selectedConnector.getNodeToId(), iop.getId());
 						gdd.addData(ios.getDeviation().toString(), data);
 						i++;
 					}
@@ -354,15 +355,8 @@ public class DeviationMapPanel implements Initializable, VdmRunStatus {
 		}
 		connectors = cons;
 	}
-	
+
 	public void stepSelect(String nodeId) {
-		//for (Element e : elementDisplays) {
-		//	if (e.getNodeId().equals(nodeId)) {
-	//			e.setSelect(true);
-	//		} else {
-	//			e.setSelect(false);
-	//		}
-	//	}
 		for (Connector c : connectorDrawInfos) {
 			if (c.getNodeFromId().equals(oldStepSelect)) {
 				c.setPointed(true);

@@ -47,8 +47,8 @@
 					<children>
 						<LineChart fx:id="displayedGraph">
 							<xAxis>
-								<NumberAxis prefHeight="25.0" prefWidth="432.0"
-											side="BOTTOM" />
+								<CategoryAxis prefHeight="25.0" prefWidth="432.0"
+											  side="BOTTOM" />
 							</xAxis>
 							<yAxis>
 								<NumberAxis prefHeight="162.0" prefWidth="28.0"

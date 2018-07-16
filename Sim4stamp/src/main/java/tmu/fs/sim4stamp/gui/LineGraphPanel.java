@@ -20,7 +20,9 @@ package tmu.fs.sim4stamp.gui;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.Initializable;
+import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import tmu.fs.sim4stamp.gui.util.GraphData;
 
@@ -32,6 +34,16 @@ import tmu.fs.sim4stamp.gui.util.GraphData;
 public class LineGraphPanel implements Initializable {
 
 	private final LineChart lineChart;
+	private int chartCount = 0;
+	private GraphData firstData;
+
+	public LineGraphPanel() {
+		CategoryAxis xa = new CategoryAxis();
+		NumberAxis ya = new NumberAxis();
+		LineChart<String, Number> chart = new LineChart<String, Number>(xa, ya);
+		chart.setAnimated(false);
+		lineChart = chart;
+	}
 
 	public LineGraphPanel(LineChart chart) {
 		this.lineChart = chart;
@@ -39,7 +51,7 @@ public class LineGraphPanel implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-
+		chartCount = 0;
 	}
 
 	public void setTitle(String title) {
@@ -54,54 +66,99 @@ public class LineGraphPanel implements Initializable {
 	 * 表示データの追加
 	 */
 	public void addData(String seriesName, GraphData data) {
-		XYChart.Series series = new XYChart.Series();
+		XYChart.Series series = null;
+		if (chartCount == 0) {
+			firstData = data;
+		}
+
+		// populating the series with data
+		GraphData.GhType ghType = data.getGhType();
+		if (ghType == GraphData.GhType.DOUBLE) {
+			series = new XYChart.Series<String, Double>();
+			lineChart.setCreateSymbols(true);
+			double[] dVals = data.getDoubleData();
+			double[] frDVals = firstData.getDoubleData();
+			boolean f = false;
+			for (int i = 0; i < dVals.length; i++) {
+				String num = Integer.toString(i + 1);
+				if (chartCount == 0) {
+					series.getData().add(new XYChart.Data(num, dVals[i]));
+				} else if (dVals[i] != frDVals[i]) {
+					if (i >= 1 && !f) {
+						series.getData().add(new XYChart.Data(Integer.toString(i), dVals[i - 1]));
+						f = true;
+					}
+					series.getData().add(new XYChart.Data(num, dVals[i]));
+				} else {
+					f = false;
+				}
+			}
+		} else if (ghType == GraphData.GhType.INT) {
+			series = new XYChart.Series<String, Integer>();
+			lineChart.setCreateSymbols(false);
+			int[] iVals = data.getIntData();
+			int[] frIVals = firstData.getIntData();
+			boolean f = false;
+			for (int i = 0; i < iVals.length; i++) {
+				String num = Integer.toString(i + 1);
+				if (chartCount == 0) {
+					if (i > 0 && iVals[i - 1] != iVals[i]) {
+						series.getData().add(new XYChart.Data(num, iVals[i - 1]));
+					}
+					series.getData().add(new XYChart.Data(num, iVals[i]));
+				} else if (iVals[i] != frIVals[i]) {
+					if (i > 0 && iVals[i - 1] != iVals[i]) {
+						series.getData().add(new XYChart.Data(num, iVals[i - 1]));
+					}
+					series.getData().add(new XYChart.Data(num, iVals[i]));
+					f = true;
+				} else {
+					if (f) {
+						if (i > 0 && iVals[i - 1] != iVals[i]) {
+							series.getData().add(new XYChart.Data(num, iVals[i - 1]));
+						}
+						series.getData().add(new XYChart.Data(num, iVals[i]));
+					}
+					f = false;
+				}
+			}
+		} else if (ghType == GraphData.GhType.BOOL) {
+			series = new XYChart.Series<String, Integer>();
+			lineChart.setCreateSymbols(false);
+			boolean[] bVals = data.getBoolData();
+			boolean[] frBVals = firstData.getBoolData();
+			boolean f = false;
+			for (int i = 0; i < bVals.length; i++) {
+				String num = Integer.toString(i + 1);
+				if (chartCount == 0) {
+					if (i > 0 && bVals[i - 1] != bVals[i]) {
+						series.getData().add(new XYChart.Data(num, convBoolToInt(bVals[i - 1])));
+					}
+					series.getData().add(new XYChart.Data(num, convBoolToInt(bVals[i])));
+				} else if (bVals[i] != frBVals[i]) {
+					if (i > 0 && bVals[i - 1] != bVals[i]) {
+						series.getData().add(new XYChart.Data(num, convBoolToInt(bVals[i - 1])));
+					}
+					series.getData().add(new XYChart.Data(num, convBoolToInt(bVals[i])));
+					f = true;
+				} else {
+					if (f) {
+						if (i > 0 && bVals[i - 1] != bVals[i]) {
+							series.getData().add(new XYChart.Data(num, convBoolToInt(bVals[i - 1])));
+						}
+						series.getData().add(new XYChart.Data(num, convBoolToInt(bVals[i])));
+					}
+					f = false;
+				}
+			}
+		}
 		if (seriesName != null) {
 			series.setName(seriesName);
 		} else {
 			lineChart.legendVisibleProperty().set(false);
 		}
-		// populating the series with data
-		GraphData.GhType ghType = data.getGhType();
-		if (ghType == GraphData.GhType.DOUBLE) {
-			lineChart.setCreateSymbols(true);
-			double[] dVals = data.getDoubleData();
-			for (int i = 0; i < dVals.length; i++) {
-				series.getData().add(new XYChart.Data(i + 1, dVals[i]));
-			}
-		} else if (ghType == GraphData.GhType.INT) {
-			lineChart.setCreateSymbols(false);
-			int[] iVals = data.getIntData();
-			if (iVals.length > 0) {
-				int iOld = iVals[0];
-				series.getData().add(new XYChart.Data(1, iOld));
-				for (int i = 1; i < iVals.length; i++) {
-					if (iVals[i] == iOld) {
-						series.getData().add(new XYChart.Data(i + 1, iVals[i]));
-					} else {
-						series.getData().add(new XYChart.Data(i + 1, iOld));
-						series.getData().add(new XYChart.Data(i + 1, iVals[i]));
-					}
-					iOld = iVals[i];
-				}
-			}
-		} else if (ghType == GraphData.GhType.BOOL) {
-			lineChart.setCreateSymbols(false);
-			boolean[] bVals = data.getBoolData();
-			if (bVals.length > 0) {
-				boolean old = bVals[0];
-				series.getData().add(new XYChart.Data(1, convBoolToInt(old)));
-				for (int i = 1; i < bVals.length; i++) {
-					if (bVals[i] == old) {
-						series.getData().add(new XYChart.Data(i + 1, convBoolToInt(bVals[i])));
-					} else {
-						series.getData().add(new XYChart.Data(i + 1, convBoolToInt(old)));
-						series.getData().add(new XYChart.Data(i + 1, convBoolToInt(bVals[i])));
-					}
-					old = bVals[i];
-				}
-			}
-		}
 		lineChart.getData().add(series);
+		chartCount++;
 	}
 
 	private int convBoolToInt(boolean b) {
@@ -113,11 +170,16 @@ public class LineGraphPanel implements Initializable {
 
 	public void reset() {
 		lineChart.getData().removeAll(lineChart.getData().toArray());
+		chartCount = 0;
 	}
 
 	public void setChartSize(double width, double height) {
 		lineChart.setMaxSize(width, height);
 		lineChart.setMinSize(width, height);
+	}
+
+	public LineChart getChart() {
+		return lineChart;
 	}
 
 }

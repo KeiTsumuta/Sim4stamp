@@ -27,6 +27,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
+import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.ChoiceBox;
@@ -73,7 +74,6 @@ public class ResultPanel implements Initializable {
 	private VBox graphInfoPane;
 	private AnchorPane lineChartPane;
 	private GridPane resultGraphGrid;
-	private LineChart[] lineCharts = new LineChart[graphSize];
 	private LineGraphPanel[] linePanels = new LineGraphPanel[graphSize];
 	private String initSelectParentIds[] = new String[graphSize];
 	private String initSelectIds[] = new String[graphSize];
@@ -106,7 +106,6 @@ public class ResultPanel implements Initializable {
 		resultGraphGrid.getChildren().clear();
 
 		//graphChoiseBoxs = new ChoiceBox[graphSize];
-		lineCharts = new LineChart[graphSize];
 		linePanels = new LineGraphPanel[graphSize];
 		initSelectParentIds = new String[graphSize];
 		initSelectIds = new String[graphSize];
@@ -116,14 +115,10 @@ public class ResultPanel implements Initializable {
 			BorderPane bp = new BorderPane();
 			//graphChoiseBoxs[i] = new ChoiceBox();
 			//bp.setTop(graphChoiseBoxs[i]);
-			NumberAxis xa = new NumberAxis();
-			NumberAxis ya = new NumberAxis();
-			LineChart chart = new LineChart(xa, ya);
-			chart.setAnimated(false);
-			bp.setCenter(chart);
-			lineCharts[i] = chart;
-			linePanels[i] = new LineGraphPanel(chart);
-			linePanels[i].setChartSize(chartWidth, CHART_INIT_HEIGHT);
+			LineGraphPanel gpanel = new LineGraphPanel();
+			gpanel.setChartSize(chartWidth, CHART_INIT_HEIGHT);
+			linePanels[i] = gpanel;
+			bp.setCenter(gpanel.getChart());
 			resultGraphGrid.add(bp, i % 2, i / 2);
 		}
 	}
@@ -263,17 +258,14 @@ public class ResultPanel implements Initializable {
 		}
 		graphInfoPane.getChildren().clear();
 		graph.reset();
-		int i = 1;
-		for (IOScene ios : resultScenes) {
-			if (i > graphSize) {
-				break;
-			}
-			if (currentSelectParentIds[i - 1] != null) {
+		for (int i = 0; i < resultScenes.size(); i++) {
+			if (currentSelectParentIds[i] != null) {
+				IOScene ios = resultScenes.get(i);
 				FlowPane fp = new FlowPane();
-				String deviation = i + ":" + ios.getDeviation().toString();
+				String deviation = (i + 1) + ":" + ios.getDeviation().toString();
 				Label li = new Label();
 				li.setText("●");
-				li.setTextFill(Color.web(GRAPH_LINE_COLORS[(i - 1) % GRAPH_LINE_COLORS.length]));
+				li.setTextFill(Color.web(GRAPH_LINE_COLORS[(i) % GRAPH_LINE_COLORS.length]));
 				li.setFont(new Font("Arial", 15));
 				Label la = new Label();
 				la.setText(deviation);
@@ -285,7 +277,6 @@ public class ResultPanel implements Initializable {
 				graph.setTitle(id);
 				graph.addData(null, data);
 			}
-			i++;
 		}
 	}
 
