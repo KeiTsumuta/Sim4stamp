@@ -84,7 +84,9 @@ public class GraphDisplayDialog implements Initializable {
 	public void show(ActionEvent event) throws IOException {
 		stage = new Stage();
 		Parent root = FXMLLoader.load(getClass().getResource("/fxml/graphDisplayDialog.fxml"));
-		stage.setScene(new Scene(root));
+		Scene scene = new Scene(root);
+		scene.getStylesheets().add("/styles/Styles.css");
+		stage.setScene(scene);
 		stage.setTitle("sim4stamp");
 		stage.initModality(Modality.WINDOW_MODAL);
 		SimService s = SimService.getInstance();

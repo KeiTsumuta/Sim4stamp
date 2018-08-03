@@ -34,9 +34,11 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import tmu.fs.sim4stamp.PanelManager;
 import tmu.fs.sim4stamp.SimService;
 
 /**
+ * システムパラメータ設定ダイアログ
  *
  * @author Keiichi Tsumuta
  */
@@ -48,6 +50,9 @@ public class SystemParamPanel implements Initializable {
 	@FXML
 	private TextField commandTool;
 
+	@FXML
+	private TextField resultGraphColumSize;
+
 	private Stage stage;
 
 	public SystemParamPanel() {
@@ -58,6 +63,8 @@ public class SystemParamPanel implements Initializable {
 		SimService s = SimService.getInstance();
 		overtureHome.setText(s.getOvertureHome());
 		commandTool.setText(s.getOvertureCommandLine());
+		int gsize = s.getResultGraphColumSize();
+		resultGraphColumSize.setText(Integer.toString(gsize));
 		List<String> projects = s.getProjects();
 	}
 
@@ -76,7 +83,17 @@ public class SystemParamPanel implements Initializable {
 	public void saveAction(ActionEvent event) {
 		// System.out.println("SystemParamPanel saveAction !!");
 		SimService s = SimService.getInstance();
+		String size = resultGraphColumSize.getText();
+		try {
+			int isize = Integer.parseInt(size);
+			if (isize <= 0) {
+				isize = 1;
+			}
+			s.setResultGraphColumSize(isize);
+		} catch (Exception ex) {
+		}
 		s.writeInfoFile();
+		PanelManager.get().getResutPanel().updateGraphColumnSize();
 		closeDialog(event);
 	}
 

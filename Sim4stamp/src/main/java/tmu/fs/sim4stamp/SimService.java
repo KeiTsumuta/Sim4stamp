@@ -119,6 +119,13 @@ public class SimService extends ResourceFileIO implements java.io.Serializable {
 		paramMap.put("overture.home", overture.getString("home"));
 		paramMap.put("overture.commandline", overture.getString("commandline"));
 
+		int ghColum = 1;
+		JSONObject sp = sj.optJSONObject("systemparams");
+		if (sp != null) {
+			ghColum = sp.optInt("graphcolums", 1);
+		}
+		paramMap.put("systemparams.graphcolums", Integer.toString(ghColum));
+
 		JSONObject devparams = sj.optJSONObject("deviationParams");
 		if (devparams != null) {
 			IOScene.setProvidingMoreParam(devparams.optDouble("providingMore"));
@@ -167,6 +174,10 @@ public class SimService extends ResourceFileIO implements java.io.Serializable {
 		ov.accumulate("home", paramMap.get("overture.home"));
 		ov.accumulate("commandline", paramMap.get("overture.commandline"));
 		jobj.accumulate("overture", ov);
+
+		JSONObject sp = new JSONObject();
+		sp.accumulate("graphcolums", paramMap.get("systemparams.graphcolums"));
+		jobj.accumulate("systemparams", sp);
 
 		ov = new JSONObject();
 		ov.accumulate("providingMore", IOScene.getProvidingMoreParam());
@@ -299,6 +310,21 @@ public class SimService extends ResourceFileIO implements java.io.Serializable {
 
 	public String getOvertureCommandLineJar() {
 		return paramMap.get("overture.home") + SP + "commandline" + SP + paramMap.get("overture.commandline");
+	}
+
+	public void setResultGraphColumSize(int colSize) {
+		if (colSize > 0) {
+			paramMap.put("systemparams.graphcolums", Integer.toString(colSize));
+		}
+	}
+
+	public int getResultGraphColumSize() {
+		String size = paramMap.get("systemparams.graphcolums");
+		try {
+			return Integer.parseInt(size);
+		} catch (Exception ex) {
+		}
+		return 1;
 	}
 
 	public List<String> getProjects() {
