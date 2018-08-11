@@ -28,7 +28,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tmu.fs.sim4stamp.gui.FXMLController">
+<AnchorPane id="AnchorPane" xmlns="http://javafx.com/javafx/10.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tmu.fs.sim4stamp.gui.FXMLController">
 	<children>
 		<BorderPane layoutX="4.0" layoutY="-1.0" prefHeight="700.0" prefWidth="993.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-1.0">
 			<top>
@@ -260,11 +260,32 @@
 									<children>
 										<SplitPane dividerPositions="0.1856710393541877" prefHeight="647.0" prefWidth="993.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 											<items>
-												<AnchorPane maxWidth="180.0" minHeight="0.0" minWidth="180.0" prefHeight="644.0" prefWidth="180.0">
-													<children>
-														<VBox fx:id="graphInfoPane" prefHeight="624.0" prefWidth="166.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0" />
-													</children>
-												</AnchorPane>
+												<TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+													<tabs>
+														<Tab text="偏差投入">
+															<content>
+																<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+																	<children>
+																		<VBox fx:id="graphInfoPane" layoutX="5.0" layoutY="16.0" prefHeight="594.0" prefWidth="172.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="16.0" />
+																	</children>
+																</AnchorPane>
+															</content>
+														</Tab>
+														<Tab text="構成要素">
+															<content>
+																<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+																	<children>
+																		<VBox fx:id="displaySelectParams" prefHeight="617.0" prefWidth="181.0" style="-fx-padding: 2.0;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+																			<padding>
+																				<Insets left="4.0" top="10.0" />
+																			</padding>
+																		</VBox>
+																	</children>
+																</AnchorPane>
+															</content>
+														</Tab>
+													</tabs>
+												</TabPane>
 												<AnchorPane minHeight="0.0" minWidth="0.0">
 													<children>
 														<ScrollPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
