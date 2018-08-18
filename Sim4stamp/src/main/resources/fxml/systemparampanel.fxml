@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -27,24 +28,39 @@
 			<center>
 				<VBox prefHeight="367.0" prefWidth="576.0" BorderPane.alignment="CENTER">
 					<children>
-						<GridPane prefHeight="124.0" prefWidth="576.0">
+						<GridPane prefHeight="202.0" prefWidth="576.0">
 							<columnConstraints>
 								<ColumnConstraints hgrow="SOMETIMES" maxWidth="283.0" minWidth="10.0" prefWidth="120.0" />
 								<ColumnConstraints hgrow="SOMETIMES" maxWidth="471.0" minWidth="10.0" prefWidth="367.0" />
 								<ColumnConstraints hgrow="SOMETIMES" maxWidth="471.0" minWidth="10.0" prefWidth="108.0" />
 							</columnConstraints>
 							<rowConstraints>
-								<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-								<RowConstraints maxHeight="49.0" minHeight="10.0" prefHeight="27.0" vgrow="SOMETIMES" />
-								<RowConstraints maxHeight="69.0" minHeight="10.0" prefHeight="63.0" vgrow="SOMETIMES" />
+								<RowConstraints maxHeight="45.0" minHeight="10.0" prefHeight="45.0" vgrow="SOMETIMES" />
+								<RowConstraints maxHeight="49.0" minHeight="10.0" prefHeight="42.0" vgrow="SOMETIMES" />
+								<RowConstraints maxHeight="69.0" minHeight="5.0" prefHeight="52.0" vgrow="SOMETIMES" />
+								<RowConstraints maxHeight="69.0" minHeight="9.0" prefHeight="33.0" vgrow="SOMETIMES" />
 							</rowConstraints>
 							<children>
 								<Label text="Overture Home" />
 								<Label text="コマンドラインツール" GridPane.rowIndex="1" />
-								<Label text="結果グラフカラム数" GridPane.rowIndex="2" />
+								<Label text="結果グラフカラム数" GridPane.rowIndex="2">
+									<padding>
+										<Insets left="8.0" />
+									</padding>
+								</Label>
+								<Label text="結果グラフ横幅" GridPane.rowIndex="3">
+									<padding>
+										<Insets left="10.0" />
+									</padding>
+								</Label>
 								<TextField fx:id="overtureHome" editable="false" GridPane.columnIndex="1" />
 								<TextField fx:id="commandTool" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 								<TextField fx:id="resultGraphColumSize" maxWidth="50.0" minWidth="-Infinity" prefHeight="25.0" prefWidth="50.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+								<Slider fx:id="resultGraphWidth" majorTickUnit="1.0" max="3.0" min="1.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="1.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+									<GridPane.margin>
+										<Insets right="80.0" />
+									</GridPane.margin>
+								</Slider>
 								<Button mnemonicParsing="false" onAction="#overtureRefAction" text="参照" GridPane.columnIndex="2">
 									<GridPane.margin>
 										<Insets left="20.0" />

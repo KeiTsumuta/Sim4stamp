@@ -92,7 +92,6 @@ public class ResultPanel implements Initializable {
 	private boolean[] displaySelects = new boolean[graphSize];
 
 	private int selectResultIndex = -1;
-	private double chartWidth = CHART_INIT_WIDTH;
 
 	private final ResultTablePanel resultTable;
 	private int gridColumnSizeOld;
@@ -127,6 +126,7 @@ public class ResultPanel implements Initializable {
 		currentSelectParentIds = new String[graphSize];
 		currentSelectIds = new String[graphSize];
 		displaySelects = new boolean[graphSize];
+		double chartWidth = CHART_INIT_WIDTH * SimService.getInstance().getResultGraphWidth();
 		for (int i = 0; i < graphSize; i++) {
 			LineGraphPanel gpanel = new LineGraphPanel();
 			gpanel.setChartSize(chartWidth, CHART_INIT_HEIGHT);
@@ -138,7 +138,7 @@ public class ResultPanel implements Initializable {
 		resultGraphGrid.getChildren().clear();
 		for (int i = 0; i < graphSize; i++) {
 			BorderPane bp = new BorderPane();
-			bp.setCenter(linePanels[i].getChart());
+			bp.setCenter(linePanels[i].getStackPane());
 			resultGraphGrid.add(bp, i % gridColumnSize, i / gridColumnSize);
 		}
 	}
@@ -196,13 +196,15 @@ public class ResultPanel implements Initializable {
 		// グラフの割り付け
 		int gridColumnSize = SimService.getInstance().getResultGraphColumSize();
 		resultGraphGrid.getChildren().clear();
+		int count = 0;
 		for (int i = 0; i < graphSize; i++) {
 			if (!displaySelects[i]) {
 				continue;
 			}
 			BorderPane bp = new BorderPane();
-			bp.setCenter(linePanels[i].getChart());
-			resultGraphGrid.add(bp, i % gridColumnSize, i / gridColumnSize);
+			bp.setCenter(linePanels[i].getStackPane());
+			resultGraphGrid.add(bp, count % gridColumnSize, count / gridColumnSize);
+			count++;
 		}
 	}
 
@@ -280,13 +282,16 @@ public class ResultPanel implements Initializable {
 		Platform.runLater(() -> {
 			try {
 				int gridColumnSize = SimService.getInstance().getResultGraphColumSize();
+				double chartWidth = CHART_INIT_WIDTH * SimService.getInstance().getResultGraphWidth();
+				int count = 0;
 				for (int i = 0; i < graphSize; i++) {
 					if (displaySelects[i]) {
 						BorderPane bp = new BorderPane();
 						LineGraphPanel gpanel = linePanels[i];
 						gpanel.setChartSize(chartWidth, CHART_INIT_HEIGHT);
-						bp.setCenter(gpanel.getChart());
-						resultGraphGrid.add(bp, i % gridColumnSize, i / gridColumnSize);
+						bp.setCenter(gpanel.getStackPane());
+						resultGraphGrid.add(bp, count % gridColumnSize, count / gridColumnSize);
+						count++;
 					}
 				}
 			} catch (Exception ex) {

@@ -57,7 +57,6 @@ public class SimService extends ResourceFileIO implements java.io.Serializable {
 	private static Logger log = Logger.getLogger(SimService.class.getPackage().getName());
 
 	private volatile static SimService simService = new SimService();
-	;
 
 	private Stage stage;
 	private List<String> projectList;
@@ -126,6 +125,12 @@ public class SimService extends ResourceFileIO implements java.io.Serializable {
 		}
 		paramMap.put("systemparams.graphcolums", Integer.toString(ghColum));
 
+		double ghWidth = 1.0;
+		if (sp != null) {
+			ghWidth = sp.optDouble("graphwidth", 1);
+		}
+		paramMap.put("systemparams.graphwidth", Double.toString(ghWidth));
+
 		JSONObject devparams = sj.optJSONObject("deviationParams");
 		if (devparams != null) {
 			IOScene.setProvidingMoreParam(devparams.optDouble("providingMore"));
@@ -177,6 +182,7 @@ public class SimService extends ResourceFileIO implements java.io.Serializable {
 
 		JSONObject sp = new JSONObject();
 		sp.accumulate("graphcolums", paramMap.get("systemparams.graphcolums"));
+		sp.accumulate("graphwidth", paramMap.get("systemparams.graphwidth"));
 		jobj.accumulate("systemparams", sp);
 
 		ov = new JSONObject();
@@ -325,6 +331,21 @@ public class SimService extends ResourceFileIO implements java.io.Serializable {
 		} catch (Exception ex) {
 		}
 		return 1;
+	}
+
+	public void setResultGraphWidth(double width) {
+		if (width > 0.0) {
+			paramMap.put("systemparams.graphwidth", Double.toString(width));
+		}
+	}
+
+	public double getResultGraphWidth() {
+		String width = paramMap.get("systemparams.graphwidth");
+		try {
+			return Double.parseDouble(width);
+		} catch (Exception ex) {
+		}
+		return 1.0;
 	}
 
 	public List<String> getProjects() {

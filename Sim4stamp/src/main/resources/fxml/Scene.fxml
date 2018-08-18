@@ -177,7 +177,7 @@
 															</HBox.margin>
 														</Label>
 														<ComboBox fx:id="deviationSelectionByType" layoutX="107.0" layoutY="370.0" prefWidth="160.0" />
-														<ComboBox fx:id="executeTypeSelection" prefWidth="120.0">
+														<ComboBox fx:id="executeTypeSelection" prefWidth="80.0">
 															<HBox.margin>
 																<Insets left="20.0" />
 															</HBox.margin>

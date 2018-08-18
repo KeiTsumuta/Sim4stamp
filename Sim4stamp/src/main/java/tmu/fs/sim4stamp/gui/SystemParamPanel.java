@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -29,6 +30,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -53,6 +55,9 @@ public class SystemParamPanel implements Initializable {
 	@FXML
 	private TextField resultGraphColumSize;
 
+	@FXML
+	private Slider resultGraphWidth;
+
 	private Stage stage;
 
 	public SystemParamPanel() {
@@ -65,7 +70,11 @@ public class SystemParamPanel implements Initializable {
 		commandTool.setText(s.getOvertureCommandLine());
 		int gsize = s.getResultGraphColumSize();
 		resultGraphColumSize.setText(Integer.toString(gsize));
-		List<String> projects = s.getProjects();
+		resultGraphWidth.setValue(s.getResultGraphWidth());
+		resultGraphWidth.valueProperty().addListener((
+				ObservableValue<? extends Number> ov, Number old_val, Number new_val) -> {
+			SimService.getInstance().setResultGraphWidth(new_val.doubleValue());
+		});
 	}
 
 	public void show(ActionEvent event) throws IOException {
