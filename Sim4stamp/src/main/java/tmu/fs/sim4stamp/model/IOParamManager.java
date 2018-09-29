@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import tmu.fs.sim4stamp.model.co.Connector;
@@ -37,8 +36,6 @@ import tmu.fs.sim4stamp.util.JSONConvert;
  * @author Keiichi Tsumuta
  */
 public class IOParamManager implements JSONConvert {
-
-	private static final Logger log = Logger.getLogger(IOParamManager.class.getPackage().getName());
 
 	public static final int INIT_DATA_SIZE = 10;
 
@@ -127,7 +124,7 @@ public class IOParamManager implements JSONConvert {
 			}
 			List<IOParam> ios = c.getAppendParams().getParams();
 			connectorParams.add(ios);
-			nfntList.add(new String[] { connectorFromId, connectorToId });
+			nfntList.add(new String[]{connectorFromId, connectorToId});
 
 			// System.out.println("conn:" + connectorFromId + "," + connectorToId + "," +
 			// ios);
@@ -214,7 +211,6 @@ public class IOParamManager implements JSONConvert {
 				currentScene.parseJson(ob);
 			}
 		} catch (Exception ex) {
-			log.severe(ex.toString());
 			ex.printStackTrace();
 		}
 	}

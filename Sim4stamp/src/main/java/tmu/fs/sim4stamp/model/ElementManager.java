@@ -25,7 +25,6 @@ import tmu.fs.sim4stamp.model.em.Controller;
 import tmu.fs.sim4stamp.model.em.Actuator;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import tmu.fs.sim4stamp.model.iop.AppendParams;
@@ -36,8 +35,6 @@ import tmu.fs.sim4stamp.util.JSONConvert;
  * @author Keiichi Tsumuta
  */
 public class ElementManager implements JSONConvert {
-
-	private static final Logger log = Logger.getLogger(ElementManager.class.getPackage().getName());
 
 	private List<Element> elements;
 
@@ -99,14 +96,14 @@ public class ElementManager implements JSONConvert {
 				AppendParams ap = new AppendParams(AppendParams.ParamType.Element);
 				JSONArray apObj = ob.optJSONArray("ioparams");
 				if (apObj != null) {
-					String[] parentId = new String[] { id };
+					String[] parentId = new String[]{id};
 					ap.parseJson(parentId, apObj);
 					element.setAppendParams(ap);
 				}
 				addElement(element);
 			}
 		} catch (Exception ex) {
-			log.severe(ex.toString());
+			ex.printStackTrace();
 		}
 	}
 

@@ -44,7 +44,6 @@ import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import tmu.fs.sim4stamp.PanelManager;
@@ -78,13 +77,11 @@ public class ConditionPanel implements Initializable {
 	private final TextField sceneTitle;
 	private final TableView simItemParamView; // 構成要素パラメータテーブル
 
-	// private final TableView simConnectorView; // コネクタパラメータテーブル
 	private Map<String, RadioButton> radioMap;
 
 	private final TextField simInitSeqSize; // 時系列数
 	private final TableView initDataTable; // 初期値設定テーブル
 	private final Button conditionSetButton; // 設定ボタン（条件データ初期値テーブル反映）
-	// private final ComboBox deviationSelectBox; // 偏差投入種別
 	private final TextField deviationStartIndex; // 偏差投入開始インデックス
 
 	private Deviation selectedConnectorDeviation = Deviation.NORMAL;
@@ -92,9 +89,7 @@ public class ConditionPanel implements Initializable {
 	public ConditionPanel(Control[] controls) {
 		this.sceneTitle = (TextField) controls[0];
 		this.simItemParamView = (TableView) controls[1];
-		// this.simConnectorView = (TableView) controls[2];
 		this.simInitSeqSize = (TextField) controls[3];
-		// this.deviationSelectBox = (ComboBox) controls[4];
 		this.deviationStartIndex = (TextField) controls[5];
 		this.conditionSetButton = (Button) controls[6];
 		this.initDataTable = (TableView) controls[7];
@@ -108,7 +103,6 @@ public class ConditionPanel implements Initializable {
 		simInitSeqSize.textProperty().set(Integer.toString(ioScene.getSize()));
 		simInitSeqSize.setTextFormatter(GuiUtil.getIntTextFormater());
 		setItemTableView();
-		// setConnectorTableView();
 		this.conditionSetButton.setOnAction((ActionEvent event) -> {
 			setInitTable();
 			PanelManager.get().updateCondition();
@@ -140,7 +134,34 @@ public class ConditionPanel implements Initializable {
 			});
 			return new SimpleObjectProperty<CheckBox>(checkBox);
 		});
-		simItemParamView.getColumns().setAll(elemColumn, paramColumn, selColumn);
+		TableColumn<ElementItem, String> underColumn = new TableColumn("下限制約値");
+		underColumn.setStyle("-fx-alignment: CENTER-RIGHT;");
+		underColumn.setCellValueFactory(new PropertyValueFactory<>("underRestrict"));
+		underColumn.setCellFactory(TextFieldTableCell.<ElementItem>forTableColumn());
+		underColumn.setOnEditCommit(
+				(CellEditEvent<ElementItem, String> t) -> {
+					ElementItem ei = ((ElementItem) t.getTableView().getItems().get(t.getTablePosition().getRow()));
+					ei.setUnderRestrict(t.getNewValue());
+					IOValue ioValue = SimService.getInstance().getIoParamManager().getCurrentScene().getIOData(ei.getElementId(), ei.getParamId());
+					ioValue.setUnderValue(t.getNewValue());
+				});
+		underColumn.setEditable(true);
+
+		TableColumn<ElementItem, String> upperColumn = new TableColumn("上限制約値");
+		upperColumn.setStyle("-fx-alignment: CENTER-RIGHT;");
+		upperColumn.setCellValueFactory(new PropertyValueFactory<>("upperRestrict"));
+		upperColumn.setCellFactory(TextFieldTableCell.<ElementItem>forTableColumn());
+		upperColumn.setOnEditCommit(
+				(CellEditEvent<ElementItem, String> t) -> {
+					ElementItem ei = ((ElementItem) t.getTableView().getItems().get(t.getTablePosition().getRow()));
+					ei.setUpperRestrict(t.getNewValue());
+					IOValue ioValue = SimService.getInstance().getIoParamManager().getCurrentScene().getIOData(ei.getElementId(), ei.getParamId());
+					ioValue.setUpperValue(t.getNewValue());
+				});
+		underColumn.setEditable(true);
+
+		simItemParamView.getColumns().setAll(elemColumn, paramColumn, selColumn, underColumn, upperColumn);
+		simItemParamView.setEditable(true);
 	}
 
 	public void setInitDisplay() {
@@ -148,8 +169,6 @@ public class ConditionPanel implements Initializable {
 		sceneTitle.textProperty().set(ioScene.getScene());
 		simInitSeqSize.textProperty().set(Integer.toString(ioScene.getSize()));
 		setItemTableView();
-		// setConnectorTableView();
-
 		setItemDisplay();
 		setInitTable();
 	}
@@ -196,7 +215,9 @@ public class ConditionPanel implements Initializable {
 				if (etypes.get(i) == Element.EType.INJECTOR) {
 					sel = true;
 				}
-				ElementItem ei = new ElementItem(ename, elementParams.get(i).get(k), sel);
+				IOParam param = elementParams.get(i).get(k);
+				IOValue ioValue = SimService.getInstance().getIoParamManager().getCurrentScene().getIOData(ename, param.getId());
+				ElementItem ei = new ElementItem(ename, param, sel, ioValue.getUpperValue(), ioValue.getUnderValue());
 				eis.add(ei);
 			}
 			n++;
@@ -400,14 +421,18 @@ public class ConditionPanel implements Initializable {
 		private SimpleStringProperty elementId;
 		private SimpleStringProperty paramId;
 		private SimpleBooleanProperty selected;
+		private SimpleStringProperty underRestrict;
+		private SimpleStringProperty upperRestrict;
 		private IOParam ioparam;
 
-		public ElementItem(String elemId, IOParam param, boolean select) {
+		public ElementItem(String elemId, IOParam param, boolean select, String upper, String under) {
 			this.elementId = new SimpleStringProperty(elemId);
 			this.ioparam = param;
 			this.paramId = new SimpleStringProperty(param.getId());
 			this.selected = new SimpleBooleanProperty(select);
 			this.ioparam.setInitData(select);
+			this.underRestrict = new SimpleStringProperty(under);
+			this.upperRestrict = new SimpleStringProperty(upper);
 		}
 
 		public IOParam getIOParam() {
@@ -454,95 +479,29 @@ public class ConditionPanel implements Initializable {
 			this.selected.set(select);
 			ioparam.setInitData(select);
 		}
+
+		public String getUnderRestrict() {
+			return underRestrict.get();
+		}
+
+		public void setUnderRestrict(String value) {
+			underRestrict.set(value);
+		}
+
+		public SimpleStringProperty getUnderRestrictProperty() {
+			return underRestrict;
+		}
+
+		public String getUpperRestrict() {
+			return upperRestrict.get();
+		}
+
+		public void setUpperRestrict(String value) {
+			upperRestrict.set(value);
+		}
+
+		public SimpleStringProperty getUpperRestrictProperty() {
+			return upperRestrict;
+		}
 	}
-
-	public class ConnectorItem {
-
-		private SimpleStringProperty fromId;
-		private SimpleStringProperty toId;
-		private SimpleStringProperty paramId;
-		private SimpleBooleanProperty selected;
-
-		public ConnectorItem(String fromId, String toId, String paramId, boolean select) {
-			this.fromId = new SimpleStringProperty(fromId);
-			this.toId = new SimpleStringProperty(toId);
-			this.paramId = new SimpleStringProperty(paramId);
-			this.selected = new SimpleBooleanProperty(select);
-		}
-
-		/**
-		 * @return the fromId
-		 */
-		public SimpleStringProperty getFromIdProperty() {
-			return fromId;
-		}
-
-		public String getFromId() {
-			return fromId.get();
-		}
-
-		/**
-		 * @param fromId the fromId to set
-		 */
-		public void setFromId(SimpleStringProperty fromId) {
-			this.fromId = fromId;
-		}
-
-		/**
-		 * @return the toId
-		 */
-		public SimpleStringProperty getToIdProperty() {
-			return toId;
-		}
-
-		public String getToId() {
-			return toId.get();
-		}
-
-		/**
-		 * @param toId the toId to set
-		 */
-		public void setToId(SimpleStringProperty toId) {
-			this.toId = toId;
-		}
-
-		public boolean isSelected() {
-			return selected.get();
-		}
-
-		/**
-		 * @return the paramId
-		 */
-		public String getParamId() {
-			return paramId.get();
-		}
-
-		public SimpleStringProperty getParamIdProperty() {
-			return paramId;
-		}
-
-		/**
-		 * @return the selected
-		 */
-		public SimpleBooleanProperty getSelectedProperty() {
-			return selected;
-		}
-
-		public void setSelected(boolean selected) {
-			this.selected.set(selected);
-		}
-
-		/**
-		 * @param selected the selected to set
-		 */
-		public void setSelected(SimpleBooleanProperty selected) {
-			this.selected = selected;
-		}
-
-		public String toString() {
-			return fromId.get() + "," + toId.get() + "," + paramId.get();
-		}
-
-	}
-
 }

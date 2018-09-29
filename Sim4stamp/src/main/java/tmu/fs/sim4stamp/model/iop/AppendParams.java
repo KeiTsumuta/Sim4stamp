@@ -20,7 +20,6 @@ package tmu.fs.sim4stamp.model.iop;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -33,8 +32,6 @@ public class AppendParams {
 	public enum ParamType {
 		Element, Connector
 	};
-
-	private static final Logger log = Logger.getLogger(AppendParams.class.getPackage().getName());
 
 	private final ParamType type;
 	private List<IOParam> ioParams;
@@ -104,7 +101,7 @@ public class AppendParams {
 				ioParams.add(p);
 			}
 		} catch (Exception ex) {
-			log.severe(ex.toString());
+			ex.printStackTrace();
 		}
 	}
 

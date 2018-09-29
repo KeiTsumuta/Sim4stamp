@@ -25,7 +25,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
@@ -43,7 +42,6 @@ import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import tmu.fs.sim4stamp.MainApp;
 import tmu.fs.sim4stamp.SimService;
 import tmu.fs.sim4stamp.model.ConnectorManager;
 import tmu.fs.sim4stamp.model.ElementManager;
@@ -56,8 +54,7 @@ import tmu.fs.sim4stamp.util.DisplayLevel;
  */
 public class ModelPanel implements Initializable {
 
-	private static final Logger log = Logger.getLogger(ModelPanel.class.getPackage().getName());
-	private static final Color FILL_BACK_COLOR = Color.CORNSILK;
+	private static final Color FILL_BACK_COLOR = Color.LIGHTYELLOW;
 
 	private final Canvas modelCanvas;
 	private double modelCanvasWidth;

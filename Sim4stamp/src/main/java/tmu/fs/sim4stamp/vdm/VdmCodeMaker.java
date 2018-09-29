@@ -20,7 +20,6 @@ package tmu.fs.sim4stamp.vdm;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 import tmu.fs.sim4stamp.SimService;
 import tmu.fs.sim4stamp.model.ConnectorManager;
 import tmu.fs.sim4stamp.model.ElementManager;
@@ -35,8 +34,6 @@ import tmu.fs.sim4stamp.util.ResourceFileIO;
  * @author Keiichi Tsumuta
  */
 public class VdmCodeMaker extends ResourceFileIO {
-
-	private static final Logger log = Logger.getLogger(VdmCodeMaker.class.getPackage().getName());
 
 	private static final String SP = System.getProperty("file.separator");
 
@@ -64,7 +61,7 @@ public class VdmCodeMaker extends ResourceFileIO {
 
 	public void make() {
 		String projectHome = simService.getCurrentProjectHome();
-		log.info("project home:" + projectHome);
+		//log.info("project home:" + projectHome);
 		copyFiles(projectHome);
 		makeExecuteMain(projectHome);
 		makeElementClasses(projectHome);

@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 import tmu.fs.sim4stamp.model.co.Connector;
 import tmu.fs.sim4stamp.model.em.Element;
 
@@ -30,8 +29,6 @@ import tmu.fs.sim4stamp.model.em.Element;
  * @author Keiichi Tsumuta
  */
 public class ElementTree {
-
-	private static final Logger log = Logger.getLogger(ElementTree.class.getPackage().getName());
 
 	private List<Element> elements;
 	private Map<String, Element> map;
@@ -79,7 +76,7 @@ public class ElementTree {
 		flags = new boolean[connectors.size()];
 		root.element.setTempFlag(true);
 		findChildren(root);
-		log.fine("tree make:" + root.toString());
+		//log.fine("tree make:" + root.toString());
 		series = new ArrayList<>();
 		List<Element> temp = new ArrayList<>();
 		List<Tree> rootChildren = root.getChildren();
@@ -158,8 +155,8 @@ public class ElementTree {
 		return series;
 	}
 
-	private static final Element.EType[] ETYPE_ORDERS = { Element.EType.INJECTOR, Element.EType.SENSOR,
-			Element.EType.CONTROLLER, Element.EType.ACTUATOR, Element.EType.CONTROLLED_EQUIPMENT };
+	private static final Element.EType[] ETYPE_ORDERS = {Element.EType.INJECTOR, Element.EType.SENSOR,
+		Element.EType.CONTROLLER, Element.EType.ACTUATOR, Element.EType.CONTROLLED_EQUIPMENT};
 
 	class Tree {
 
@@ -178,8 +175,7 @@ public class ElementTree {
 		}
 
 		/**
-		 * @param element
-		 *            the element to set
+		 * @param element the element to set
 		 */
 		public void setElement(Element element) {
 			this.element = element;

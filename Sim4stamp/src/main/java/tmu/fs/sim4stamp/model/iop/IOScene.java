@@ -162,6 +162,9 @@ public class IOScene implements JSONConvert {
 						icIoValue.set(i, bVals[i]);
 					}
 				}
+				IOValue iov = getIOData(nodeId, iop.getId());
+				icIoValue.setUpperValue(iov.getUpperValue());
+				icIoValue.setUnderValue(iov.getUnderValue());
 			}
 		}
 		// System.out.println("copy clone:" + deviation);
@@ -531,6 +534,8 @@ public class IOScene implements JSONConvert {
 			if (type == IOParam.ValueType.BOOL) {
 				gd.setBoolData(iv.getBoolValues());
 			}
+			gd.setUpperValue(iv.getSafetyConstraintUpper());
+			gd.setUnderValue(iv.getSafetyConstraintUnder());
 		}
 		return gd;
 	}

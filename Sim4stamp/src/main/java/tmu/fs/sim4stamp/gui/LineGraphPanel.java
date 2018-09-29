@@ -18,16 +18,19 @@
 package tmu.fs.sim4stamp.gui;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.text.DecimalFormat;
+import javafx.application.Platform;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
-import javafx.scene.chart.AreaChart;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
-import javafx.scene.layout.StackPane;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+import tmu.fs.sim4stamp.gui.util.GraphAxis;
 import tmu.fs.sim4stamp.gui.util.GraphData;
+import tmu.fs.sim4stamp.gui.util.GuiUtil;
+import tmu.fs.sim4stamp.model.iop.SafetyConstraintValue;
 
 /**
  * 時系列グラフの表示
@@ -36,246 +39,355 @@ import tmu.fs.sim4stamp.gui.util.GraphData;
  */
 public class LineGraphPanel implements Initializable {
 
-	private NumberAxis ya;
-	private final LineChart lineChart;
-	private int chartCount = 0;
-	private GraphData firstData;
-	private AreaChart<String, Number> areaChart;
-	private StackPane stpane = null;
+	private static final DecimalFormat D_FORMAT = new DecimalFormat("#0.00");
+
+	private static final Color FILL_BACK_COLOR = Color.FLORALWHITE;
+	private static final Color GRPAH_EDGE_COLOR = Color.DARKGREY;
+	private static final Color GRPAH_MESH_COLOR = Color.GREY;
+	private static final Color GRPAH_METRIC_COLOR = Color.BLACK;
+	private static final Color GRPAH_TITLE_COLOR = Color.BLACK;
+	private static final Color GRPAH_CONSTRAINT_COLOR = Color.MAGENTA;
+	private static final double W_AX_LEFT = 60.0;
+	private static final double H_AX_BOTTOM = 30.0;
+	private static final double INSET_TOP = 20.0;
+	private static final double INSET_RIGHT = 10.0;
+
+	private Canvas modelCanvas = null;
+	private double modelCanvasWidth;
+	private double modelCanvasHeight;
+
+	private List<String> seriesNames;
+	private List<GraphData> graphDataList;
+	private SafetyConstraintValue upperValue;
+	private SafetyConstraintValue underValue;
+	private double heightMaxValue;
+	private double heightMinValue;
+
+	private GraphAxis graphAxis;
+	private double[] yAxis = new double[]{0.0, 1.0};
+	private int pow = 0;
+	private GraphData.GhType ghType;
+
+	private String[] graphLineColors;
+
+	private String title = null;
 
 	public LineGraphPanel() {
-		CategoryAxis xa = new CategoryAxis();
-		ya = new NumberAxis();
-
-		//areaChart = new AreaChart<String, Number>(xa, ya);
-		//areaChart.setAnimated(false);
-		lineChart = new LineChart<String, Number>(xa, ya);
-		lineChart.setAnimated(false);
-
-		stpane = new StackPane();
-		//stpane.getChildren().addAll(areaChart, lineChart);
-		stpane.getChildren().addAll(lineChart);
-		stpane.setAlignment(Pos.BOTTOM_LEFT);
-	}
-
-	public LineGraphPanel(LineChart chart) {
-		this.lineChart = chart;
-		ya = (NumberAxis) chart.getYAxis();
-		stpane = null;
+		modelCanvas = new Canvas();
+		seriesNames = new ArrayList<>();
+		graphDataList = new ArrayList<>();
+		heightMaxValue = 0.0;
+		heightMinValue = 0.0;
+		pow = 0;
 	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		chartCount = 0;
 	}
 
-	public void setTitle(String title) {
-		lineChart.setTitle(title);
-		if (areaChart != null) {
-			areaChart.setTitle(" ");
-		}
+	public void reset() {
+		seriesNames = new ArrayList<>();
+		graphDataList = new ArrayList<>();
+		upperValue = null;
+		underValue = null;
+		heightMaxValue = 0.0;
+		heightMinValue = 0.0;
+		pow = 0;
+		graphAxis = new GraphAxis();
+		drawCanvasPanel();
 	}
 
 	public void setWidth(double w) {
-		lineChart.setMaxWidth(w);
-		if (areaChart != null) {
-			areaChart.setMaxWidth(w);
-		}
+		modelCanvasWidth = w;
+		drawCanvasPanel();
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	/**
 	 * 表示データの追加
 	 */
 	public void addData(String seriesName, GraphData data) {
-		XYChart.Series series = null;
-		if (chartCount == 0) {
-			firstData = data;
-			if (areaChart != null) {
-				//addAreaChart();
-			}
-		}
+		seriesNames.add(seriesName);
+		getGraphDataList().add(data);
 
 		// populating the aSeries with data
-		GraphData.GhType ghType = data.getGhType();
+		ghType = data.getGhType();
 		if (null != ghType) {
 			switch (ghType) {
 			case DOUBLE: {
-				series = new XYChart.Series<String, Double>();
-				lineChart.setCreateSymbols(true);
 				double[] dVals = data.getDoubleData();
-				double[] frDVals = firstData.getDoubleData();
-				boolean f = false;
 				for (int i = 0; i < dVals.length; i++) {
-					String num = Integer.toString(i + 1);
-					if (chartCount == 0) {
-						series.getData().add(new XYChart.Data(num, dVals[i]));
-					} else if (dVals[i] != frDVals[i]) {
-						if (i >= 1 && !f) {
-							series.getData().add(new XYChart.Data(Integer.toString(i), dVals[i - 1]));
-							f = true;
-						}
-						series.getData().add(new XYChart.Data(num, dVals[i]));
-					} else {
-						f = false;
-					}
+					heightMaxValue = Math.max(heightMaxValue, dVals[i]);
+					heightMinValue = Math.min(heightMinValue, dVals[i]);
 				}
 				break;
 			}
 			case INT: {
-				ya.setMinorTickCount(0);
-				series = new XYChart.Series<String, Integer>();
-				lineChart.setCreateSymbols(false);
 				int[] iVals = data.getIntData();
-				int[] frIVals = firstData.getIntData();
-				boolean f = false;
 				for (int i = 0; i < iVals.length; i++) {
-					String num = Integer.toString(i + 1);
-					if (chartCount == 0) {
-						if (i > 0 && iVals[i - 1] != iVals[i]) {
-							series.getData().add(new XYChart.Data(num, iVals[i - 1]));
-						}
-						series.getData().add(new XYChart.Data(num, iVals[i]));
-					} else if (iVals[i] != frIVals[i]) {
-						if (i > 0 && iVals[i - 1] != iVals[i]) {
-							series.getData().add(new XYChart.Data(num, iVals[i - 1]));
-						}
-						series.getData().add(new XYChart.Data(num, iVals[i]));
-						f = true;
-					} else {
-						if (f) {
-							if (i > 0 && iVals[i - 1] != iVals[i]) {
-								series.getData().add(new XYChart.Data(num, iVals[i - 1]));
-							}
-							series.getData().add(new XYChart.Data(num, iVals[i]));
-						}
-						f = false;
-					}
+					heightMaxValue = Math.max(heightMaxValue, iVals[i]);
+					heightMinValue = Math.min(heightMinValue, iVals[i]);
 				}
 				break;
 			}
 			case BOOL: {
-				ya.setMinorTickCount(0);
-				ya.setUpperBound(1.0);
-				ya.setLowerBound(0.0);
-				series = new XYChart.Series<String, Integer>();
-				lineChart.setCreateSymbols(false);
-				boolean[] bVals = data.getBoolData();
-				boolean[] frBVals = firstData.getBoolData();
-				boolean f = false;
-				for (int i = 0; i < bVals.length; i++) {
-					String num = Integer.toString(i + 1);
-					if (chartCount == 0) {
-						if (i > 0 && bVals[i - 1] != bVals[i]) {
-							series.getData().add(new XYChart.Data(num, convBoolToInt(bVals[i - 1])));
-						}
-						series.getData().add(new XYChart.Data(num, convBoolToInt(bVals[i])));
-					} else if (bVals[i] != frBVals[i]) {
-						if (i > 0 && bVals[i - 1] != bVals[i]) {
-							series.getData().add(new XYChart.Data(num, convBoolToInt(bVals[i - 1])));
-						}
-						series.getData().add(new XYChart.Data(num, convBoolToInt(bVals[i])));
-						f = true;
-					} else {
-						if (f) {
-							if (i > 0 && bVals[i - 1] != bVals[i]) {
-								series.getData().add(new XYChart.Data(num, convBoolToInt(bVals[i - 1])));
-							}
-							series.getData().add(new XYChart.Data(num, convBoolToInt(bVals[i])));
-						}
-						f = false;
-					}
-				}
+				heightMaxValue = 1.0;
+				heightMinValue = 0.0;
 				break;
 			}
 			default:
 				break;
 			}
 		}
-		if (seriesName != null) {
-			series.setName(seriesName);
-		} else {
-			lineChart.legendVisibleProperty().set(false);
+		upperValue = data.getUpperValue();
+		if (upperValue != null && upperValue.isSetting()) {
+			heightMaxValue = Math.max(heightMaxValue, upperValue.getConstraintValue());
 		}
-		lineChart.getData().add(series);
-		chartCount++;
-	}
+		underValue = data.getUnderValue();
+		if (underValue != null && underValue.isSetting()) {
+			heightMinValue = Math.min(heightMinValue, underValue.getConstraintValue());
+		}
+		yAxis = graphAxis.getScale(heightMaxValue, heightMinValue);
+		pow = graphAxis.getPow();
 
-	private int convBoolToInt(boolean b) {
-		if (b) {
-			return 1;
-		}
-		return 0;
-	}
-
-	private void addAreaChart() {
-		XYChart.Series aSeries = null;
-		GraphData.GhType ghType = firstData.getGhType();
-		if (null != ghType) {
-			switch (ghType) {
-			case DOUBLE:
-				aSeries = new XYChart.Series<String, Double>();
-				areaChart.setCreateSymbols(false);
-				double[] dVals = firstData.getDoubleData();
-				for (int i = 0; i < dVals.length; i++) {
-					String num = Integer.toString(i + 1);
-					aSeries.getData().add(new XYChart.Data(num, dVals[i]));
-				}
-				break;
-			case INT:
-				ya.setMinorTickCount(0);
-				aSeries = new XYChart.Series<String, Integer>();
-				areaChart.setCreateSymbols(false);
-				int[] iVals = firstData.getIntData();
-				for (int i = 0; i < iVals.length; i++) {
-					String num = Integer.toString(i + 1);
-					aSeries.getData().add(new XYChart.Data(num, iVals[i - 1]));
-					aSeries.getData().add(new XYChart.Data(num, iVals[i]));
-				}
-				break;
-			case BOOL:
-				ya.setMinorTickCount(0);
-				ya.setUpperBound(1.0);
-				ya.setLowerBound(0.0);
-				aSeries = new XYChart.Series<String, Integer>();
-				areaChart.setCreateSymbols(false);
-				boolean[] bVals = firstData.getBoolData();
-				for (int i = 0; i < bVals.length; i++) {
-					String num = Integer.toString(i + 1);
-					aSeries.getData().add(new XYChart.Data(num, convBoolToInt(bVals[i - 1])));
-					aSeries.getData().add(new XYChart.Data(num, convBoolToInt(bVals[i])));
-				}
-				break;
-			default:
-				break;
-			}
-		}
-		//areaChart.legendVisibleProperty().set(true);
-		areaChart.getData().add(aSeries);
-	}
-
-	public void reset() {
-		lineChart.getData().removeAll(lineChart.getData().toArray());
-		if (areaChart != null) {
-			areaChart.getData().removeAll(areaChart.getData());
-		}
-		chartCount = 0;
+		drawCanvasPanel();
 	}
 
 	public void setChartSize(double width, double height) {
-		lineChart.setMaxSize(width, height);
-		lineChart.setMinSize(width, height);
-		if (areaChart != null) {
-			areaChart.setMaxSize(width, height);
-			areaChart.setMinSize(width, height);
+		modelCanvasWidth = width;
+		modelCanvasHeight = height;
+		drawCanvasPanel();
+	}
+
+	public Canvas getCanvas() {
+		return modelCanvas;
+	}
+
+	public void drawCanvasPanel() {
+		Platform.runLater(() -> {
+			try {
+				drawCanvas(modelCanvas);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		});
+	}
+
+	private void drawCanvas(Canvas canvas) {
+
+		GraphicsContext gc = canvas.getGraphicsContext2D();
+		canvas.setWidth(modelCanvasWidth);
+		canvas.setHeight(modelCanvasHeight);
+		double wMax = canvas.getWidth();
+		double hMax = canvas.getHeight();
+
+		gc.setFill(FILL_BACK_COLOR);
+		gc.fillRect(0, 0, wMax, hMax);
+		gc.setStroke(GRPAH_EDGE_COLOR);
+		gc.strokeRect(0, 0, wMax, hMax);
+		//System.out.println("w=" + wMax + ", h=" + hMax);
+		double graphWidth = wMax - W_AX_LEFT - INSET_RIGHT;
+		double graphHeight = hMax - INSET_TOP - H_AX_BOTTOM;
+
+		gc.strokeRect(W_AX_LEFT, INSET_TOP, graphWidth, graphHeight);
+
+		if (title != null) {
+			gc.setFill(GRPAH_TITLE_COLOR);
+			double fontTitleHeight = GuiUtil.getFontHight(gc);
+			gc.fillText(title, W_AX_LEFT + 10.0, fontTitleHeight + 2.0);
 		}
+
+		if (getGraphDataList().size() == 0) {
+			return;
+		}
+		gc.setStroke(GRPAH_MESH_COLOR);
+		gc.setLineWidth(0.5);
+		gc.setLineDashes(2);
+		int x_count = getGraphDataList().get(0).getDataCount() + 1;
+		for (int i = 1; i < x_count; i++) {
+			double x = W_AX_LEFT + graphWidth / x_count * i;
+			gc.strokeLine(x, INSET_TOP, x, hMax - H_AX_BOTTOM);
+		}
+
+		int yCount = yAxis.length - 1;
+		for (int i = 1; i < yCount; i++) {
+			double y = INSET_TOP + graphHeight / yCount * i;
+			gc.strokeLine(W_AX_LEFT, y, wMax - INSET_RIGHT, y);
+		}
+		gc.setFill(GRPAH_METRIC_COLOR);
+		gc.setLineDashes(0);
+		double fontHeight = GuiUtil.getFontHight(gc);
+		for (int i = 1; i < x_count; i++) {
+			double x = W_AX_LEFT + graphWidth / x_count * i;
+			String num = Integer.toString(i);
+			double fontWidth = GuiUtil.getFontWidth(gc, num);
+			gc.fillText(num, x - fontWidth / 2.0, hMax - H_AX_BOTTOM + fontHeight);
+		}
+		String[] yAxNums = getGraphYAxis();
+		for (int i = 0; i <= yCount; i++) {
+			double y = INSET_TOP + graphHeight / yCount * (yCount - i);
+			double fontWidth = GuiUtil.getFontWidth(gc, yAxNums[i]);
+			gc.fillText(yAxNums[i], W_AX_LEFT - fontWidth - 2.0, y);
+		}
+
+		double yConv = (Math.abs(yAxis[yAxis.length - 1]) + Math.abs(yAxis[0])) * Math.pow(10, pow);
+		double xm = Math.abs(yAxis[0]) * Math.pow(10, pow);
+
+		gc.setLineWidth(2.0);
+		gc.setLineDashes(5);
+		gc.setStroke(GRPAH_CONSTRAINT_COLOR);
+		if (upperValue != null && upperValue.isSetting()) {
+			double constraitMax = upperValue.getConstraintValue();
+			double y = INSET_TOP + graphHeight * (1 - (constraitMax + xm) / yConv);
+			gc.strokeLine(W_AX_LEFT, y, wMax - INSET_RIGHT, y);
+		}
+		if (underValue != null && underValue.isSetting()) {
+			double constraitMin = underValue.getConstraintValue();
+			double y = INSET_TOP + graphHeight * (1 - (constraitMin + xm) / yConv);
+			gc.strokeLine(W_AX_LEFT, y, wMax - INSET_RIGHT, y);
+		}
+		gc.setLineDashes(0);
+
+		for (int k = 0; k < getGraphDataList().size(); k++) {
+			Color gcolor = Color.web(graphLineColors[(k) % graphLineColors.length]);
+			gc.setStroke(gcolor);
+			List<Double> xarr = new ArrayList<>();
+			List<Double> yarr = new ArrayList<>();
+			GraphData dg = getGraphDataList().get(k);
+			if (dg.isDisabled()) {
+				continue;
+			}
+
+			switch (ghType) {
+			case DOUBLE:
+				double[] d = dg.getDoubleData();
+				for (int i = 0; i < x_count - 1; i++) {
+					xarr.add(W_AX_LEFT + graphWidth / x_count * (i + 1));
+					yarr.add(INSET_TOP + graphHeight * (1 - (d[i] + xm) / yConv));
+				}
+				break;
+			case INT:
+				int[] iv = dg.getIntData();
+				int ivOld = 0;
+				if (iv.length > 0) {
+					ivOld = iv[0];
+				}
+				for (int i = 0; i < x_count - 1; i++) {
+					double x = W_AX_LEFT + graphWidth / x_count * (i + 1);
+					if (iv[i] != ivOld) {
+						xarr.add(x);
+						yarr.add(INSET_TOP + graphHeight * (1 - (ivOld + xm) / yConv));
+					}
+					xarr.add(x);
+					yarr.add(INSET_TOP + graphHeight * (1 - (iv[i] + xm) / yConv));
+					ivOld = iv[i];
+				}
+				break;
+			case BOOL:
+				boolean[] b = dg.getBoolData();
+				boolean bOld = false;
+				if (b.length > 0) {
+					bOld = b[0];
+				}
+				for (int i = 0; i < x_count - 1; i++) {
+					double x = W_AX_LEFT + graphWidth / x_count * (i + 1);
+					if (b[i] != bOld) {
+						xarr.add(x);
+						if (bOld) {
+							yarr.add(INSET_TOP + graphHeight * (1 - (0.9) / 1.0));
+						} else {
+							yarr.add(INSET_TOP + graphHeight * (1 - (0.1) / 1.0));
+						}
+					}
+					xarr.add(x);
+					if (b[i]) {
+						yarr.add(INSET_TOP + graphHeight * (1 - (0.9) / 1.0));
+					} else {
+						yarr.add(INSET_TOP + graphHeight * (1 - (0.1) / 1.0));
+					}
+					bOld = b[i];
+				}
+				break;
+			}
+			int xsize = xarr.size();
+			if (k == 0 && xsize >= 2) {
+				double[] xas0 = new double[xsize + 2];
+				double[] yas0 = new double[xsize + 2];
+				xas0[0] = xarr.get(0);
+				yas0[0] = hMax - H_AX_BOTTOM;
+				for (int i = 0; i < xsize; i++) {
+					xas0[i + 1] = xarr.get(i);
+					yas0[i + 1] = yarr.get(i);
+				}
+				xas0[xsize + 1] = xarr.get(xsize - 1);
+				yas0[xsize + 1] = hMax - H_AX_BOTTOM;
+				gc.setFill(gcolor);
+				gc.setGlobalAlpha(0.1);
+				gc.fillPolygon(xas0, yas0, xsize + 2);
+			}
+
+			gc.setGlobalAlpha(1.0);
+			double[] xas = new double[xsize];
+			double[] yas = new double[xsize];
+			for (int i = 0; i < xsize; i++) {
+				xas[i] = xarr.get(i);
+				yas[i] = yarr.get(i);
+			}
+			gc.strokePolyline(xas, yas, xsize);
+		}
+
 	}
 
-	public LineChart getChart() {
-		return lineChart;
+	private String[] getGraphYAxis() {
+		String[] yScVals = new String[yAxis.length];
+		if (null != ghType) {
+			switch (ghType) {
+			case DOUBLE: {
+				for (int i = 0; i < yAxis.length; i++) {
+					yScVals[i] = D_FORMAT.format(yAxis[i] * Math.pow(10, pow));
+				}
+				break;
+			}
+			case INT: {
+				for (int i = 0; i < yAxis.length; i++) {
+					yScVals[i] = Integer.toString((int) (yAxis[i] * Math.pow(10, pow)));
+				}
+				break;
+			}
+			case BOOL: {
+				yScVals[0] = "FALSE";
+				yScVals[yScVals.length - 1] = "TRUE";
+				break;
+			}
+			default:
+				break;
+			}
+		}
+		return yScVals;
 	}
 
-	public StackPane getStackPane() {
-		return stpane;
+	/**
+	 * @return the graphLineColors
+	 */
+	public String[] getGraphLineColors() {
+		return graphLineColors;
+	}
+
+	/**
+	 * @param graphLineColors the graphLineColors to set
+	 */
+	public void setGraphLineColors(String[] graphLineColors) {
+		this.graphLineColors = graphLineColors;
+	}
+
+	/**
+	 * @return the graphDataList
+	 */
+	public List<GraphData> getGraphDataList() {
+		return graphDataList;
 	}
 
 }

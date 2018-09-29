@@ -22,39 +22,25 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import tmu.fs.sim4stamp.PanelManager;
 import tmu.fs.sim4stamp.SimService;
-import tmu.fs.sim4stamp.gui.ConditionPanel.ElementItem;
 import tmu.fs.sim4stamp.gui.util.GraphData;
 import tmu.fs.sim4stamp.model.IOParamManager;
 import tmu.fs.sim4stamp.model.em.Element;
@@ -68,8 +54,6 @@ import tmu.fs.sim4stamp.model.iop.IOScene;
  * @author Keiichi Tsumuta
  */
 public class ResultPanel implements Initializable {
-
-	private static final Logger log = Logger.getLogger(ResultPanel.class.getPackage().getName());
 
 	private static final String[] GRAPH_LINE_COLORS = {"#32cd32", "#ffa500", "#ff0000", "#4d66cc",
 		"#b22222", "#0000ff", "#daa520", "#40e0d0"};
@@ -129,6 +113,7 @@ public class ResultPanel implements Initializable {
 		double chartWidth = CHART_INIT_WIDTH * SimService.getInstance().getResultGraphWidth();
 		for (int i = 0; i < graphSize; i++) {
 			LineGraphPanel gpanel = new LineGraphPanel();
+			gpanel.setGraphLineColors(GRAPH_LINE_COLORS);
 			gpanel.setChartSize(chartWidth, CHART_INIT_HEIGHT);
 			linePanels[i] = gpanel;
 			displaySelects[i] = true;
@@ -138,7 +123,7 @@ public class ResultPanel implements Initializable {
 		resultGraphGrid.getChildren().clear();
 		for (int i = 0; i < graphSize; i++) {
 			BorderPane bp = new BorderPane();
-			bp.setCenter(linePanels[i].getStackPane());
+			bp.setCenter(linePanels[i].getCanvas());
 			resultGraphGrid.add(bp, i % gridColumnSize, i / gridColumnSize);
 		}
 	}
@@ -202,7 +187,7 @@ public class ResultPanel implements Initializable {
 				continue;
 			}
 			BorderPane bp = new BorderPane();
-			bp.setCenter(linePanels[i].getStackPane());
+			bp.setCenter(linePanels[i].getCanvas());
 			resultGraphGrid.add(bp, count % gridColumnSize, count / gridColumnSize);
 			count++;
 		}
@@ -289,7 +274,7 @@ public class ResultPanel implements Initializable {
 						BorderPane bp = new BorderPane();
 						LineGraphPanel gpanel = linePanels[i];
 						gpanel.setChartSize(chartWidth, CHART_INIT_HEIGHT);
-						bp.setCenter(gpanel.getStackPane());
+						bp.setCenter(gpanel.getCanvas());
 						resultGraphGrid.add(bp, count % gridColumnSize, count / gridColumnSize);
 						count++;
 					}
@@ -340,8 +325,14 @@ public class ResultPanel implements Initializable {
 		graph.reset();
 		for (int i = 0; i < resultScenes.size(); i++) {
 			IOScene ios = resultScenes.get(i);
+			GraphData data = ios.getGraphData(parentId, id);
 			FlowPane fp = new FlowPane();
 			String deviation = (i + 1) + ":" + ios.getDeviation().toString();
+			CheckBox cb = new CheckBox();
+			cb.setSelected(!data.isDisabled());
+			cb.setStyle("-fx-padding: 8.0;");
+			final int index = i;
+			cb.setOnAction((ActionEvent) -> selectGraphData(index, cb.isSelected()));
 			Label li = new Label();
 			li.setText("●");
 			li.setTextFill(Color.web(GRAPH_LINE_COLORS[(i) % GRAPH_LINE_COLORS.length]));
@@ -350,11 +341,27 @@ public class ResultPanel implements Initializable {
 			la.setText(deviation);
 			//la.setTextFill(Color.web(GRAPH_LINE_COLORS[(i - 1) % GRAPH_LINE_COLORS.length]));
 			la.setFont(new Font("Arial", 15));
-			fp.getChildren().addAll(li, la);
+			fp.getChildren().addAll(cb, li, la);
 			graphInfoPane.getChildren().add(fp);
-			GraphData data = ios.getGraphData(parentId, id);
 			graph.setTitle(id);
 			graph.addData(null, data);
+		}
+	}
+
+	private void selectGraphData(int index, boolean select) {
+		for (LineGraphPanel lp : linePanels) {
+			List<GraphData> gds = lp.getGraphDataList();
+			for (int i = 0; i < gds.size(); i++) {
+				GraphData data = gds.get(i);
+				if (i == index) {
+					if (select) {
+						data.setDisabled(false);
+					} else {
+						data.setDisabled(true);
+					}
+				}
+			}
+			lp.drawCanvasPanel();
 		}
 	}
 

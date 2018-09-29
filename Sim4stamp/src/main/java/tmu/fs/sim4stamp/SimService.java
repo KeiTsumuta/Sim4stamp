@@ -25,8 +25,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.stage.Stage;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -54,7 +52,6 @@ public class SimService extends ResourceFileIO implements java.io.Serializable {
 	public static final String INFO_DIR_NAME = SP + ".stamp";
 	public static final String INFO_FILE_NAME = SP + ".stamp" + SP + "siminfo.json";
 	private static final int JSON_SIZE_MAX = 1024 * 100;
-	private static Logger log = Logger.getLogger(SimService.class.getPackage().getName());
 
 	private volatile static SimService simService = new SimService();
 
@@ -104,7 +101,7 @@ public class SimService extends ResourceFileIO implements java.io.Serializable {
 			}
 			parseSimInfo(readJsonFile(f));
 		} catch (Exception ex) {
-			log.log(Level.SEVERE, ex.toString());
+			ex.printStackTrace();
 		}
 	}
 
@@ -143,9 +140,8 @@ public class SimService extends ResourceFileIO implements java.io.Serializable {
 		setCurrentProjectId(null);
 		setCurrentProjectId(currentPjObj);
 
-		log.info("o-home -> " + paramMap.get("overture.home"));
+		//log.info("o-home -> " + paramMap.get("overture.home"));
 		// log.info("commandlinetool -> " + paramMap.get("overture.commandline"));
-
 		JSONArray pjs = sj.getJSONArray("projects");
 		int len = pjs.length();
 		projectList = new ArrayList<>();
@@ -169,7 +165,7 @@ public class SimService extends ResourceFileIO implements java.io.Serializable {
 			File f = new File(System.getProperty("user.home") + INFO_FILE_NAME);
 			writeInfos(f, getSimInfoJson().toString(2));
 		} catch (Exception ex) {
-			log.log(Level.SEVERE, ex.toString());
+			ex.printStackTrace();
 		}
 	}
 
@@ -219,7 +215,7 @@ public class SimService extends ResourceFileIO implements java.io.Serializable {
 			return;
 		}
 		String pf = paramMap.get("project.home." + id) + "/" + paramMap.get("project.pjparams." + id);
-		log.info("param.json -> " + pf);
+		//log.info("param.json -> " + pf);
 		elementManager.init();
 		connectorManager.init();
 		ioParamManager.init();
@@ -228,7 +224,7 @@ public class SimService extends ResourceFileIO implements java.io.Serializable {
 			JSONObject ob = readJsonFile(paramFile);
 			parseProjectParams(ob);
 		} else {
-			log.severe("project params file no exists:" + pf);
+			System.out.println("project params file no exists:" + pf);
 		}
 		OvertureExecManager.getInstance().init();
 		/* Debug */
@@ -254,10 +250,9 @@ public class SimService extends ResourceFileIO implements java.io.Serializable {
 					jobj = new JSONObject(json);
 				}
 			} else {
-				log.log(Level.SEVERE, "ERROR:JSONデータサイズオーバー");
+				System.out.println("ERROR:JSONデータサイズオーバー");
 			}
 		} catch (Exception ex) {
-			log.log(Level.SEVERE, ex.toString());
 			ex.printStackTrace();
 		}
 		return jobj;
@@ -289,7 +284,6 @@ public class SimService extends ResourceFileIO implements java.io.Serializable {
 		try (FileOutputStream fo = new FileOutputStream(f); BufferedOutputStream out = new BufferedOutputStream(fo);) {
 			out.write(contents.getBytes("UTF-8"));
 		} catch (Exception ex) {
-			log.log(Level.SEVERE, ex.toString());
 			ex.printStackTrace();
 		}
 	}
@@ -428,7 +422,6 @@ public class SimService extends ResourceFileIO implements java.io.Serializable {
 				BufferedOutputStream out = new BufferedOutputStream(fo);) {
 			out.write(toJson().getBytes("UTF-8"));
 		} catch (Exception ex) {
-			log.log(Level.SEVERE, ex.toString());
 			ex.printStackTrace();
 		}
 	}

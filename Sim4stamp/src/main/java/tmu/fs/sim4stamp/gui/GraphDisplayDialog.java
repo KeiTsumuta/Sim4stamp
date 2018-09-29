@@ -29,8 +29,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.chart.LineChart;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import tmu.fs.sim4stamp.SimService;
@@ -43,11 +43,14 @@ import tmu.fs.sim4stamp.gui.util.GraphData;
  */
 public class GraphDisplayDialog implements Initializable {
 
+	private static final String[] GRAPH_LINE_COLORS = {"#32cd32", "#ffa500", "#ff0000", "#4d66cc",
+		"#b22222", "#0000ff", "#daa520", "#40e0d0"};
+
 	@FXML
 	private Label graphTitle;
 
 	@FXML
-	private LineChart displayedGraph;
+	private AnchorPane displayedGraph;
 	private LineGraphPanel linePanel;
 
 	private static String mainTitle;
@@ -56,9 +59,14 @@ public class GraphDisplayDialog implements Initializable {
 
 	private Stage stage;
 
+	public GraphDisplayDialog() {
+		linePanel = new LineGraphPanel();
+		linePanel.setGraphLineColors(GRAPH_LINE_COLORS);
+		linePanel.setChartSize(600, 300);
+	}
+
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
-		linePanel = new LineGraphPanel(displayedGraph);
 		linePanel.reset();
 		if (subTitles != null) {
 			for (int i = 0; i < subTitles.size(); i++) {
@@ -68,6 +76,7 @@ public class GraphDisplayDialog implements Initializable {
 		} else {
 			graphTitle.textProperty().set("");
 		}
+		displayedGraph.getChildren().add(linePanel.getCanvas());
 	}
 
 	public void reset(String title) {

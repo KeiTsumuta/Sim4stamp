@@ -20,7 +20,6 @@ package tmu.fs.sim4stamp.model;
 import tmu.fs.sim4stamp.model.co.Connector;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import tmu.fs.sim4stamp.model.iop.AppendParams;
@@ -31,8 +30,6 @@ import tmu.fs.sim4stamp.util.JSONConvert;
  * @author Keiichi Tsumuta
  */
 public class ConnectorManager implements JSONConvert {
-
-	private static final Logger log = Logger.getLogger(ConnectorManager.class.getPackage().getName());
 
 	private List<Connector> connectors;
 
@@ -110,7 +107,7 @@ public class ConnectorManager implements JSONConvert {
 			}
 
 		} catch (Exception ex) {
-			log.severe(ex.toString());
+			ex.printStackTrace();
 		}
 	}
 

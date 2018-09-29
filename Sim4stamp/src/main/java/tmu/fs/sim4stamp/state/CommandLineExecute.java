@@ -27,7 +27,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
-import java.util.logging.Logger;
 import tmu.fs.sim4stamp.PanelManager;
 import tmu.fs.sim4stamp.SimService;
 import tmu.fs.sim4stamp.gui.ExecuteLogPanel;
@@ -38,8 +37,6 @@ import tmu.fs.sim4stamp.vdm.VdmCodeMaker;
  * @author Keiichi Tsumuta
  */
 public class CommandLineExecute implements Runnable {
-
-	private static final Logger log = Logger.getLogger(CommandLineExecute.class.getPackage().getName());
 
 	private static final String[] COMMAND_EXECUTE = new String[] { "-vdmpp", "-w", "-r", "vdm10", "-c", "UTF-8", "-e",
 			"\"new ExecuteMain().execute()\"" };

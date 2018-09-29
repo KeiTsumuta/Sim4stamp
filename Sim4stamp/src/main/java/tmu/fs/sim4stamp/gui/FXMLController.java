@@ -21,8 +21,6 @@ import java.io.File;
 import java.net.URL;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -61,7 +59,6 @@ import tmu.fs.sim4stamp.vdm.VdmCodeMaker;
  */
 public class FXMLController implements Initializable {
 
-	private static Logger log = Logger.getLogger(FXMLController.class.getPackage().getName());
 	private static final String SP = System.getProperty("file.separator");
 
 	@FXML
@@ -186,7 +183,7 @@ public class FXMLController implements Initializable {
 	}
 
 	public void fileOpenAction(ActionEvent event) {
-		log.info("file open!!");
+		//log.info("file open!!");
 		FileChooser fileChooser = new FileChooser();
 
 		fileChooser.setTitle("CSV出力データファイル選択");
@@ -198,14 +195,14 @@ public class FXMLController implements Initializable {
 		// ファイル選択
 		File file = fileChooser.showOpenDialog(MainApp.getStage());
 		if (file != null) {
-			log.info(file.getPath());
+			//log.info(file.getPath());
 		}
 
 	}
 
 	@FXML
 	public void sim4StampSettingsAction(ActionEvent event) {
-		log.info("file settings!!");
+		//log.info("file settings!!");
 		SystemParamPanel pp = new SystemParamPanel();
 		try {
 			pp.show(event);
@@ -216,7 +213,7 @@ public class FXMLController implements Initializable {
 
 	@FXML
 	public void projectSettingsAction(ActionEvent event) {
-		log.info("project settings!! " + selectedProjectName);
+		//log.info("project settings!! " + selectedProjectName);
 		ProjectSelectionPanel ps = new ProjectSelectionPanel();
 		try {
 			ps.show(event);
@@ -227,7 +224,7 @@ public class FXMLController implements Initializable {
 
 	@FXML
 	public void deviationPanelAction(ActionEvent event) {
-		log.info("deviation setting panel!!");
+		//log.info("deviation setting panel!!");
 		DeviationSettingPanel dsp = new DeviationSettingPanel();
 		try {
 			dsp.show(event);
@@ -238,7 +235,7 @@ public class FXMLController implements Initializable {
 
 	@FXML
 	public void conditionSaveActin(ActionEvent evnt) {
-		log.info("condition save!!");
+		//log.info("condition save!!");
 		SimService simService = SimService.getInstance();
 		String currentPj = simService.getCurrentProjectId();
 		if (currentPj != null) {
@@ -246,7 +243,7 @@ public class FXMLController implements Initializable {
 			String file = simService.getProjectParams(currentPj);
 			File f = new File(dir + SP + file);
 			simService.saveProjectParams(f);
-			log.log(Level.INFO, "save file:{0}", f.getAbsolutePath());
+			//log.log(Level.INFO, "save file:{0}", f.getAbsolutePath());
 		}
 	}
 
@@ -254,26 +251,26 @@ public class FXMLController implements Initializable {
 	public void appExitAction(ActionEvent event) {
 		SimService simService = SimService.getInstance();
 		simService.close();
-		log.info("Exit sim4stamp");
+		//log.info("Exit sim4stamp");
 		Platform.exit();
 		System.exit(0);
 	}
 
 	@FXML
 	public void initResultAction(ActionEvent event) {
-		log.info("result init");
+		//log.info("result init");
 		PanelManager.get().resetResult();
 	}
 
 	@FXML
 	public void initSecondResultAction(ActionEvent event) {
-		log.info("result init 2th");
+		//log.info("result init 2th");
 		PanelManager.get().resetSecondResult();
 	}
 
 	@FXML
 	public void vdmppCreateAction(ActionEvent event) {
-		log.info("VDM++ source create action");
+		//log.info("VDM++ source create action");
 		Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.OK, ButtonType.CANCEL);
 		alert.setTitle("コード生成");
 		alert.getDialogPane().setHeaderText("VDM++コード生成");
@@ -287,7 +284,7 @@ public class FXMLController implements Initializable {
 
 	@FXML
 	public void modelInfoUpdateAction(ActionEvent event) {
-		log.info("modelInfoUpdateAction:--");
+		//log.info("modelInfoUpdateAction:--");
 		SimService ss = SimService.getInstance();
 		String pjJson = ss.toJson();
 		// System.out.println("JSON:\n"+pjJson);
@@ -298,7 +295,7 @@ public class FXMLController implements Initializable {
 
 	@FXML
 	public void overtureExecuteAction(ActionEvent event) {
-		log.info("overtureExecuteAction:--");
+		//log.info("overtureExecuteAction:--");
 		// Platform.runLater(() -> {
 		try {
 			DeviationMapPanel dm = PanelManager.get().getDeviationMapPanel();

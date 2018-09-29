@@ -22,7 +22,6 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Logger;
 
 /**
  *
@@ -30,7 +29,6 @@ import java.util.logging.Logger;
  */
 public class SimServer implements Runnable {
 
-	private static final Logger log = Logger.getLogger(SimServer.class.getPackage().getName());
 	private ServerSocket server;
 
 	public SimServer(int portNo) throws Exception {
@@ -46,7 +44,7 @@ public class SimServer implements Runnable {
 				es.execute(new SimListener(client));
 			}
 		} catch (SocketException se) {
-			log.info("Socket loop out");
+			System.out.println("SimServer, Loop out.");
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}

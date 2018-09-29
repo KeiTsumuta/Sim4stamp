@@ -19,7 +19,10 @@ package tmu.fs.sim4stamp.gui.util;
 
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 /**
  * 画面にに関するユーティリティクラス
@@ -69,4 +72,23 @@ public class GuiUtil {
 		return new TextFormatter<>(filter);
 	}
 
+	public static double getFontWidth(GraphicsContext gc, String t) {
+		return getFontWidth(t, gc.getFont());
+	}
+
+	public static double getFontWidth(String t, Font font) {
+		Text text = new Text(t);
+		text.setFont(font);
+		return text.getLayoutBounds().getWidth();
+	}
+
+	public static double getFontHight(GraphicsContext gc) {
+		return getFontHight(gc.getFont());
+	}
+
+	public static double getFontHight(Font font) {
+		Text text = new Text("X");
+		text.setFont(font);
+		return text.getLayoutBounds().getHeight();
+	}
 }

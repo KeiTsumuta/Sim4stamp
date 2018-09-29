@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -70,9 +69,8 @@ import tmu.fs.sim4stamp.state.VdmRunStatus;
  */
 public class DeviationMapPanel implements Initializable, VdmRunStatus {
 
-	private static final Logger log = Logger.getLogger(DeviationMapPanel.class.getPackage().getName());
 	private static final double DISTANCE_CLOSED = 10.0;
-	private static final Color FILL_BACK_COLOR = Color.CORNSILK;
+	private static final Color FILL_BACK_COLOR = Color.FLORALWHITE;
 	private static final Color STROKE_COLOR = Color.BLACK;
 
 	private static final double ELEMENT_INTERVAL = 160;
@@ -106,6 +104,7 @@ public class DeviationMapPanel implements Initializable, VdmRunStatus {
 			return id;
 		}
 
+		@Override
 		public String toString() {
 			return name;
 		}
@@ -227,10 +226,10 @@ public class DeviationMapPanel implements Initializable, VdmRunStatus {
 	}
 
 	private void executeSim() {
-		log.info("overtureExecuteAction: " + OvertureExecManager.getInstance().isStepExecute());
+		//log.info("overtureExecuteAction: " + OvertureExecManager.getInstance().isStepExecute());
 		// Platform.runLater(() -> {
 		try {
-			clearSstepSelect();
+			clearStepSelect();
 			if (selectEcecuteMode == ExecuteMode.STEP) {
 				stepExecuteSimButton.setDisable(false);
 			}
@@ -248,8 +247,8 @@ public class DeviationMapPanel implements Initializable, VdmRunStatus {
 	}
 
 	private void executeStop() {
-		log.info("overtureExecute StopAction:--");
-		clearSstepSelect();
+		//log.info("overtureExecute StopAction:--");
+		clearStepSelect();
 		OvertureExecManager.getInstance().setStopRequest(true);
 		executeButton.setDisable(false);
 		stepExecuteSimButton.setDisable(true);
@@ -319,11 +318,9 @@ public class DeviationMapPanel implements Initializable, VdmRunStatus {
 				if (resultScenes.size() > 0) {
 					IOParam iop = aps.get(0);
 					gdd.reset(selectedConnector.getNodeToId() + "." + iop.getId());
-					int i = 1;
 					for (IOScene ios : resultScenes) {
 						GraphData data = ios.getGraphData(selectedConnector.getNodeToId(), iop.getId());
 						gdd.addData(ios.getDeviation().toString(), data);
-						i++;
 					}
 				}
 				gdd.show(t);
@@ -367,7 +364,7 @@ public class DeviationMapPanel implements Initializable, VdmRunStatus {
 		oldStepSelect = nodeId;
 	}
 
-	public void clearSstepSelect() {
+	public void clearStepSelect() {
 		oldStepSelect = "";
 		for (Element e : elementDisplays) {
 			e.setSelect(false);
@@ -589,10 +586,10 @@ public class DeviationMapPanel implements Initializable, VdmRunStatus {
 
 	class ConnectorPoint {
 
-		private Connector connector;
-		private double x1;
-		private double x2;
-		private double y1;
+		private final Connector connector;
+		private final double x1;
+		private final double x2;
+		private final double y1;
 
 		public ConnectorPoint(Connector conn, double x1, double y1, double x2) {
 			this.connector = conn;

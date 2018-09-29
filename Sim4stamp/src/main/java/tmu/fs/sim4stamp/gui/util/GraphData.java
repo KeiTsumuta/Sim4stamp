@@ -17,6 +17,8 @@
  */
 package tmu.fs.sim4stamp.gui.util;
 
+import tmu.fs.sim4stamp.model.iop.SafetyConstraintValue;
+
 /**
  *
  * @author keiichi
@@ -32,6 +34,11 @@ public class GraphData {
 	private double[] dData = new double[0];
 	private int[] iData = new int[0];
 	private boolean[] bData = new boolean[0];
+
+	private boolean disabled = false;
+
+	private SafetyConstraintValue upperValue;
+	private SafetyConstraintValue underValue;
 
 	public GraphData() {
 	}
@@ -88,4 +95,60 @@ public class GraphData {
 		ghType = GhType.BOOL;
 	}
 
+	public int getDataCount() {
+		try {
+			if (ghType == GhType.DOUBLE) {
+				return dData.length;
+			} else if (ghType == GhType.INT) {
+				return iData.length;
+			} else if (ghType == GhType.BOOL) {
+				return bData.length;
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return 0;
+	}
+
+	/**
+	 * @return the disable
+	 */
+	public boolean isDisabled() {
+		return disabled;
+	}
+
+	/**
+	 * @param disable the disable to set
+	 */
+	public void setDisabled(boolean disabled) {
+		this.disabled = disabled;
+	}
+
+	/**
+	 * @return the upperValue
+	 */
+	public SafetyConstraintValue getUpperValue() {
+		return upperValue;
+	}
+
+	/**
+	 * @param upperValue the upperValue to set
+	 */
+	public void setUpperValue(SafetyConstraintValue upperValue) {
+		this.upperValue = upperValue;
+	}
+
+	/**
+	 * @return the underValue
+	 */
+	public SafetyConstraintValue getUnderValue() {
+		return underValue;
+	}
+
+	/**
+	 * @param underValue the underValue to set
+	 */
+	public void setUnderValue(SafetyConstraintValue underValue) {
+		this.underValue = underValue;
+	}
 }

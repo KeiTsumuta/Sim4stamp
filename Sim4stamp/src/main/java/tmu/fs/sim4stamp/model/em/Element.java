@@ -20,11 +20,10 @@ package tmu.fs.sim4stamp.model.em;
 import javafx.scene.canvas.GraphicsContext;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
-import java.util.logging.Logger;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import org.json.JSONObject;
+import tmu.fs.sim4stamp.gui.util.GuiUtil;
 import tmu.fs.sim4stamp.model.iop.AppendParams;
 import tmu.fs.sim4stamp.model.iop.IOParam;
 import tmu.fs.sim4stamp.util.DisplayLevel;
@@ -36,8 +35,6 @@ import tmu.fs.sim4stamp.util.JSONConvert;
  * @author Keiichi Tsumuta
  */
 public abstract class Element implements JSONConvert, DisplayLevel {
-
-	private static final Logger log = Logger.getLogger(Element.class.getPackage().getName());
 
 	public enum EType { //
 		CONTROLLER, //
@@ -160,23 +157,19 @@ public abstract class Element implements JSONConvert, DisplayLevel {
 	}
 
 	protected double getFontWidth(GraphicsContext gc, String t) {
-		return getFontWidth(t, gc.getFont());
+		return GuiUtil.getFontWidth(gc, t);
 	}
 
 	protected double getFontWidth(String t, Font font) {
-		Text text = new Text(t);
-		text.setFont(font);
-		return text.getLayoutBounds().getWidth();
+		return GuiUtil.getFontWidth(t, font);
 	}
 
 	protected double getFontHight(GraphicsContext gc) {
-		return getFontHight(gc.getFont());
+		return GuiUtil.getFontHight(gc);
 	}
 
 	protected double getFontHight(Font font) {
-		Text text = new Text("X");
-		text.setFont(font);
-		return text.getLayoutBounds().getHeight();
+		return GuiUtil.getFontHight(font);
 	}
 
 	/**
@@ -286,7 +279,7 @@ public abstract class Element implements JSONConvert, DisplayLevel {
 				appendParams.addJson(AppendParams.ParamType.Element, jobj);
 			}
 		} catch (Exception ex) {
-			log.severe(ex.toString());
+			ex.printStackTrace();
 		}
 		jj.accumulate("element", jobj);
 	}

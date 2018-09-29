@@ -28,13 +28,11 @@ import tmu.fs.sim4stamp.PanelManager;
 import tmu.fs.sim4stamp.SimService;
 import tmu.fs.sim4stamp.gui.DeviationMapPanel;
 import tmu.fs.sim4stamp.model.IOParamManager;
-import tmu.fs.sim4stamp.model.co.Connector;
 import tmu.fs.sim4stamp.model.em.Element;
 import tmu.fs.sim4stamp.model.iop.IOParam;
 import tmu.fs.sim4stamp.model.iop.IOScene;
 import tmu.fs.sim4stamp.model.iop.IOValue;
 import tmu.fs.sim4stamp.util.DisplayItem;
-import tmu.fs.sim4stamp.util.DisplayLevel;
 import tmu.fs.sim4stamp.util.DisplayValues;
 
 /**
@@ -142,11 +140,12 @@ public class OvertureExecManager implements DisplayItem {
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
-				dpanel.drawMapPanel();
 			}
+			dpanel.drawMapPanel();
 			return true;
 		}
 		ioParamManager.addResultScene(executeScene);
+		dpanel.drawMapPanel();
 		PanelManager.get().resultDisplay();
 		return false;
 	}
