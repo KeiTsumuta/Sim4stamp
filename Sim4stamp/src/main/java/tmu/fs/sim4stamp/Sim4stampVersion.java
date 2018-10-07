@@ -23,6 +23,6 @@ package tmu.fs.sim4stamp;
  */
 public class Sim4stampVersion {
 
-	public static final String version = "0.8.4";
+	public static final String version = "0.8.5";
 
 }

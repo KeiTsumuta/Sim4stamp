@@ -27,6 +27,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import tmu.fs.sim4stamp.gui.util.GraphAxis;
 import tmu.fs.sim4stamp.gui.util.GraphData;
 import tmu.fs.sim4stamp.gui.util.GuiUtil;
@@ -49,7 +50,7 @@ public class LineGraphPanel implements Initializable {
 	private static final Color GRPAH_CONSTRAINT_COLOR = Color.MAGENTA;
 	private static final double W_AX_LEFT = 60.0;
 	private static final double H_AX_BOTTOM = 30.0;
-	private static final double INSET_TOP = 20.0;
+	private static final double INSET_TOP = 25.0;
 	private static final double INSET_RIGHT = 10.0;
 
 	private Canvas modelCanvas = null;
@@ -195,9 +196,13 @@ public class LineGraphPanel implements Initializable {
 		gc.strokeRect(W_AX_LEFT, INSET_TOP, graphWidth, graphHeight);
 
 		if (title != null) {
+			Font font = gc.getFont();
+			Font tfont = new Font(font.getSize()*1.3);
+			gc.setFont(tfont);
 			gc.setFill(GRPAH_TITLE_COLOR);
 			double fontTitleHeight = GuiUtil.getFontHight(gc);
-			gc.fillText(title, W_AX_LEFT + 10.0, fontTitleHeight + 2.0);
+			gc.fillText(title, W_AX_LEFT + 10.0, fontTitleHeight + 1.0);
+			gc.setFont(font);
 		}
 
 		if (getGraphDataList().size() == 0) {
