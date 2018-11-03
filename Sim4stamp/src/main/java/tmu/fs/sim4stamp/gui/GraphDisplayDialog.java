@@ -31,10 +31,16 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import tmu.fs.sim4stamp.SimService;
+import static tmu.fs.sim4stamp.gui.ResultPanel.GRAPH_LINE_COLORS;
 import tmu.fs.sim4stamp.gui.util.GraphData;
+import tmu.fs.sim4stamp.model.iop.IOScene;
 
 /**
  * グラフ表示ダイアログ
@@ -43,8 +49,7 @@ import tmu.fs.sim4stamp.gui.util.GraphData;
  */
 public class GraphDisplayDialog implements Initializable {
 
-	private static final String[] GRAPH_LINE_COLORS = {"#32cd32", "#ffa500", "#ff0000", "#4d66cc",
-		"#b22222", "#0000ff", "#daa520", "#40e0d0"};
+	private static final String[] GRAPH_LINE_COLORS = ResultPanel.GRAPH_LINE_COLORS;
 
 	@FXML
 	private Label graphTitle;
@@ -52,6 +57,9 @@ public class GraphDisplayDialog implements Initializable {
 	@FXML
 	private AnchorPane displayedGraph;
 	private LineGraphPanel linePanel;
+
+	@FXML
+	private VBox graphInfoPane2;
 
 	private static String mainTitle;
 	private static List<String> subTitles;
@@ -68,15 +76,31 @@ public class GraphDisplayDialog implements Initializable {
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
 		linePanel.reset();
+		graphInfoPane2.getChildren().clear();
 		if (subTitles != null) {
 			for (int i = 0; i < subTitles.size(); i++) {
 				linePanel.addData(i + "：" + subTitles.get(i), gdata.get(i));
+				Label li = new Label();
+				List<IOScene> resultScenes = SimService.getInstance().getIoParamManager().getResultScenes();
+				IOScene ios = resultScenes.get(i);
+				li.setText("●");
+				li.setTextFill(Color.web(GRAPH_LINE_COLORS[(i) % GRAPH_LINE_COLORS.length]));
+				li.setFont(new Font("Arial", 15));
+				Label la = new Label();
+				String deviation = (i + 1) + ":" + ios.getDeviation().toString();
+				la.setText(deviation);
+				//la.setTextFill(Color.web(GRAPH_LINE_COLORS[(i - 1) % GRAPH_LINE_COLORS.length]));
+				la.setFont(new Font("Arial", 15));
+				FlowPane fp = new FlowPane();
+				fp.getChildren().addAll(li, la);
+				graphInfoPane2.getChildren().add(fp);
 			}
 			graphTitle.textProperty().set(mainTitle);
 		} else {
 			graphTitle.textProperty().set("");
 		}
 		displayedGraph.getChildren().add(linePanel.getCanvas());
+		
 	}
 
 	public void reset(String title) {

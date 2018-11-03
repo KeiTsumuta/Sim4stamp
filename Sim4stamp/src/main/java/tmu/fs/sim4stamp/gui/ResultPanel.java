@@ -55,7 +55,7 @@ import tmu.fs.sim4stamp.model.iop.IOScene;
  */
 public class ResultPanel implements Initializable {
 
-	private static final String[] GRAPH_LINE_COLORS = {"#32cd32", "#ffa500", "#ff0000", "#4d66cc",
+	public static final String[] GRAPH_LINE_COLORS = {"#32cd32", "#ffa500", "#ff0000", "#4d66cc",
 		"#b22222", "#0000ff", "#daa520", "#40e0d0"};
 
 	private static final double CHART_INIT_WIDTH = 400.0;
