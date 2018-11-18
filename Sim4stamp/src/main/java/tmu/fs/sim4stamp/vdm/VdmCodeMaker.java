@@ -47,7 +47,9 @@ public class VdmCodeMaker extends ResourceFileIO {
 	private static final String ELEM_SLIB = "『作用素』.vdmpp";
 	private static final String STAMP_CTL_LIB = "ovt_ctl_lib_CtlTool.vdmpp";
 
-	public static final String CTLIB = "CtlLib-2.1.jar";
+	private static final String CTLIB_NAME = "CtlLib-";
+	private static final String CTLIB_REV = "2.1";
+	public static final String CTLIB = CTLIB_NAME + CTLIB_REV + ".jar";
 
 	private final SimService simService;
 	private final ElementManager elemMgr;
@@ -77,8 +79,9 @@ public class VdmCodeMaker extends ResourceFileIO {
 			writeFile(dir + SP + LIB_DIR + SP + ELEM_SLIB, elem.getBytes("UTF-8"));
 			String ctlib = getResource(R_VDM_LIB_DIR + STAMP_CTL_LIB);
 			writeFile(dir + SP + "lib" + SP + STAMP_CTL_LIB, ctlib.getBytes("UTF-8"));
-			byte[] jarlib = getBinResource(R_VDM_LIB_DIR + CTLIB);
-			writeFile(dir + SP + "lib" + SP + CTLIB, jarlib);
+			byte[] jarlib = getBinResource(R_VDM_LIB_DIR + CTLIB_NAME + CTLIB_REV + ".jar");
+			deleteOldFiles(dir + SP + "lib" + SP, CTLIB_NAME, ".jar");
+			writeFile(dir + SP + "lib" + SP + CTLIB_NAME + CTLIB_REV + ".jar", jarlib);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -188,8 +191,8 @@ public class VdmCodeMaker extends ResourceFileIO {
 					}
 				}
 				String ec4 = ec3.replace("$4", sbe.toString());
-				String file = dir + SP + "『" + elemId + "』.vdmpp_ini";
-				writeFile(file, ec4.getBytes("UTF-8"));
+				String file = dir + SP + "『" + elemId + "』.vdmpp";
+				writeElementClassFile(file, ec4.getBytes("UTF-8"));
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
