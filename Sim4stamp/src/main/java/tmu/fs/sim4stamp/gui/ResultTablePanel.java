@@ -39,7 +39,6 @@ public class ResultTablePanel implements Initializable {
 	private final TableView resultTable;
 	private ObservableList<String> headers;
 	private ObservableList<ObservableList> dataVals;
-	private static final DecimalFormat format = new DecimalFormat("#0.00");
 
 	public ResultTablePanel(TableView resultTable) {
 		this.resultTable = resultTable;

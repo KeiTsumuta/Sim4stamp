@@ -53,6 +53,7 @@ public class Injector extends Element {
 		double height = getFontHight(gc);
 		gc.setFill(STROKE_COLOR);
 		if (getLevel() == Level.Base) {
+            gc.fillText("Injector", x0 + 8, y0 + height);
 			gc.fillText(title, x0 + (RECT_WIDTH - width) / 2, y0 + (RECT_HIGHT + height) / 2);
 		} else {
 			gc.fillText(title, x0 + 8, y0 + height);

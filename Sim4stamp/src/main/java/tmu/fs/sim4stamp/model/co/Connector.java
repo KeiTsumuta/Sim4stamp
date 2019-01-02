@@ -24,7 +24,6 @@ import java.util.List;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import tmu.fs.sim4stamp.SimService;

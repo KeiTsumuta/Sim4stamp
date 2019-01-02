@@ -27,6 +27,17 @@ The simulation tool for STAMP/STPA
 
 本リポジトリ下の「documents」以下を参照ください。
 
+## jdk11以降による起動方法
+
+jdk11以降は、javaFXライブラリが同胞されてないので、別途、javaFXライブラリ（使用OSに該当するSDKライブラリ）を以下からダウンロードし、ライブラリを指定して起動してください。
+
+https://gluonhq.com/products/javafx/
+
+java --module-path AAA/javafx-sdk-11/lib --add-modules=javafx.controls,javafx.fxml  -cp sim4stamp-1.0.jar tmu.fs.sim4stamp.MainApp
+
+ここで「AAA」はjavaFXのライブラリのルートパスを示します。実行環境に合わせて設定してください。
+
+
 ## ライセンス
 
 ソースコードのライセンスはGPL-v3です。

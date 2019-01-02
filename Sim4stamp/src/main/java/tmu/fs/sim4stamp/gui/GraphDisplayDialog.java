@@ -38,7 +38,6 @@ import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import tmu.fs.sim4stamp.SimService;
-import static tmu.fs.sim4stamp.gui.ResultPanel.GRAPH_LINE_COLORS;
 import tmu.fs.sim4stamp.gui.util.GraphData;
 import tmu.fs.sim4stamp.model.iop.IOScene;
 
