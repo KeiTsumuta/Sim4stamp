@@ -41,7 +41,7 @@ import tmu.fs.sim4stamp.util.JSONConvert;
  */
 public class Connector implements JSONConvert, DisplayLevel {
 
-	private static final double ARROW_LENGTH = 20.0;
+	private static final double ARROW_LENGTH = 14.0;
 	private static final double DISTANCE_CLOSED = 10.0;
 	private static final Color STROKE_COLOR = Color.BLUE;
 	private static final Color STROKE2_COLOR = Color.SEASHELL;

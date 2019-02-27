@@ -55,7 +55,7 @@ public class ConnectorParamDialog implements Initializable {
 	private Label paramType;
 
 	@FXML
-	private TextField connectorParam;
+	private Label connectorParam;
 
 	@FXML
 	private Button addButton;
@@ -87,7 +87,7 @@ public class ConnectorParamDialog implements Initializable {
 		realParam.setSelected(true);
 		intParam.setToggleGroup(group);
 		boolParam.setToggleGroup(group);
-		connectorParam.setEditable(false);
+		//connectorParam.setEditable(false);
 		makeDisplayList();
 	}
 
