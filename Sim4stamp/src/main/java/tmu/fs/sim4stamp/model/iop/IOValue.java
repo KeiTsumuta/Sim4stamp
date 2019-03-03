@@ -123,7 +123,7 @@ public class IOValue implements JSONConvert {
 	}
 
 	public void set(int index, double value) {
-		if (index >= size) {
+		if (index >= size || doubleValues == null) {
 			return;
 		}
 		doubleValues[index] = value;
@@ -137,7 +137,7 @@ public class IOValue implements JSONConvert {
 	}
 
 	public void set(int index, int value) {
-		if (index >= size) {
+		if (index >= size || intValues == null) {
 			return;
 		}
 		intValues[index] = value;
@@ -151,7 +151,7 @@ public class IOValue implements JSONConvert {
 	}
 
 	public void set(int index, boolean value) {
-		if (index >= size) {
+		if (index >= size || boolValues == null) {
 			return;
 		}
 		boolValues[index] = value;
