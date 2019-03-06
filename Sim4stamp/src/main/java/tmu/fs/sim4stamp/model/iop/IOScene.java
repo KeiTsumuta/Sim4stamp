@@ -617,7 +617,7 @@ public class IOScene implements JSONConvert {
 	public void addJSON(JSONObject ob) {
 		JSONObject obj = new JSONObject();
 		obj.accumulate("sceneid", scene);
-		obj.accumulate("size", new Integer(size));
+		obj.accumulate("size", size);
 		List<JSONObject> arr0 = new ArrayList<>();
 		Iterator<String> it = nodeValues.keySet().iterator();
 		while (it.hasNext()) {
@@ -636,7 +636,7 @@ public class IOScene implements JSONConvert {
 			arr0.add(obj2);
 		}
 		obj.accumulate("values", arr0);
-		obj.accumulate("dStartIdx", new Integer(getDeviationStartIndex()));
+		obj.accumulate("dStartIdx", getDeviationStartIndex());
 		JSONObject devObj = new JSONObject();
 		devObj.accumulate("kind", "connector");
 		if (deviation == null) {

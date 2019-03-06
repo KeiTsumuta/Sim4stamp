@@ -23,10 +23,13 @@ import java.util.List;
 import tmu.fs.sim4stamp.SimService;
 import tmu.fs.sim4stamp.model.ConnectorManager;
 import tmu.fs.sim4stamp.model.ElementManager;
+import tmu.fs.sim4stamp.model.IOParamManager;
 import tmu.fs.sim4stamp.model.co.Connector;
 import tmu.fs.sim4stamp.model.em.Element;
 import tmu.fs.sim4stamp.model.iop.AppendParams;
 import tmu.fs.sim4stamp.model.iop.IOParam;
+import tmu.fs.sim4stamp.model.iop.IOScene;
+import tmu.fs.sim4stamp.model.iop.IOValue;
 import tmu.fs.sim4stamp.util.ResourceFileIO;
 
 /**
@@ -54,11 +57,14 @@ public class VdmCodeMaker extends ResourceFileIO {
     private final SimService simService;
     private final ElementManager elemMgr;
     private final ConnectorManager connMgr;
+    private final IOScene ioScene;
 
     public VdmCodeMaker() {
         simService = SimService.getInstance();
         elemMgr = simService.getElementManger();
         connMgr = simService.getConnectorManager();
+        IOParamManager iom = simService.getIoParamManager();
+        ioScene = iom.getCurrentScene();
     }
 
     public void make() {
@@ -127,7 +133,14 @@ public class VdmCodeMaker extends ResourceFileIO {
                 List<IOParam> iops = aps.getParams();
                 for (IOParam iop : iops) {
                     if (iop.getParamType() == AppendParams.ParamType.Element) {
-                        if (element.getType() == Element.EType.INJECTOR) {
+                        boolean initFlag = false;
+                        if (ioScene != null) {
+                            IOValue ioVal = ioScene.getIOData(elemId, iop.getId());
+                            if (ioVal != null && ioVal.isInitFlag()) {
+                                initFlag = true;
+                            }
+                        }
+                        if (element.getType() == Element.EType.INJECTOR || initFlag) {
                             importList.add(iop);
                         } else {
                             exportList.add(iop);

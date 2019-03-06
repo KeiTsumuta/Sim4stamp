@@ -204,8 +204,7 @@ public class IOValue implements JSONConvert {
 		upperValue.setVaue(sj.optString("upper", "*"));
 		underValue.setVaue(sj.optString("under", "*"));
 		attentions = new boolean[size];
-		// System.out.println("IOV parse:"+getId()+":"+sj.optString("id")+",
-		// "+list+","+initFlag);
+		//System.out.println("IOV parse:"+getId()+":"+sj.optString("id")+", "+list+","+initFlag);
 	}
 
 	@Override
