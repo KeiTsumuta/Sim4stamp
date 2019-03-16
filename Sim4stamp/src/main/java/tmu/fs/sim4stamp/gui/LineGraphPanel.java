@@ -151,7 +151,7 @@ public class LineGraphPanel implements Initializable {
 		if (underValue != null && underValue.isSetting()) {
 			heightMinValue = Math.min(heightMinValue, underValue.getConstraintValue());
 		}
-		yAxis = graphAxis.getScale(heightMaxValue, heightMinValue);
+		yAxis = graphAxis.getScale(heightMaxValue, heightMinValue, ghType);
 		pow = graphAxis.getPow();
 
 		drawCanvasPanel();
