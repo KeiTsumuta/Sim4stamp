@@ -17,6 +17,7 @@
  */
 package tmu.fs.sim4stamp;
 
+import tmu.fs.sim4stamp.model.LogicalValueManager;
 import javafx.application.Application;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
@@ -46,6 +47,8 @@ public class MainApp extends Application {
 		simService.setStage(stage);
 		simService.readInfoFile();
 		simService.readProjectFile(simService.getCurrentProjectId());
+        
+        LogicalValueManager.getInstance().readInitFile();
 
 		Parent root = FXMLLoader.load(getClass().getResource("/fxml/Scene.fxml"));
 		Scene scene = new Scene(root);

@@ -67,7 +67,9 @@ public class ElementTree {
             el.setTempFlag(false);
             map.put(el.getNodeId(), el);
         }
-
+        for (Element e : elems) {
+            e.setOrder(0);
+        }
         root = getRoot();
         if (root == null) {
             return;
@@ -76,7 +78,7 @@ public class ElementTree {
         flags = new boolean[connectors.size()];
         root.element.setTempFlag(true);
         findChildren(root);
-        //log.fine("tree make:" + root.toString());
+        //System.out.println("tree make:" + root.toString());
         series = new ArrayList<>();
         List<Element> temp = new ArrayList<>();
         List<Tree> rootChildren = root.getChildren();
@@ -84,22 +86,20 @@ public class ElementTree {
             temp.add(root.getElement());
             tree.getSeries(temp);
         }
-        int order = 1;
+        int order = 2;
         for (Element el : temp) {
-            if (el.getType() == Element.EType.CONTROLLED_EQUIPMENT) {
-                el.setOrder(order++);
-                series.add(el);
-            }
-        }
-        for (Element el : temp) {
-            if (el.getType() != Element.EType.CONTROLLED_EQUIPMENT && el.getType() != Element.EType.INJECTOR) {
-                el.setOrder(order++);
+            if (el.getType() != Element.EType.INJECTOR) {
+                if (el.getOrder() != 1) {
+                    el.setOrder(order++);
+                }
                 series.add(el);
             }
         }
         for (Element el : temp) {
             if (el.getType() == Element.EType.INJECTOR) {
-                el.setOrder(order++);
+                if (el.getOrder() != 1) {
+                    el.setOrder(order++);
+                }
                 series.add(el);
             }
         }
@@ -108,7 +108,7 @@ public class ElementTree {
     private void findChildren(Tree tree) {
         String id = tree.element.getNodeId();
         int order = tree.element.getOrder();
-        // System.out.println("tree:" + id + "(" + order + ")");
+        //System.out.println("tree:" + id + "(" + order + ")");
         for (int i = 0; i < connectors.size(); i++) {
             if (flags[i]) {
                 continue;
@@ -130,7 +130,9 @@ public class ElementTree {
                 if (el.isTempFlag() && el.getType() == Element.EType.CONTROLLED_EQUIPMENT) {
                     continue;
                 }
-                el.setOrder(order + 1);
+                if (el.getOrder() == 0) {
+                    el.setOrder(order + 1);
+                }
                 flags[i] = true;
                 Tree child = new Tree(el);
                 tree.addChild(child);
@@ -147,6 +149,13 @@ public class ElementTree {
 
     private Tree getRoot() {
         Tree root = null;
+        // ルートElement設定されているものを検索
+        for (Element ele : elements) {
+            if (ele.isRootElement()) {
+                return new Tree(ele);
+            }
+        }
+        // ルートElement設定なしのケース
         List<Element> ceList = new ArrayList<>();
         for (Element ele : elements) {
             if (ele.getType() == Element.EType.CONTROLLED_EQUIPMENT) {

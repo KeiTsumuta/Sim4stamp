@@ -417,7 +417,6 @@ public class DeviationMapPanel implements Initializable, VdmRunStatus {
 
 	private void getElementInfo() {
 		elementDisplays = new ArrayList<>();
-		List<Element> group = new ArrayList<>();
 		Map<String, Element> map = new HashMap<>();
 		for (Element e : elementSeries) {
 			if (!map.containsKey(e.getNodeId())) {
