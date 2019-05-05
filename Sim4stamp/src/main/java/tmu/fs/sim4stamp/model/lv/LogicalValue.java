@@ -24,19 +24,19 @@ package tmu.fs.sim4stamp.model.lv;
  */
 public class LogicalValue {
 
-    private String vid;
+    private String unitId;
     private String[] values;
     private int logicValue;
 
     public LogicalValue(String vid) {
-        this.vid = vid;
+        this.unitId = vid;
     }
 
     /**
-     * @return the vid
+     * @return the unitId
      */
-    public String getVid() {
-        return vid;
+    public String getUnitId() {
+        return unitId;
     }
 
     /**
@@ -87,7 +87,7 @@ public class LogicalValue {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("vid :").append(vid).append(" (");
+        sb.append("unitId :").append(unitId).append(" (");
         sb.append(getLogicalName()).append(") : ");
         for (int i = 0; i < values.length; i++) {
             if (i > 0) {

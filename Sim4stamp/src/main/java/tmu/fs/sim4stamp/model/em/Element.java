@@ -210,9 +210,10 @@ public abstract class Element implements JSONConvert, DisplayLevel {
                         id += "<R>";
                     } else if (type == IOParam.ValueType.INT) {
                         id += "<I>";
-                    }
-                    if (type == IOParam.ValueType.BOOL) {
+                    } else if (type == IOParam.ValueType.BOOL) {
                         id += "<B>";
+                    } else if (type == IOParam.ValueType.LOGI_VAL) {
+                        id += "<" + ioParam.getUnit() + ">";
                     }
                 }
                 if (displayLevel == Level.Progress) {

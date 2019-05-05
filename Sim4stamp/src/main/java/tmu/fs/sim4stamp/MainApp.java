@@ -47,8 +47,7 @@ public class MainApp extends Application {
 		simService.setStage(stage);
 		simService.readInfoFile();
 		simService.readProjectFile(simService.getCurrentProjectId());
-        
-        LogicalValueManager.getInstance().readInitFile();
+        simService.getLogicalValueManager().readInitFile();
 
 		Parent root = FXMLLoader.load(getClass().getResource("/fxml/Scene.fxml"));
 		Scene scene = new Scene(root);
@@ -59,11 +58,6 @@ public class MainApp extends Application {
 		stage.setScene(scene);
 		stage.show();
 		// System.out.println("start main");
-
-		ModelPanel mp = PanelManager.get().getModelPanel();
-		mp.initSize();
-		mp.drawCanvasPanel();
-		PanelManager.get().getConditionPanel().setItemDisplay();
 
 		scene.widthProperty().addListener(
 				(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) -> {

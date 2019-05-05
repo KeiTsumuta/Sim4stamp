@@ -25,130 +25,178 @@ import tmu.fs.sim4stamp.model.iop.SafetyConstraintValue;
  */
 public class GraphData {
 
-	public enum GhType {
-		DOUBLE, INT, BOOL
-	}
+    public enum GhType {
+        DOUBLE, INT, BOOL, LOGICAL_VALUE
+    }
 
-	private GhType ghType = GhType.DOUBLE;
+    private GhType ghType = GhType.DOUBLE;
 
-	private double[] dData = new double[0];
-	private int[] iData = new int[0];
-	private boolean[] bData = new boolean[0];
+    private double[] dData = new double[0];
+    private int[] iData = new int[0];
+    private boolean[] bData = new boolean[0];
+    
+    private String unit = null;
+    private String[] unitValues = new String[]{"","","","","",""};
 
-	private boolean disabled = false;
+    private boolean disabled = false;
 
-	private SafetyConstraintValue upperValue;
-	private SafetyConstraintValue underValue;
+    private SafetyConstraintValue upperValue;
+    private SafetyConstraintValue underValue;
 
-	public GraphData() {
-	}
+    public GraphData() {
+    }
 
-	/**
-	 * @return the ghType
-	 */
-	public GhType getGhType() {
-		return ghType;
-	}
+    /**
+     * @return the ghType
+     */
+    public GhType getGhType() {
+        return ghType;
+    }
 
-	/**
-	 * @return the dData
-	 */
-	public double[] getDoubleData() {
-		return dData;
-	}
+    /**
+     * @return the dData
+     */
+    public double[] getDoubleData() {
+        return dData;
+    }
 
-	/**
-	 * @param dData the dData to set
-	 */
-	public void setDoubleData(double[] dData) {
-		this.dData = dData;
-		ghType = GhType.DOUBLE;
-	}
+    /**
+     * @param dData the dData to set
+     */
+    public void setDoubleData(double[] dData) {
+        this.dData = dData;
+        ghType = GhType.DOUBLE;
+    }
 
-	/**
-	 * @return the iData
-	 */
-	public int[] getIntData() {
-		return iData;
-	}
+    /**
+     * @return the iData
+     */
+    public int[] getIntData() {
+        return iData;
+    }
 
-	/**
-	 * @param iData the iData to set
-	 */
-	public void setIntData(int[] iData) {
-		this.iData = iData;
-		ghType = GhType.INT;
-	}
+    /**
+     * @param iData the iData to set
+     */
+    public void setIntData(int[] iData) {
+        this.iData = iData;
+        ghType = GhType.INT;
+    }
 
-	/**
-	 * @return the bData
-	 */
-	public boolean[] getBoolData() {
-		return bData;
-	}
+    /**
+     * @return the bData
+     */
+    public boolean[] getBoolData() {
+        return bData;
+    }
 
-	/**
-	 * @param bData the bData to set
-	 */
-	public void setBoolData(boolean[] bData) {
-		this.bData = bData;
-		ghType = GhType.BOOL;
-	}
+    /**
+     * @param bData the bData to set
+     */
+    public void setBoolData(boolean[] bData) {
+        this.bData = bData;
+        ghType = GhType.BOOL;
+    }
 
-	public int getDataCount() {
-		try {
-			if (ghType == GhType.DOUBLE) {
-				return dData.length;
-			} else if (ghType == GhType.INT) {
-				return iData.length;
-			} else if (ghType == GhType.BOOL) {
-				return bData.length;
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		return 0;
-	}
+    /**
+     * @return the dData
+     */
+    public double[] getLogicalValueData() {
+        return dData;
+    }
 
-	/**
-	 * @return the disable
-	 */
-	public boolean isDisabled() {
-		return disabled;
-	}
+    /**
+     * @param dData the dData to set
+     */
+    public void setLogicalValueData(double[] dData) {
+        this.dData = dData;
+        ghType = GhType.LOGICAL_VALUE;
+    }
 
-	/**
-	 * @param disable the disable to set
-	 */
-	public void setDisabled(boolean disabled) {
-		this.disabled = disabled;
-	}
+    public int getDataCount() {
+        try {
+            if (ghType == GhType.DOUBLE) {
+                return dData.length;
+            } else if (ghType == GhType.INT) {
+                return iData.length;
+            } else if (ghType == GhType.BOOL) {
+                return bData.length;
+            } else if (ghType == GhType.LOGICAL_VALUE) {
+                return dData.length;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return 0;
+    }
 
-	/**
-	 * @return the upperValue
-	 */
-	public SafetyConstraintValue getUpperValue() {
-		return upperValue;
-	}
+    /**
+     * @return the disable
+     */
+    public boolean isDisabled() {
+        return disabled;
+    }
 
-	/**
-	 * @param upperValue the upperValue to set
-	 */
-	public void setUpperValue(SafetyConstraintValue upperValue) {
-		this.upperValue = upperValue;
-	}
+    /**
+     * @param disable the disable to set
+     */
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
+    }
 
-	/**
-	 * @return the underValue
-	 */
-	public SafetyConstraintValue getUnderValue() {
-		return underValue;
-	}
+    /**
+     * @return the upperValue
+     */
+    public SafetyConstraintValue getUpperValue() {
+        return upperValue;
+    }
 
-	/**
-	 * @param underValue the underValue to set
-	 */
-	public void setUnderValue(SafetyConstraintValue underValue) {
-		this.underValue = underValue;
-	}
+    /**
+     * @param upperValue the upperValue to set
+     */
+    public void setUpperValue(SafetyConstraintValue upperValue) {
+        this.upperValue = upperValue;
+    }
+
+    /**
+     * @return the underValue
+     */
+    public SafetyConstraintValue getUnderValue() {
+        return underValue;
+    }
+
+    /**
+     * @param underValue the underValue to set
+     */
+    public void setUnderValue(SafetyConstraintValue underValue) {
+        this.underValue = underValue;
+    }
+
+    /**
+     * @return the unit
+     */
+    public String getUnit() {
+        return unit;
+    }
+
+    /**
+     * @param unit the unit to set
+     */
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    /**
+     * @return the unitValues
+     */
+    public String[] getUnitValues() {
+        return unitValues;
+    }
+
+    /**
+     * @param unitValues the unitValues to set
+     */
+    public void setUnitValues(String[] unitValues) {
+        this.unitValues = unitValues;
+    }
 }

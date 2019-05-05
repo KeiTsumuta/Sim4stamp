@@ -11,50 +11,50 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="381.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/10.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tmu.fs.sim4stamp.gui.GraphDisplayDialog">
-	<children>
-		<BorderPane layoutX="14.0" layoutY="14.0" prefHeight="411.0" prefWidth="576.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-			<top>
-				<FlowPane prefHeight="33.0" prefWidth="576.0">
-					<Label prefHeight="38.0" text="データ：" BorderPane.alignment="CENTER">
-						<font>
-							<Font size="14.0" />
-						</font>
-						<padding>
-							<Insets left="20.0" />
-						</padding>
-					</Label>
-					<Label fx:id="graphTitle" prefHeight="20.0" prefWidth="260.0" text="Label">
-						<font>
-							<Font size="14.0" />
-						</font>
-					</Label>
-				</FlowPane>
-			</top>
-			<center>
-				<VBox prefHeight="322.0" prefWidth="576.0" BorderPane.alignment="CENTER">
-					<children>
-						<BorderPane prefHeight="328.0" prefWidth="600.0">
-							<bottom>
-								<Button mnemonicParsing="false" onAction="#okAction" text="OK" BorderPane.alignment="CENTER" />
-							</bottom>
-							<center>
-								<AnchorPane fx:id="displayedGraph" BorderPane.alignment="CENTER" />
-							</center>
-							<right>
-								<ScrollPane prefHeight="303.0" prefWidth="208.0" BorderPane.alignment="CENTER">
-									<content>
-										<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="301.0" prefWidth="206.0">
-											<children>
-												<VBox fx:id="graphInfoPane2" prefHeight="301.0" prefWidth="208.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-											</children>
-										</AnchorPane>
-									</content>
-								</ScrollPane>
-							</right>
-						</BorderPane>
-					</children>
-				</VBox>
-			</center>
-		</BorderPane>
-	</children>
+    <children>
+        <BorderPane layoutX="14.0" layoutY="14.0" prefHeight="411.0" prefWidth="576.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <top>
+                <FlowPane prefHeight="33.0" prefWidth="576.0">
+                    <Label prefHeight="38.0" text="データ：" BorderPane.alignment="CENTER">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                        <padding>
+                            <Insets left="20.0" />
+                        </padding>
+                    </Label>
+                    <Label fx:id="graphTitle" prefHeight="20.0" prefWidth="260.0" text="Label">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </Label>
+                </FlowPane>
+            </top>
+            <center>
+                <VBox prefHeight="322.0" prefWidth="576.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <BorderPane prefHeight="328.0" prefWidth="600.0">
+                            <bottom>
+                                <Button mnemonicParsing="false" onAction="#okAction" text="OK" BorderPane.alignment="CENTER" />
+                            </bottom>
+                            <center>
+                                <AnchorPane fx:id="displayedGraph" BorderPane.alignment="CENTER" />
+                            </center>
+                            <right>
+                                <ScrollPane prefHeight="303.0" prefWidth="208.0" BorderPane.alignment="CENTER">
+                                    <content>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="301.0" prefWidth="206.0">
+                                            <children>
+                                                <VBox fx:id="graphInfoPane2" prefHeight="301.0" prefWidth="208.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                            </children>
+                                        </AnchorPane>
+                                    </content>
+                                </ScrollPane>
+                            </right>
+                        </BorderPane>
+                    </children>
+                </VBox>
+            </center>
+        </BorderPane>
+    </children>
 </AnchorPane>

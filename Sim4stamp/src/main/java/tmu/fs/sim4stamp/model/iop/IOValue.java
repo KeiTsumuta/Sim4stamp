@@ -27,333 +27,384 @@ import tmu.fs.sim4stamp.util.JSONConvert;
  */
 public class IOValue implements JSONConvert {
 
-	private AppendParams.ParamType paramType = AppendParams.ParamType.Element;
-	private IOParam ioParam;
-	private int size;
-	private boolean initFlag;
-	private SafetyConstraintValue upperValue;
-	private SafetyConstraintValue underValue;
+    private AppendParams.ParamType paramType = AppendParams.ParamType.Element;
+    private IOParam ioParam;
+    private int size;
+    private boolean initFlag;
+    private SafetyConstraintValue upperValue;
+    private SafetyConstraintValue underValue;
 
-	private double[] doubleValues;
-	private int[] intValues;
-	private boolean[] boolValues;
+    private double[] doubleValues;
+    private int[] intValues;
+    private boolean[] boolValues;
 
-	private boolean[] attentions;
+    private boolean[] attentions;
 
-	public IOValue(AppendParams.ParamType ptype, IOParam ioParam, int size) {
-		this.paramType = ptype;
-		this.ioParam = ioParam;
-		this.size = size;
-		this.initFlag = false;
-		switch (ioParam.getType()) {
-		case REAL:
-			doubleValues = new double[size];
-			break;
-		case INT:
-			intValues = new int[size];
-			break;
-		case BOOL:
-			boolValues = new boolean[size];
-			break;
-		}
-		upperValue = new SafetyConstraintValue(ioParam.getType());
-		underValue = new SafetyConstraintValue(ioParam.getType());
-		attentions = new boolean[size];
-	}
+    public IOValue(AppendParams.ParamType ptype, IOParam ioParam, int size) {
+        this.paramType = ptype;
+        this.ioParam = ioParam;
+        this.size = size;
+        this.initFlag = false;
+        switch (ioParam.getType()) {
+            case REAL:
+                doubleValues = new double[size];
+                break;
+            case INT:
+                intValues = new int[size];
+                break;
+            case BOOL:
+                boolValues = new boolean[size];
+                break;
+            case LOGI_VAL:
+                doubleValues = new double[size];
+                break;
+        }
+        upperValue = new SafetyConstraintValue(ioParam.getType());
+        underValue = new SafetyConstraintValue(ioParam.getType());
+        attentions = new boolean[size];
+    }
 
-	/**
-	 * @return the parentId
-	 */
-	public String[] getParentId() {
-		return ioParam.getParentId();
-	}
+    /**
+     * @return the parentId
+     */
+    public String[] getParentId() {
+        return ioParam.getParentId();
+    }
 
-	/**
-	 * @return the id
-	 */
-	public String getId() {
-		return ioParam.getId();
-	}
+    /**
+     * @return the id
+     */
+    public String getId() {
+        return ioParam.getId();
+    }
 
-	public AppendParams.ParamType getParamType() {
-		return paramType;
-	}
+    public AppendParams.ParamType getParamType() {
+        return paramType;
+    }
 
-	/**
-	 * @return the type
-	 */
-	public IOParam.ValueType getType() {
-		return ioParam.getType();
-	}
+    /**
+     * @return the type
+     */
+    public IOParam.ValueType getType() {
+        return ioParam.getType();
+    }
 
-	public int getSize() {
-		return size;
-	}
+    public int getSize() {
+        return size;
+    }
 
-	public void setSize(int newSize) {
-		if (size == newSize) {
-			return;
-		}
-		if (size < newSize) {
-			switch (ioParam.getType()) {
-			case REAL:
-				double[] newDoubleValues = new double[newSize];
-				for (int i = 0; i < size; i++) {
-					newDoubleValues[i] = doubleValues[i];
-				}
-				doubleValues = newDoubleValues;
-				break;
-			case INT:
-				int[] newIntValues = new int[newSize];
-				for (int i = 0; i < size; i++) {
-					newIntValues[i] = intValues[i];
-				}
-				intValues = newIntValues;
-				break;
-			case BOOL:
-				boolean[] newBoolValues = new boolean[newSize];
-				for (int i = 0; i < size; i++) {
-					newBoolValues[i] = boolValues[i];
-				}
-				boolValues = newBoolValues;
-				break;
-			}
-		}
-		size = newSize;
-	}
+    public void setSize(int newSize) {
+        if (size == newSize) {
+            return;
+        }
+        if (size < newSize) {
+            switch (ioParam.getType()) {
+                case REAL:
+                    double[] newDoubleValues = new double[newSize];
+                    for (int i = 0; i < size; i++) {
+                        newDoubleValues[i] = doubleValues[i];
+                    }
+                    doubleValues = newDoubleValues;
+                    break;
+                case INT:
+                    int[] newIntValues = new int[newSize];
+                    for (int i = 0; i < size; i++) {
+                        newIntValues[i] = intValues[i];
+                    }
+                    intValues = newIntValues;
+                    break;
+                case BOOL:
+                    boolean[] newBoolValues = new boolean[newSize];
+                    for (int i = 0; i < size; i++) {
+                        newBoolValues[i] = boolValues[i];
+                    }
+                    boolValues = newBoolValues;
+                    break;
+                case LOGI_VAL:
+                    newDoubleValues = new double[newSize];
+                    for (int i = 0; i < size; i++) {
+                        newDoubleValues[i] = doubleValues[i];
+                    }
+                    doubleValues = newDoubleValues;
+                    break;
+            }
+        }
+        size = newSize;
+    }
 
-	public void set(int index, double value) {
-		if (index >= size || doubleValues == null) {
-			return;
-		}
-		doubleValues[index] = value;
-	}
+    public void set(int index, double value) {
+        if (index >= size || doubleValues == null) {
+            return;
+        }
+        doubleValues[index] = value;
+    }
 
-	/**
-	 * @return the doubleValues
-	 */
-	public double[] getDoubleValues() {
-		return doubleValues;
-	}
+    /**
+     * @return the doubleValues
+     */
+    public double[] getDoubleValues() {
+        return doubleValues;
+    }
 
-	public void set(int index, int value) {
-		if (index >= size || intValues == null) {
-			return;
-		}
-		intValues[index] = value;
-	}
+    public void set(int index, int value) {
+        if (index >= size || intValues == null) {
+            return;
+        }
+        intValues[index] = value;
+    }
 
-	/**
-	 * @return the intValues
-	 */
-	public int[] getIntValues() {
-		return intValues;
-	}
+    /**
+     * @return the intValues
+     */
+    public int[] getIntValues() {
+        return intValues;
+    }
 
-	public void set(int index, boolean value) {
-		if (index >= size || boolValues == null) {
-			return;
-		}
-		boolValues[index] = value;
-	}
+    public void set(int index, boolean value) {
+        if (index >= size || boolValues == null) {
+            return;
+        }
+        boolValues[index] = value;
+    }
 
-	/**
-	 * @return the boolValues
-	 */
-	public boolean[] getBoolValues() {
-		return boolValues;
-	}
+    /**
+     * @return the boolValues
+     */
+    public boolean[] getBoolValues() {
+        return boolValues;
+    }
 
-	@Override
-	public void parseJson(JSONObject sj) {
-		String list = sj.optString("list");
-		String[] tokens = list.split(",");
-		// String type = tokens[0];
-		size = tokens.length - 1;
-		switch (ioParam.getType()) {
-		case REAL:
-			doubleValues = new double[size];
-			for (int i = 0; i < size; i++) {
-				try {
-					doubleValues[i] = Double.parseDouble(tokens[i + 1]);
-				} catch (Exception ex) {
-				}
-			}
-			break;
-		case INT:
-			intValues = new int[size];
-			for (int i = 0; i < size; i++) {
-				try {
-					intValues[i] = Integer.parseInt(tokens[i + 1]);
-				} catch (Exception ex) {
-				}
-			}
-			break;
-		case BOOL:
-			boolValues = new boolean[size];
-			for (int i = 0; i < size; i++) {
-				if (tokens[i + 1].startsWith("t")) {
-					boolValues[i] = true;
-				} else {
-					boolValues[i] = false;
-				}
-			}
-			break;
-		}
-		initFlag = sj.optBoolean("init");
-		upperValue.setVaue(sj.optString("upper", "*"));
-		underValue.setVaue(sj.optString("under", "*"));
-		attentions = new boolean[size];
-		//System.out.println("IOV parse:"+getId()+":"+sj.optString("id")+", "+list+","+initFlag);
-	}
+    @Override
+    public void parseJson(JSONObject sj) {
+        String list = sj.optString("list");
+        String[] tokens = list.split(",");
+        // String type = tokens[0];
+        size = tokens.length - 1;
+        switch (ioParam.getType()) {
+            case REAL:
+                doubleValues = new double[size];
+                for (int i = 0; i < size; i++) {
+                    try {
+                        doubleValues[i] = Double.parseDouble(tokens[i + 1]);
+                    } catch (Exception ex) {
+                    }
+                }
+                break;
+            case INT:
+                intValues = new int[size];
+                for (int i = 0; i < size; i++) {
+                    try {
+                        intValues[i] = Integer.parseInt(tokens[i + 1]);
+                    } catch (Exception ex) {
+                    }
+                }
+                break;
+            case BOOL:
+                boolValues = new boolean[size];
+                for (int i = 0; i < size; i++) {
+                    if (tokens[i + 1].startsWith("t")) {
+                        boolValues[i] = true;
+                    } else {
+                        boolValues[i] = false;
+                    }
+                }
+                break;
+            case LOGI_VAL:
+                doubleValues = new double[size];
+                for (int i = 0; i < size; i++) {
+                    try {
+                        doubleValues[i] = Double.parseDouble(tokens[i + 1]);
+                    } catch (Exception ex) {
+                    }
+                }
+                break;
+        }
+        initFlag = sj.optBoolean("init");
+        upperValue.setVaue(sj.optString("upper", "*"));
+        underValue.setVaue(sj.optString("under", "*"));
+        attentions = new boolean[size];
+        //System.out.println("IOV parse:"+getId()+":"+sj.optString("id")+", "+list+","+initFlag);
+    }
 
-	@Override
-	public void addJSON(JSONObject mobj) {
-		JSONObject jobj = new JSONObject();
-		jobj.accumulate("id", getId());
-		jobj.accumulate("type", paramType);
-		jobj.accumulate("init", initFlag);
-		jobj.accumulate("upper", upperValue.getValue());
-		jobj.accumulate("under", underValue.getValue());
-		StringBuilder sb = new StringBuilder();
-		switch (ioParam.getType()) {
-		case REAL:
-			if (doubleValues != null) {
-				sb.append("REAL");
-				for (double d : doubleValues) {
-					sb.append(",").append(d);
-				}
-			}
-			break;
-		case INT:
-			if (intValues != null) {
-				sb.append("INT");
-				for (int i : intValues) {
-					sb.append(",").append(i);
-				}
-			}
-			break;
-		case BOOL:
-			if (boolValues != null) {
-				sb.append("BOOL");
-				for (boolean b : boolValues) {
-					sb.append(",").append(b);
-				}
-			}
-			break;
-		}
-		jobj.accumulate("list", sb.toString());
-		mobj.accumulate("iovalue", jobj);
-	}
+    @Override
+    public void addJSON(JSONObject mobj) {
+        JSONObject jobj = new JSONObject();
+        jobj.accumulate("id", getId());
+        jobj.accumulate("type", paramType);
+        jobj.accumulate("init", initFlag);
+        jobj.accumulate("upper", upperValue.getValue());
+        jobj.accumulate("under", underValue.getValue());
+        StringBuilder sb = new StringBuilder();
+        switch (ioParam.getType()) {
+            case REAL:
+                if (doubleValues != null) {
+                    sb.append("REAL");
+                    for (double d : doubleValues) {
+                        sb.append(",").append(d);
+                    }
+                }
+                break;
+            case INT:
+                if (intValues != null) {
+                    sb.append("INT");
+                    for (int i : intValues) {
+                        sb.append(",").append(i);
+                    }
+                }
+                break;
+            case BOOL:
+                if (boolValues != null) {
+                    sb.append("BOOL");
+                    for (boolean b : boolValues) {
+                        sb.append(",").append(b);
+                    }
+                }
+                break;
+            case LOGI_VAL:
+                if (doubleValues != null) {
+                    sb.append(ioParam.getUnit());
+                    for (double d : doubleValues) {
+                        sb.append(",").append(d);
+                    }
+                }
+                break;
+        }
+        jobj.accumulate("list", sb.toString());
+        mobj.accumulate("iovalue", jobj);
+    }
 
-	/**
-	 * @return the initFlag
-	 */
-	public boolean isInitFlag() {
-		return initFlag;
-	}
+    /**
+     * @return the initFlag
+     */
+    public boolean isInitFlag() {
+        return initFlag;
+    }
 
-	/**
-	 * @param initFlag the initFlag to set
-	 */
-	public void setInitFlag(boolean initFlag) {
-		this.initFlag = initFlag;
-	}
+    /**
+     * @param initFlag the initFlag to set
+     */
+    public void setInitFlag(boolean initFlag) {
+        this.initFlag = initFlag;
+    }
 
-	public void setUpperValue(String value) {
-		upperValue.setVaue(value);
-	}
+    public void setUpperValue(String value) {
+        upperValue.setVaue(value);
+    }
 
-	public String getUpperValue() {
-		return upperValue.getValue();
-	}
+    public String getUpperValue() {
+        return upperValue.getValue();
+    }
 
-	public void setUnderValue(String value) {
-		underValue.setVaue(value);
-	}
+    public void setUnderValue(String value) {
+        underValue.setVaue(value);
+    }
 
-	public String getUnderValue() {
-		return underValue.getValue();
-	}
+    public String getUnderValue() {
+        return underValue.getValue();
+    }
 
-	public void makeAttentions() {
-		switch (ioParam.getType()) {
-		case REAL:
-			if (doubleValues != null) {
-				if (upperValue.isSetting()) {
-					double upper = upperValue.getDoubleValue();
-					for (int i = 0; i < size; i++) {
-						if (doubleValues[i] > upper) {
-							attentions[i] = true;
-						}
-					}
-				}
-				if (underValue.isSetting()) {
-					double under = underValue.getDoubleValue();
-					for (int i = 0; i < size; i++) {
-						if (doubleValues[i] < under) {
-							attentions[i] = true;
-						}
-					}
-				}
-			}
-			break;
-		case INT:
-			if (intValues != null) {
-				if (upperValue.isSetting()) {
-					int upper2 = upperValue.getIntegerValue();
-					for (int i = 0; i < size; i++) {
-						if (intValues[i] > upper2) {
-							attentions[i] = true;
-						}
-					}
-				}
-				if (underValue.isSetting()) {
-					int under2 = underValue.getIntegerValue();
-					for (int i = 0; i < size; i++) {
-						if (intValues[i] < under2) {
-							attentions[i] = true;
-						}
-					}
-				}
-			}
-			break;
-		case BOOL:
-			if (boolValues != null) {
-				if (upperValue.isSetting()) {
-					boolean upper3 = upperValue.isBooleanValue();
-					for (int i = 0; i < size; i++) {
-						if (boolValues[i] == upper3) {
-							attentions[i] = true;
-						}
-					}
-				}
-				if (underValue.isSetting()) {
-					boolean under3 = underValue.isBooleanValue();
-					for (int i = 0; i < size; i++) {
-						if (boolValues[i] == under3) {
-							attentions[i] = true;
-						}
-					}
-				}
-			}
-			break;
-		}
-	}
+    public void makeAttentions() {
+        switch (ioParam.getType()) {
+            case REAL:
+                if (doubleValues != null) {
+                    if (upperValue.isSetting()) {
+                        double upper = upperValue.getDoubleValue();
+                        for (int i = 0; i < size; i++) {
+                            if (doubleValues[i] > upper) {
+                                attentions[i] = true;
+                            }
+                        }
+                    }
+                    if (underValue.isSetting()) {
+                        double under = underValue.getDoubleValue();
+                        for (int i = 0; i < size; i++) {
+                            if (doubleValues[i] < under) {
+                                attentions[i] = true;
+                            }
+                        }
+                    }
+                }
+                break;
+            case INT:
+                if (intValues != null) {
+                    if (upperValue.isSetting()) {
+                        int upper2 = upperValue.getIntegerValue();
+                        for (int i = 0; i < size; i++) {
+                            if (intValues[i] > upper2) {
+                                attentions[i] = true;
+                            }
+                        }
+                    }
+                    if (underValue.isSetting()) {
+                        int under2 = underValue.getIntegerValue();
+                        for (int i = 0; i < size; i++) {
+                            if (intValues[i] < under2) {
+                                attentions[i] = true;
+                            }
+                        }
+                    }
+                }
+                break;
+            case BOOL:
+                if (boolValues != null) {
+                    if (upperValue.isSetting()) {
+                        boolean upper3 = upperValue.isBooleanValue();
+                        for (int i = 0; i < size; i++) {
+                            if (boolValues[i] == upper3) {
+                                attentions[i] = true;
+                            }
+                        }
+                    }
+                    if (underValue.isSetting()) {
+                        boolean under3 = underValue.isBooleanValue();
+                        for (int i = 0; i < size; i++) {
+                            if (boolValues[i] == under3) {
+                                attentions[i] = true;
+                            }
+                        }
+                    }
+                }
+                break;
+            case LOGI_VAL:
+                if (doubleValues != null) {
+                    if (upperValue.isSetting()) {
+                        double upper = upperValue.getDoubleValue();
+                        for (int i = 0; i < size; i++) {
+                            if (doubleValues[i] > upper) {
+                                attentions[i] = true;
+                            }
+                        }
+                    }
+                    if (underValue.isSetting()) {
+                        double under = underValue.getDoubleValue();
+                        for (int i = 0; i < size; i++) {
+                            if (doubleValues[i] < under) {
+                                attentions[i] = true;
+                            }
+                        }
+                    }
+                }
+                break;
+        }
+    }
 
-	/**
-	 * @return the attentions
-	 */
-	public boolean[] getAttentions() {
-		return attentions;
-	}
+    /**
+     * @return the attentions
+     */
+    public boolean[] getAttentions() {
+        return attentions;
+    }
 
-	public SafetyConstraintValue getSafetyConstraintUpper() {
-		return upperValue;
-	}
+    public SafetyConstraintValue getSafetyConstraintUpper() {
+        return upperValue;
+    }
 
-	public SafetyConstraintValue getSafetyConstraintUnder() {
-		return underValue;
-	}
+    public SafetyConstraintValue getSafetyConstraintUnder() {
+        return underValue;
+    }
+
+    public String getUnit() {
+        return ioParam.getUnit();
+    }
 
 }

@@ -186,6 +186,8 @@ public class VdmCodeMaker extends ResourceFileIO {
                         sbi.append(id).append(" : int = getIntData(\"").append(id).append("\")");
                     } else if (type == IOParam.ValueType.BOOL) {
                         sbi.append(id).append(" : bool = getBoolData(\"").append(id).append("\")");
+                    } else if (type == IOParam.ValueType.LOGI_VAL) {
+                        sbi.append(id).append(" : real = getData(\"").append(id).append("\")");
                     }
                 }
                 String ec3 = ec2.replace("$3", sbi.toString());
@@ -203,6 +205,8 @@ public class VdmCodeMaker extends ResourceFileIO {
                         sbe.append("setIntData(\"").append(iop.getId()).append("\",0);");
                     } else if (type == IOParam.ValueType.BOOL) {
                         sbe.append("setBoolData(\"").append(iop.getId()).append("\",false);");
+                    } else if (type == IOParam.ValueType.LOGI_VAL) {
+                        sbe.append("setData(\"").append(iop.getId()).append("\",0.0);");
                     }
                 }
                 String ec4 = ec3.replace("$4", sbe.toString());

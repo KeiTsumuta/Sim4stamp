@@ -27,93 +27,115 @@ import tmu.fs.sim4stamp.util.JSONConvert;
  */
 public class IOParam implements JSONConvert {
 
-	public enum ValueType { //
-		REAL, // 浮動小数点
-		INT, // 整数
-		BOOL // true/false
-	}
+    public enum ValueType { //
+        REAL, // 浮動小数点
+        INT, // 整数
+        BOOL, // true/false
+        LOGI_VAL  // Logical Value
+    }
 
-	private final AppendParams.ParamType pType; // Element or Connector
-	private final String[] parentId; // pTypeがConnectorのみ有意（Elementは「null」）
-	private final String id;
-	private final ValueType vType;
-	private boolean initData;
+    private final AppendParams.ParamType pType; // Element or Connector
+    private final String[] parentId; // pTypeがConnectorのみ有意（Elementは「null」）
+    private final String id;
+    private final ValueType vType;
+    private String unit;
+    private boolean initData;
 
-	public IOParam(AppendParams.ParamType ptype, String[] parentId, String id, ValueType type) {
-		this.pType = ptype;
-		this.parentId = parentId;
-		this.id = id;
-		this.vType = type;
-		this.initData = false;
-	}
+    public IOParam(AppendParams.ParamType ptype, String[] parentId, String id, ValueType type, String unit) {
+        this.pType = ptype;
+        this.parentId = parentId;
+        this.id = id;
+        this.vType = type;
+        this.initData = false;
+        this.unit = unit;
+    }
 
-	public AppendParams.ParamType getParamType() {
-		return pType;
-	}
+    public AppendParams.ParamType getParamType() {
+        return pType;
+    }
 
-	public String[] getParentId() {
-		return parentId;
-	}
+    public String[] getParentId() {
+        return parentId;
+    }
 
-	public String getId() {
-		return id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public ValueType getType() {
-		return vType;
-	}
+    public ValueType getType() {
+        return vType;
+    }
 
-	public String getTypeToString() {
-		String s = "";
-		switch (vType) {
-		case REAL:
-			s = "real";
-			break;
-		case INT:
-			s = "int";
-			break;
-		case BOOL:
-			s = "bool";
-			break;
-		}
-		return s;
-	}
+    public String getTypeToString() {
+        String s = "";
+        switch (vType) {
+            case REAL:
+                s = "real";
+                break;
+            case INT:
+                s = "int";
+                break;
+            case BOOL:
+                s = "bool";
+                break;
+            case LOGI_VAL:
+                s = "logic";
+                break;
+        }
+        return s;
+    }
 
-	/**
-	 * @return the initData
-	 */
-	public boolean isInitData() {
-		return initData;
-	}
+    /**
+     * @return the initData
+     */
+    public boolean isInitData() {
+        return initData;
+    }
 
-	/**
-	 * @param initData
-	 *            the initData to set
-	 */
-	public void setInitData(boolean initData) {
-		this.initData = initData;
-	}
+    /**
+     * @param initData the initData to set
+     */
+    public void setInitData(boolean initData) {
+        this.initData = initData;
+    }
 
-	@Override
-	public void parseJson(JSONObject sj) {
+    /**
+     * @return the unit
+     */
+    public String getUnit() {
+        return unit;
+    }
 
-	}
+    /**
+     * @param unit the unit to set
+     */
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
 
-	@Override
-	public void addJSON(JSONObject jj) {
-		JSONObject jobj = new JSONObject();
-		jobj.accumulate("type", getTypeToString());
-		jobj.accumulate("id", id);
-		JSONArray arr = new JSONArray();
-		for (String pi : parentId) {
-			arr.put(pi);
-		}
-		jobj.accumulate("parent", arr);
-		jj.accumulate("ioparam", jobj);
-	}
+    @Override
+    public void parseJson(JSONObject sj) {
 
-	public String toString() {
-		return parentId + "," + id + "," + getTypeToString();
-	}
+    }
+
+    @Override
+    public void addJSON(JSONObject jj) {
+        JSONObject jobj = new JSONObject();
+        jobj.accumulate("type", getTypeToString());
+        if (unit != null && unit.length() > 0) {
+            jobj.accumulate("unit", unit);
+        }
+        jobj.accumulate("id", id);
+        JSONArray arr = new JSONArray();
+        for (String pi : parentId) {
+            arr.put(pi);
+        }
+        jobj.accumulate("parent", arr);
+        jj.accumulate("ioparam", jobj);
+    }
+
+    public String toString() {
+        return parentId + "," + id + "," + getTypeToString();
+    }
 
 }

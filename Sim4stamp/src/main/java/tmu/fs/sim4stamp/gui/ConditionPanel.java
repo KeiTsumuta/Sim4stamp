@@ -20,9 +20,7 @@ package tmu.fs.sim4stamp.gui;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -38,24 +36,26 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Control;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import tmu.fs.sim4stamp.PanelManager;
 import tmu.fs.sim4stamp.SimService;
 import tmu.fs.sim4stamp.gui.util.GuiUtil;
 import tmu.fs.sim4stamp.model.IOParamManager;
+import tmu.fs.sim4stamp.model.LogicalValueManager;
 import tmu.fs.sim4stamp.model.em.Element;
 import tmu.fs.sim4stamp.model.iop.AppendParams;
 import tmu.fs.sim4stamp.util.Deviation;
 import tmu.fs.sim4stamp.model.iop.IOParam;
 import tmu.fs.sim4stamp.model.iop.IOScene;
 import tmu.fs.sim4stamp.model.iop.IOValue;
+import tmu.fs.sim4stamp.model.lv.LogicalValue;
 
 /**
  * シミュレーションに関する計算パラメータの条件設定を行うパネル
@@ -65,6 +65,7 @@ import tmu.fs.sim4stamp.model.iop.IOValue;
 public class ConditionPanel implements Initializable {
 
     private static final DecimalFormat D_FORMAT = new DecimalFormat("#0.00");
+    private static final DecimalFormat L_FORMAT = new DecimalFormat("#0");
     private static final Deviation[] CONNECTOR_DEVIATIONS = { //
         Deviation.NORMAL, //
         Deviation.NOT_PROVIDING, //
@@ -76,8 +77,6 @@ public class ConditionPanel implements Initializable {
 
     private final TextField sceneTitle;
     private final TableView simItemParamView; // 構成要素パラメータテーブル
-
-    private Map<String, RadioButton> radioMap;
 
     private final TextField simInitSeqSize; // 時系列数
     private final TableView initDataTable; // 初期値設定テーブル
@@ -97,7 +96,6 @@ public class ConditionPanel implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        radioMap = new HashMap<>();
         IOScene ioScene = SimService.getInstance().getIoParamManager().getCurrentScene();
         sceneTitle.setText(ioScene.getScene());
         simInitSeqSize.textProperty().set(Integer.toString(ioScene.getSize()));
@@ -198,14 +196,14 @@ public class ConditionPanel implements Initializable {
                         colTitles.add(colChildren);
                     }
                 });
-                setItems(etypes, colParents, colTitles);
+                setItems(colParents, colTitles);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         });
     }
 
-    private void setItems(List<Element.EType> etypes, List<String> elements, List<List<IOParam>> elementParams) {
+    private void setItems(List<String> elements, List<List<IOParam>> elementParams) {
         ObservableList<ElementItem> eis = FXCollections.observableArrayList();
         IOScene currentIoScene = SimService.getInstance().getIoParamManager().getCurrentScene();
         int n = 0;
@@ -226,8 +224,11 @@ public class ConditionPanel implements Initializable {
         simItemParamView.setItems(eis);
     }
 
+    // 初期値設定テーブルの処理
     public void setInitTable() {
         Platform.runLater(() -> {
+            IOParamManager iom = SimService.getInstance().getIoParamManager();
+            IOScene ioScene = iom.getCurrentScene();
             try {
                 List<ElementItem> initList = new ArrayList<>();
                 ObservableList<ElementItem> eis = simItemParamView.getItems();
@@ -263,7 +264,18 @@ public class ConditionPanel implements Initializable {
                         column.setCellValueFactory((CellDataFeatures<ObservableList, String> param) -> {
                             return new SimpleStringProperty(param.getValue().get(idx).toString());
                         });
-                        column.setCellFactory(TextFieldTableCell.<ObservableList>forTableColumn());
+                        ElementItem ei = initList.get(idx - 1);
+                        IOParam.ValueType type = ei.getType();
+                        if (type == IOParam.ValueType.LOGI_VAL) {
+                            String unit = ei.getUnit();
+                            LogicalValue lv = LogicalValueManager.getLogicalValue(unit);
+                            String[] vals = lv.getValues();
+                            column.setCellFactory(
+                                ComboBoxTableCell.forTableColumn(
+                                    vals[0] + "(0)", vals[1] + "(1)", vals[2] + "(2)", vals[3] + "(3)", vals[4] + "(4)", vals[5] + "(5)"));
+                        } else {
+                            column.setCellFactory(TextFieldTableCell.<ObservableList>forTableColumn());
+                        }
                         column.setOnEditCommit(new EventHandler<CellEditEvent<ObservableList, String>>() {
                             @Override
                             public void handle(CellEditEvent<ObservableList, String> event) {
@@ -274,23 +286,33 @@ public class ConditionPanel implements Initializable {
                                 IOValue ioValue = ioScene.getIOData(idel[0], idel[1]);
                                 ObservableList<String> list = event.getTableView().getItems().get(row);
                                 IOParam.ValueType type = ioValue.getType();
+                                String dispVal = "";
                                 if (type == IOParam.ValueType.REAL) {
                                     double[] d = ioScene.getData(idel[0], idel[1]);
                                     d[row] = getDouble(event.getNewValue());
-                                    list.set(idx, D_FORMAT.format(d[row]));
+                                    dispVal = D_FORMAT.format(d[row]);
                                 } else if (type == IOParam.ValueType.INT) {
                                     int[] n = ioScene.getIntData(idel[0], idel[1]);
                                     n[row] = getInt(event.getNewValue());
-                                    list.set(idx, Integer.toString(n[row]));
+                                    dispVal = Integer.toString(n[row]);
                                 } else if (type == IOParam.ValueType.BOOL) {
                                     boolean[] b = ioScene.getBoolData(idel[0], idel[1]);
                                     b[row] = getBoolean(event.getNewValue());
                                     if (b[row]) {
-                                        list.set(idx, "true");
+                                        dispVal = "true";
                                     } else {
-                                        list.set(idx, "false");
+                                        dispVal = "false";
                                     }
+                                } else if (type == IOParam.ValueType.LOGI_VAL) {
+                                    double[] d = ioScene.getData(idel[0], idel[1]);
+                                    String val = event.getNewValue();
+                                    String unit = ioValue.getUnit();
+                                    d[row] = getParseLogicalValue(val, unit);
+                                    dispVal = val + "(" + L_FORMAT.format(d[row]) + ")";
+                                    //dispVal =  L_FORMAT.format(d[row]);
                                 }
+                                list.set(idx, dispVal);
+
                                 if ((row + 1) < ioValue.getSize()) {
                                     initDataTable.getSelectionModel().clearAndSelect(row + 1, event.getTableColumn());
                                 }
@@ -302,8 +324,6 @@ public class ConditionPanel implements Initializable {
                     }
                     colIndex++;
                 }
-                IOParamManager iom = SimService.getInstance().getIoParamManager();
-                IOScene ioScene = iom.getCurrentScene();
                 ioScene.dataInitSelection();
                 ioScene.setScene(sceneTitle.getText());
                 // sceneTitle.setText(ioScene.getScene());
@@ -330,8 +350,7 @@ public class ConditionPanel implements Initializable {
                         if (i == 0) {
                             ioScene.initDataSelect(ei.getElementId(), ei.getParamId());
                         }
-                        IOValue ioValue = ioScene.getIOData(ei.getElementId(), ei.getParamId());
-                        IOParam.ValueType type = ioValue.getType();
+                        IOParam.ValueType type = ei.getType();
                         if (type == IOParam.ValueType.REAL) {
                             double[] d = ioScene.getData(ei.getElementId(), ei.getParamId());
                             rows.add(D_FORMAT.format(d[i]));
@@ -345,6 +364,10 @@ public class ConditionPanel implements Initializable {
                             } else {
                                 rows.add("false");
                             }
+                        } else if (type == IOParam.ValueType.LOGI_VAL) {
+                            double[] d = ioScene.getData(ei.getElementId(), ei.getParamId());
+                            String unitValue = getLogicalValueName(ei.getUnit(), (int) d[i]);
+                            rows.add(unitValue + "(" + L_FORMAT.format(d[i]) + ")");
                         }
                     }
                     initDataVals.add(rows);
@@ -414,7 +437,31 @@ public class ConditionPanel implements Initializable {
             for (int i = 0; i < b.length; i++) {
                 b[i] = false;
             }
+        } else if (type == IOParam.ValueType.LOGI_VAL) {
+            double[] d = ioScene.getData(ei.getElementId(), ei.getParamId());
+            for (int i = 0; i < d.length; i++) {
+                d[i] = 0.0;
+            }
         }
+    }
+
+    private double getParseLogicalValue(String value, String unit) {
+        LogicalValue lv = LogicalValueManager.getLogicalValue(unit);
+        String[] vals = lv.getValues();
+        for (int i = 0; i <= 5; i++) {
+            if (value.startsWith(vals[i])) {
+                return i;
+            }
+        }
+        return 0.0;
+    }
+
+    private String getLogicalValueName(String unitId, int value) {
+        LogicalValue lv = LogicalValueManager.getLogicalValue(unitId);
+        if (value >= 0 && value <= 5) {
+            return lv.getValues()[value];
+        }
+        return "";
     }
 
     public class ElementItem {
@@ -460,6 +507,14 @@ public class ConditionPanel implements Initializable {
 
         public SimpleStringProperty getParamIdProperty() {
             return paramId;
+        }
+
+        public IOParam.ValueType getType() {
+            return ioparam.getType();
+        }
+
+        public String getUnit() {
+            return ioparam.getUnit();
         }
 
         /**

@@ -30,7 +30,7 @@ public class GraphAxis {
         {0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0},
         {0.0, 1.0, 2.0, 3.0, 4.0, 5.0},
         {0.0, 1.0, 2.0, 3.0, 4.0},
-        {0.0, 1.0, 2.0, 3.0},           // intはここから
+        {0.0, 1.0, 2.0, 3.0}, // intはここから
         {0.0, 0.5, 1.0, 1.5, 2.0},
         {0.0, 0.5, 1.0, 1.5},
         {0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2}
@@ -43,6 +43,9 @@ public class GraphAxis {
     }
 
     public double[] getScale(double max, double min, GraphData.GhType ghType) {
+        if (ghType == GraphData.GhType.LOGICAL_VALUE) {
+            return new double[]{0.0, 1.0, 2.0, 3.0, 4.0, 5.0};
+        }
         double[] retList = new double[]{0.0, 1.0};
         int axizIndex = 0;
         pow = 0;

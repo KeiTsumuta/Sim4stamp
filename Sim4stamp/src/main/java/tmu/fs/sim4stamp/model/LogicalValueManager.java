@@ -17,7 +17,9 @@
  */
 package tmu.fs.sim4stamp.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -33,15 +35,16 @@ public class LogicalValueManager extends ResourceFileIO implements java.io.Seria
 
     private static final String LV_INI = "/lv/logicalValues.json";
 
-    private static LogicalValueManager logicalValueManager = new LogicalValueManager();
+    private static Map<String, LogicalValue> lvMap;
+    private static List<String> units;
 
-    private Map<String, LogicalValue> lvMap = new HashMap<>();
-
-    private LogicalValueManager() {
+    public LogicalValueManager() {
+        init();
     }
 
-    public static LogicalValueManager getInstance() {
-        return logicalValueManager;
+    public void init() {
+        units = new ArrayList<>();
+        lvMap = new HashMap<>();
     }
 
     public void readInitFile() {
@@ -50,7 +53,7 @@ public class LogicalValueManager extends ResourceFileIO implements java.io.Seria
         JSONArray jarr = job.getJSONArray("logiacalValues");
         for (int i = 0; i < jarr.length(); i++) {
             JSONObject jo = jarr.getJSONObject(i);
-            String vid = jo.optString("kind");
+            String vid = jo.optString("unit");
             JSONArray ar = jo.getJSONArray("value");
             LogicalValue lv = new LogicalValue(vid);
             String[] vals = new String[6];
@@ -58,9 +61,22 @@ public class LogicalValueManager extends ResourceFileIO implements java.io.Seria
                 vals[k] = ar.getString(k);
             }
             lv.setValues(vals);
+            units.add(vid);
             lvMap.put(vid, lv);
             //System.out.println(lv.toString());
         }
     }
 
+    public static List<String> getUnitList() {
+        return units;
+    }
+
+    public static LogicalValue getLogicalValue(String unitId) {
+        LogicalValue lv = lvMap.get(unitId);
+        if (lv == null && units.size() > 0) {
+            // 該当単位が未登録の場合、デフォルト単位を返す
+            lv = lvMap.get(units.get(0));
+        }
+        return lv;
+    }
 }
