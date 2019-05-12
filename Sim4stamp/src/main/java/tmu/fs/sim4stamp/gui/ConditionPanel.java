@@ -273,6 +273,10 @@ public class ConditionPanel implements Initializable {
                             column.setCellFactory(
                                 ComboBoxTableCell.forTableColumn(
                                     vals[0] + "(0)", vals[1] + "(1)", vals[2] + "(2)", vals[3] + "(3)", vals[4] + "(4)", vals[5] + "(5)"));
+                        } else if (type == IOParam.ValueType.BOOL) {
+                            column.setCellFactory(ComboBoxTableCell.forTableColumn("true", "false"));
+                        } else if (type == IOParam.ValueType.INT) {
+                            column.setCellFactory(TextFieldTableCell.<ObservableList>forTableColumn());
                         } else {
                             column.setCellFactory(TextFieldTableCell.<ObservableList>forTableColumn());
                         }

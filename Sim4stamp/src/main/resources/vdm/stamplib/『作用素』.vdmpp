@@ -86,7 +86,104 @@ operations
 	public toString : () ==> seq of char
 	toString() ==
 		return i要素ID;
-
+	
+	-- 5値論理演算
+	-- 対応
+	public op5Equ : real ==> real
+	op5Equ(value) ==
+	(dcl rValue : real := 0.0;
+		if value <= 0.0 then
+		(
+			rValue := 0.0
+		)else if value > 5.0 then
+		(
+		  rValue := 5.0;
+		)else if value < 1.0 then
+		(
+		  rValue := 1.0;
+		)else(
+			rValue := value;
+		);
+		return rValue
+	);
+	-- 反転
+	public op5Inv : real ==> real
+	op5Inv(value) ==
+	(dcl rValue : real := 0.0;
+		if value <= 0.0 then
+		(
+			rValue := 0.0
+		)else if value > 5.0 then
+		(
+		  rValue := 1.0;
+		)else if value < 1.0 then
+		(
+		  rValue := 5.0;
+		)else(
+			rValue := 6.0 - value;
+		);
+		return rValue
+	);
+	-- OR
+	public op5OR : real * real ==> real
+	op5OR(valueA, valueB) ==
+	(dcl rValue : real := valueA * valueB;
+		if rValue <= 0.0 then
+		(
+			if valueA >= 4.5 or valueB >= 4.5
+			then return 5.0
+			else return 0.0;
+		);
+		if valueA > valueB
+		then rValue := valueA
+		else rValue := valueB;
+		return rValue;
+	);
+	-- AND
+	public op5AND : real * real ==> real
+	op5AND(valueA, valueB) ==
+	(dcl rValue : real := valueA * valueB;
+		if rValue <= 0.0 then
+		(
+			if (valueA <> 0.0 and valueA < 1.5) or (valueB <> 0.0 and valueB < 1.5)
+			then return 1.0
+			else return 0.0;
+		);
+		if valueA < valueB
+		then rValue := valueA
+		else rValue := valueB;
+		return rValue;
+	);
+	-- 差分
+	public op5Diff : real * real ==> real
+	op5Diff(valueA, valueB) ==
+	(dcl rValue : real := 0.0;
+		if (valueA * valueB) <= 0.0 then return 0.0;
+		let	diff : real = valueB - valueA
+		in(
+			if diff = 0.0 then return 3.0;
+			
+			if diff < 0.0 then
+			(
+				rValue := 2.999 + diff / 2.0;
+			)else(
+				rValue := 3.001 + diff / 2.0;
+			);
+		);
+		return rValue;
+	);
+	-- 正規化
+	public op5Norm : real ==> real
+	op5Norm(value) ==
+	(
+		if value <= 0.0 then return 0.0
+		else if value < 1.5 then return 1.0
+		else if value < 2.5 then return 2.0
+		else if value < 3.5 then return 3.0
+		else if value < 4.5 then return 4.0
+		else return 5.0;
+	);
+	
 functions
 
 end 『作用素』
