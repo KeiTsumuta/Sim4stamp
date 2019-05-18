@@ -102,6 +102,20 @@ public class OvertureExecManager implements DisplayItem {
         // ioParamManager.setCurrentScene(executeScene);
         loopMax = executeScene.getSize();
         DisplayValues.getInstance().inject(this);
+        // 5論理型の初期値設定
+        for (String nodeId : nodeIds) {
+            List<IOParam> iops = ioParamManager.getParams(nodeId);
+            for (IOParam iop : iops) {
+                IOValue ioValue = executeScene.getIOData(nodeId, iop.getId());
+                IOParam.ValueType type = ioValue.getType();
+                if (type == IOParam.ValueType.LOGI_VAL) {
+                    double[] dVals = ioValue.getDoubleValues();
+                    if (dVals != null && dVals[0] == 0.0) {
+                        dVals[0] = 3.0; // 初期値設定なしなら、中心値を与える。
+                    }
+                }
+            }
+        }
     }
 
     public boolean hasNext() {

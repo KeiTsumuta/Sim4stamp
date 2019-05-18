@@ -183,6 +183,15 @@ operations
 		else if value < 4.5 then return 4.0
 		else return 5.0;
 	);
+	-- リミッター
+	public op5Limit : real ==> real
+	op5Limit(value) ==
+	(
+		if value = 0.0 then return 0.0
+		else if value > 5.0 then return 5.0
+		else if value < 1.0 then return 1.0;
+		return value;
+	);
 	
 functions
 
