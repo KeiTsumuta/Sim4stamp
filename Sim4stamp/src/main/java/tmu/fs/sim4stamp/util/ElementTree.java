@@ -89,12 +89,11 @@ public class ElementTree {
         int order = 2;
         for (Element el : temp) {
             if (el.getType() != Element.EType.INJECTOR) {
-                if (el.getOrder() != 1) {
-                    el.setOrder(order++);
-                }
+                order = Math.max(el.getOrder(), order);
                 series.add(el);
             }
         }
+        order++;
         for (Element el : temp) {
             if (el.getType() == Element.EType.INJECTOR) {
                 if (el.getOrder() != 1) {
@@ -139,9 +138,9 @@ public class ElementTree {
             }
         }
         tree.sortChildren();
-        // for (Tree child : tree.children) {
-        // System.out.println("tree child:" + child.getElement().getNodeId());
-        // }
+        //for (Tree child : tree.children) {
+        //   System.out.println("tree child:" + child.getElement().getNodeId());
+        //}
         for (Tree child : tree.children) {
             findChildren(child);
         }
