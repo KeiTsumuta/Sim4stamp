@@ -11,6 +11,7 @@ operations
 	『$1』() ==
 	(
 		init("$1",<$2>);
+		$5
 	);
 
 	public func : () ==> ()

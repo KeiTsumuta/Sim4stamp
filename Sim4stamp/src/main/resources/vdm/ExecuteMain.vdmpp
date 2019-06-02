@@ -23,8 +23,7 @@ values
 	
 instance variables
 	
-	public iシステム要素 : seq of 『作用素』 :=
-		[$1];
+	public iシステム要素 : seq of 『作用素』;
 
 operations
 	
@@ -37,6 +36,7 @@ operations
 		カウンタ : int := 1;
 		
 		status := ctl.init();
+		iシステム要素 := [$1];
 		順序 := ctl.getElementOrder();
 		for id in 順序 do
 		(

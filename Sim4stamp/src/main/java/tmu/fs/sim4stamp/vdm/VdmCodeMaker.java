@@ -210,8 +210,9 @@ public class VdmCodeMaker extends ResourceFileIO {
                     }
                 }
                 String ec4 = ec3.replace("$4", sbe.toString());
+                String ec5 = ec4.replace("$5", sbe.toString());
                 String file = dir + SP + "『" + elemId + "』.vdmpp";
-                writeElementClassFile(file, ec4.getBytes("UTF-8"));
+                writeElementClassFile(file, ec5.getBytes("UTF-8"));
             }
         } catch (Exception ex) {
             ex.printStackTrace();

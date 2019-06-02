@@ -137,7 +137,7 @@ public class SimListener implements Runnable {
             } else if (type == IOParam.ValueType.BOOL) {
                 tobj.addBValue(oeManager.getBoolData(elemId, dataId));
             } else if (type == IOParam.ValueType.LOGI_VAL) {
-                tobj.addDValue(oeManager.getData(elemId, dataId));
+                tobj.addDValue(get5Limit(oeManager.getData(elemId, dataId)));
             }
         } else { // 未定義データは実数としてとりあえず設定する。
             tobj.addDValue(oeManager.getData(elemId, dataId));
@@ -158,7 +158,7 @@ public class SimListener implements Runnable {
             } else if (type == IOParam.ValueType.BOOL && inObj.getBValues() != null) {
                 oeManager.setBoolData(elemId, dataId, inObj.getBValues().get(0));
             } else if (type == IOParam.ValueType.LOGI_VAL && inObj.getDValues() != null) {
-                oeManager.setData(elemId, dataId, inObj.getDValues().get(0));
+                oeManager.setData(elemId, dataId, get5Limit(inObj.getDValues().get(0)));
             }
         } else { // 未定義データは実数としてとりあえず処理する。
             if (inObj.getDValues() != null) {
@@ -169,4 +169,13 @@ public class SimListener implements Runnable {
         // tobj.addIntValue(0);
     }
 
+    private static double get5Limit(double value) {
+        if (value > 5.0) {
+            return 5.0;
+        }
+        if (value < 1.0) {
+            return 1.0;
+        }
+        return value;
+    }
 }

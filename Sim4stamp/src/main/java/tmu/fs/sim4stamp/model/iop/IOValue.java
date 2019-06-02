@@ -104,12 +104,18 @@ public class IOValue implements JSONConvert {
                     for (int i = 0; i < size; i++) {
                         newDoubleValues[i] = doubleValues[i];
                     }
+                    for (int i = size - 1; i < newSize; i++) {
+                        newDoubleValues[i] = doubleValues[size - 1];
+                    }
                     doubleValues = newDoubleValues;
                     break;
                 case INT:
                     int[] newIntValues = new int[newSize];
                     for (int i = 0; i < size; i++) {
                         newIntValues[i] = intValues[i];
+                    }
+                    for (int i = size - 1; i < newSize; i++) {
+                        newIntValues[i] = intValues[size - 1];
                     }
                     intValues = newIntValues;
                     break;
@@ -118,12 +124,18 @@ public class IOValue implements JSONConvert {
                     for (int i = 0; i < size; i++) {
                         newBoolValues[i] = boolValues[i];
                     }
+                    for (int i = size - 1; i < newSize; i++) {
+                        newBoolValues[i] = boolValues[size - 1];
+                    }
                     boolValues = newBoolValues;
                     break;
                 case LOGI_VAL:
                     newDoubleValues = new double[newSize];
                     for (int i = 0; i < size; i++) {
                         newDoubleValues[i] = doubleValues[i];
+                    }
+                    for (int i = size - 1; i < newSize; i++) {
+                        newDoubleValues[i] = doubleValues[size - 1];
                     }
                     doubleValues = newDoubleValues;
                     break;
@@ -133,7 +145,7 @@ public class IOValue implements JSONConvert {
     }
 
     public void set(int index, double value) {
-        if (index >= size || doubleValues == null) {
+        if (index < 0 || index >= size || doubleValues == null) {
             return;
         }
         doubleValues[index] = value;
@@ -147,7 +159,7 @@ public class IOValue implements JSONConvert {
     }
 
     public void set(int index, int value) {
-        if (index >= size || intValues == null) {
+        if (index < 0 || index >= size || intValues == null) {
             return;
         }
         intValues[index] = value;
@@ -161,7 +173,7 @@ public class IOValue implements JSONConvert {
     }
 
     public void set(int index, boolean value) {
-        if (index >= size || boolValues == null) {
+        if (index < 0 || index >= size || boolValues == null) {
             return;
         }
         boolValues[index] = value;

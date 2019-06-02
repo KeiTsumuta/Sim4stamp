@@ -173,13 +173,14 @@ public class OvertureExecManager implements DisplayItem {
         if (executeScene == null) {
             return;
         }
-        executeScene.setData(elemId, dataId, loopCounter, value);
+        int index = Math.max(loopCounter, 0); // 「loopCounter = -1」は初期値設定
+        executeScene.setData(elemId, dataId, index, value);
         // System.out.println("inject Data:(" + loopCounter + ") " + elemId + "," +
         // dataId + " = " + value);
     }
 
     public double getData(String elemId, String dataId) {
-        if (executeScene == null) {
+        if (executeScene == null || loopCounter < 0) {
             return 0.0;
         }
         double[] vals = executeScene.getData(elemId, dataId);
@@ -192,13 +193,14 @@ public class OvertureExecManager implements DisplayItem {
         if (executeScene == null) {
             return;
         }
-        executeScene.setIntData(elemId, dataId, loopCounter, value);
+        int index = Math.max(loopCounter, 0); // 「loopCounter = -1」は初期値設定
+        executeScene.setIntData(elemId, dataId, index, value);
         // System.out.println("inject Data:(" + loopCounter + ") " + elemId + "," +
         // dataId + " = " + value);
     }
 
     public int getIntData(String elemId, String dataId) {
-        if (executeScene == null) {
+        if (executeScene == null || loopCounter < 0) {
             return 0;
         }
         int[] vals = executeScene.getIntData(elemId, dataId);
@@ -211,13 +213,14 @@ public class OvertureExecManager implements DisplayItem {
         if (executeScene == null) {
             return;
         }
-        executeScene.setBoolData(elemId, dataId, loopCounter, value);
+        int index = Math.max(loopCounter, 0); // 「loopCounter = -1」は初期値設定
+        executeScene.setBoolData(elemId, dataId, index, value);
         // System.out.println("inject Data:(" + loopCounter + ") " + elemId + "," +
         // dataId + " = " + value);
     }
 
     public boolean getBoolData(String elemId, String dataId) {
-        if (executeScene == null) {
+        if (executeScene == null || loopCounter < 0) {
             return false;
         }
         boolean[] vals = executeScene.getBoolData(elemId, dataId);
