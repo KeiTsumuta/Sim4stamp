@@ -521,16 +521,16 @@ public class IOScene implements JSONConvert {
                 }
                 break;
             case PROVIDING_MORE:
-                val = val * 1.2;
+                val = val * 1.35;
                 break;
             case PROVIDING_LESS:
-                val = val * 0.8;
+                val = val * 0.7;
                 break;
             case TOO_EARLY:
                 break;
             case TOO_LATE:
                 if (index < getDeviationTooLate()) {
-                    val = 0.0;
+                    val = 1.0;
                 } else {
                     val = ioNf.getDoubleValues()[index - getDeviationTooLate()];
                 }

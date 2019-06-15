@@ -157,18 +157,12 @@ operations
 	-- 差分
 	public op5Diff : real * real ==> real
 	op5Diff(valueA, valueB) ==
-	(dcl rValue : real := 0.0;
+	(dcl rValue : real := 1.0;
 		if (valueA * valueB) <= 0.0 then return 0.0;
 		let	diff : real = valueB - valueA
 		in(
-			if diff = 0.0 then return 3.0;
-			
-			if diff < 0.0 then
-			(
-				rValue := 2.999 + diff / 2.0;
-			)else(
-				rValue := 3.001 + diff / 2.0;
-			);
+			if diff < 1.0 then rValue := 1.0;
+			rValue := diff;
 		);
 		return rValue;
 	);

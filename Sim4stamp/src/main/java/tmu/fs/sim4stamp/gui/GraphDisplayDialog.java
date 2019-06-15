@@ -81,6 +81,9 @@ public class GraphDisplayDialog implements Initializable {
 				linePanel.addData(i + "：" + subTitles.get(i), gdata.get(i));
 				Label li = new Label();
 				List<IOScene> resultScenes = SimService.getInstance().getIoParamManager().getResultScenes();
+				if (resultScenes.size() == 0) {
+					continue;
+				}
 				IOScene ios = resultScenes.get(i);
 				li.setText("●");
 				li.setTextFill(Color.web(GRAPH_LINE_COLORS[(i) % GRAPH_LINE_COLORS.length]));
@@ -99,7 +102,7 @@ public class GraphDisplayDialog implements Initializable {
 			graphTitle.textProperty().set("");
 		}
 		displayedGraph.getChildren().add(linePanel.getCanvas());
-		
+
 	}
 
 	public void reset(String title) {

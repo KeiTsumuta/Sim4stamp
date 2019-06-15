@@ -24,6 +24,7 @@ values
 instance variables
 	
 	public iシステム要素 : seq of 『作用素』;
+	public static iLoopCounter : int := 0;
 
 operations
 	
@@ -53,6 +54,7 @@ operations
 		while ctl.isLoop() do
 		(
 			IO`print("--- loop ---:");IO`println(カウンタ);
+            iLoopCounter := カウンタ;
 			for element : 『作用素』 in 評価リスト do
 			(
 				ctl.breakLine(element.i要素ID);

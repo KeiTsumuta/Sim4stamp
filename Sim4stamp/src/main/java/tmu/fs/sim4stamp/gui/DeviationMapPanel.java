@@ -1,19 +1,19 @@
 /*
- *   sim4stamp - The simulation tool for STAMP/STPA
- *   Copyright (C) 2018  Keiichi Tsumuta
+ *	 sim4stamp - The simulation tool for STAMP/STPA
+ *	 Copyright (C) 2018  Keiichi Tsumuta
  *
- *   This program is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation, either version 3 of the License, or
- *   (at your option) any later version.
+ *	 This program is free software: you can redistribute it and/or modify
+ *	 it under the terms of the GNU General Public License as published by
+ *	 the Free Software Foundation, either version 3 of the License, or
+ *	 (at your option) any later version.
  *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
+ *	 This program is distributed in the hope that it will be useful,
+ *	 but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *	 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *	 GNU General Public License for more details.
  *
- *   You should have received a copy of the GNU General Public License
- *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *	 You should have received a copy of the GNU General Public License
+ *	 along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package tmu.fs.sim4stamp.gui;
 
@@ -227,7 +227,9 @@ public class DeviationMapPanel implements Initializable, VdmRunStatus {
 
 	private void executeSim() {
 		//log.info("overtureExecuteAction: " + OvertureExecManager.getInstance().isStepExecute());
-		// Platform.runLater(() -> {
+		Platform.runLater(() -> {
+			loopDisplayCount.textProperty().set("-1");
+		});
 		try {
 			clearStepSelect();
 			if (selectEcecuteMode == ExecuteMode.STEP) {
@@ -423,21 +425,21 @@ public class DeviationMapPanel implements Initializable, VdmRunStatus {
 				Element.EType etype = e.getType();
 				Element et = null;
 				switch (etype) {
-				case CONTROLLED_EQUIPMENT:
-					et = ((ControllledEquipment) e).clone();
-					break;
-				case CONTROLLER:
-					et = ((Controller) e).clone();
-					break;
-				case ACTUATOR:
-					et = ((Actuator) e).clone();
-					break;
-				case SENSOR:
-					et = ((Sensor) e).clone();
-					break;
-				case INJECTOR:
-					et = ((Injector) e).clone();
-					break;
+					case CONTROLLED_EQUIPMENT:
+						et = ((ControllledEquipment) e).clone();
+						break;
+					case CONTROLLER:
+						et = ((Controller) e).clone();
+						break;
+					case ACTUATOR:
+						et = ((Actuator) e).clone();
+						break;
+					case SENSOR:
+						et = ((Sensor) e).clone();
+						break;
+					case INJECTOR:
+						et = ((Injector) e).clone();
+						break;
 				}
 				et.setLevel(DisplayLevel.Level.Progress);
 				elementDisplays.add(et);
