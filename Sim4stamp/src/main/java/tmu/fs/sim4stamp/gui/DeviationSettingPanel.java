@@ -44,7 +44,13 @@ public class DeviationSettingPanel implements Initializable {
 	private TextField providingMoreSetting;
 
 	@FXML
+	private TextField pentaProvidingMoreSetting;
+
+	@FXML
 	private TextField providingLessConst;
+
+	@FXML
+	private TextField pentaProvidingLessConst;
 
 	@FXML
 	private TextField tooEarlyConst;
@@ -59,8 +65,14 @@ public class DeviationSettingPanel implements Initializable {
 		providingMoreSetting.setText(Double.toString(IOScene.getProvidingMoreParam()));
 		providingMoreSetting.setTextFormatter(GuiUtil.getDecimalTextFormater());
 
+		pentaProvidingMoreSetting.setText(Double.toString(IOScene.getPentaProvidingMoreParam()));
+		pentaProvidingMoreSetting.setTextFormatter(GuiUtil.getDecimalTextFormater());
+
 		providingLessConst.setText(Double.toString(IOScene.getProvidingLessParam()));
 		providingLessConst.setTextFormatter(GuiUtil.getDecimalTextFormater());
+
+		pentaProvidingLessConst.setText(Double.toString(IOScene.getPentaProvidingLessParam()));
+		pentaProvidingLessConst.setTextFormatter(GuiUtil.getDecimalTextFormater());
 
 		tooEarlyConst.setText(Integer.toString(IOScene.getDeviationTooEarly()));
 		tooEarlyConst.setTextFormatter(GuiUtil.getIntTextFormater());
@@ -83,7 +95,9 @@ public class DeviationSettingPanel implements Initializable {
 	@FXML
 	public void saveDeviationSettingAction(ActionEvent event) {
 		IOScene.setProvidingMoreParam(getDouble(providingMoreSetting.getText()));
+		IOScene.setPentaProvidingMoreParam(getDouble(pentaProvidingMoreSetting.getText()));
 		IOScene.setProvidingLessParam(getDouble(providingLessConst.getText()));
+		IOScene.setPentaProvidingLessParam(getDouble(pentaProvidingLessConst.getText()));
 		IOScene.setDeviationTooEarly(getInt(tooEarlyConst.getText()));
 		IOScene.setDeviationTooLate(getInt(tooLateConst.getText()));
 

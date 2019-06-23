@@ -107,18 +107,20 @@ public class SafetyConstraintValue {
 		if (setting) {
 			if (null != valueType) {
 				switch (valueType) {
-				case REAL:
-					return D_FORMAT.format(doubleValue);
-				case INT:
-					return Integer.toString(integerValue);
-				case BOOL:
-					if (booleanValue) {
-						return "true";
-					} else {
-						return "false";
-					}
-				default:
-					break;
+					case REAL:
+						return D_FORMAT.format(doubleValue);
+					case INT:
+						return Integer.toString(integerValue);
+					case BOOL:
+						if (booleanValue) {
+							return "true";
+						} else {
+							return "false";
+						}
+					case LOGI_VAL:
+						return D_FORMAT.format(doubleValue);
+					default:
+						break;
 				}
 			}
 		}
@@ -131,24 +133,28 @@ public class SafetyConstraintValue {
 			try {
 				if (null != valueType) {
 					switch (valueType) {
-					case REAL:
-						doubleValue = Double.parseDouble(value);
-						setting = true;
-						break;
-					case INT:
-						integerValue = Integer.parseInt(value);
-						setting = true;
-						break;
-					case BOOL:
-						if (value.charAt(0) == 't') {
-							booleanValue = true;
-						} else {
-							booleanValue = false;
-						}
-						setting = true;
-						break;
-					default:
-						break;
+						case REAL:
+							doubleValue = Double.parseDouble(value);
+							setting = true;
+							break;
+						case INT:
+							integerValue = Integer.parseInt(value);
+							setting = true;
+							break;
+						case BOOL:
+							if (value.charAt(0) == 't') {
+								booleanValue = true;
+							} else {
+								booleanValue = false;
+							}
+							setting = true;
+							break;
+						case LOGI_VAL:
+							doubleValue = Double.parseDouble(value);
+							setting = true;
+							break;
+						default:
+							break;
 					}
 				}
 			} catch (Exception ex) {
@@ -160,18 +166,20 @@ public class SafetyConstraintValue {
 		if (setting) {
 			if (null != valueType) {
 				switch (valueType) {
-				case REAL:
-					return doubleValue;
-				case INT:
-					return integerValue;
-				case BOOL:
-					if (booleanValue) {
-						return 1.0;
-					} else {
-						return 0.0;
-					}
-				default:
-					break;
+					case REAL:
+						return doubleValue;
+					case INT:
+						return integerValue;
+					case BOOL:
+						if (booleanValue) {
+							return 1.0;
+						} else {
+							return 0.0;
+						}
+					case LOGI_VAL:
+						return doubleValue;
+					default:
+						break;
 				}
 			}
 		}

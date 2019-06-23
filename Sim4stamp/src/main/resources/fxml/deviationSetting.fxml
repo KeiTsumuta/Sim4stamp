@@ -12,17 +12,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity"
-            minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
-            prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="tmu.fs.sim4stamp.gui.DeviationSettingPanel">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tmu.fs.sim4stamp.gui.DeviationSettingPanel">
     <children>
-        <BorderPane layoutX="1.0" layoutY="2.0" prefHeight="394.0"
-                    prefWidth="600.0">
+        <BorderPane layoutX="1.0" layoutY="2.0" prefHeight="394.0" prefWidth="600.0">
             <top>
-                <Label prefHeight="33.0" prefWidth="409.0" text="偏差パラメータ設定"
-                       BorderPane.alignment="CENTER">
+                <Label prefHeight="33.0" prefWidth="409.0" text="偏差パラメータ設定" BorderPane.alignment="CENTER">
                     <font>
                         <Font size="18.0" />
                     </font>
@@ -32,94 +26,77 @@
                 <Label BorderPane.alignment="CENTER" />
             </right>
             <left>
-                <Label prefHeight="17.0" prefWidth="51.0"
-                       BorderPane.alignment="CENTER" />
+                <Label prefHeight="17.0" prefWidth="51.0" BorderPane.alignment="CENTER" />
             </left>
             <center>
-                <VBox prefHeight="315.0" prefWidth="549.0"
-                      BorderPane.alignment="CENTER">
+                <VBox prefHeight="315.0" prefWidth="549.0" BorderPane.alignment="CENTER">
                     <children>
-                        <GridPane prefHeight="117.0" prefWidth="479.0">
+                        <GridPane prefHeight="183.0" prefWidth="549.0">
                             <columnConstraints>
-                                <ColumnConstraints hgrow="SOMETIMES"
-                                                   maxWidth="245.0" minWidth="10.0" prefWidth="194.0" />
-                                <ColumnConstraints hgrow="SOMETIMES"
-                                                   maxWidth="396.0" minWidth="97.0" prefWidth="97.0" />
-                                <ColumnConstraints hgrow="SOMETIMES"
-                                                   maxWidth="396.0" minWidth="100.0" prefWidth="278.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="245.0" minWidth="10.0" prefWidth="194.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="396.0" minWidth="97.0" prefWidth="97.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="396.0" minWidth="100.0" prefWidth="278.0" />
                             </columnConstraints>
                             <rowConstraints>
-                                <RowConstraints minHeight="10.0"
-                                                prefHeight="30.0" vgrow="SOMETIMES" />
-                                <RowConstraints minHeight="10.0"
-                                                prefHeight="30.0" vgrow="SOMETIMES" />
-                                <RowConstraints minHeight="10.0"
-                                                prefHeight="30.0" vgrow="SOMETIMES" />
-                                <RowConstraints minHeight="10.0"
-                                                prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                             </rowConstraints>
                             <children>
-                                <TextField fx:id="providingMoreSetting"
-                                           alignment="CENTER_RIGHT" maxWidth="-Infinity"
-                                           minWidth="-Infinity" prefHeight="25.0" prefWidth="75.0"
-                                           GridPane.columnIndex="1">
+                                <TextField fx:id="providingMoreSetting" alignment="CENTER_RIGHT" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="75.0" GridPane.columnIndex="1">
                                     <GridPane.margin>
                                         <Insets left="10.0" />
                                     </GridPane.margin>
                                 </TextField>
-                                <TextField fx:id="providingLessConst"
-                                           alignment="CENTER_RIGHT" maxWidth="-Infinity"
-                                           minWidth="-Infinity" prefHeight="25.0" prefWidth="75.0"
-                                           GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                <TextField fx:id="pentaProvidingMoreSetting" alignment="CENTER_RIGHT" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="75.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                     <GridPane.margin>
                                         <Insets left="10.0" />
                                     </GridPane.margin>
                                 </TextField>
-                                <TextField fx:id="tooEarlyConst"
-                                           alignment="CENTER_RIGHT" maxWidth="-Infinity" prefHeight="25.0"
-                                           prefWidth="75.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                <TextField fx:id="providingLessConst" alignment="CENTER_RIGHT" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="75.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                     <GridPane.margin>
                                         <Insets left="10.0" />
                                     </GridPane.margin>
                                 </TextField>
-                                <TextField fx:id="tooLateConst"
-                                           alignment="CENTER_RIGHT" maxWidth="-Infinity" prefHeight="25.0"
-                                           prefWidth="75.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                <TextField fx:id="pentaProvidingLessConst" alignment="CENTER_RIGHT" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="75.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                     <GridPane.margin>
                                         <Insets left="10.0" />
                                     </GridPane.margin>
                                 </TextField>
-                                <Label alignment="CENTER_RIGHT" prefHeight="17.0"
-                                       prefWidth="179.0" text="Providing More 定数" />
-                                <Label alignment="CENTER_RIGHT" prefHeight="17.0"
-                                       prefWidth="180.0" text="Providing Less 定数"
-                                       GridPane.rowIndex="1" />
-                                <Label alignment="CENTER_RIGHT" prefHeight="17.0"
-                                       prefWidth="180.0" text="Too Early 飛ばし数" GridPane.rowIndex="2" />
-                                <Label alignment="CENTER_RIGHT" prefHeight="17.0"
-                                       prefWidth="180.0" text="Too Late 飛ばし数" GridPane.rowIndex="3" />
+                                <TextField fx:id="tooEarlyConst" alignment="CENTER_RIGHT" maxWidth="-Infinity" prefHeight="25.0" prefWidth="75.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                    <GridPane.margin>
+                                        <Insets left="10.0" />
+                                    </GridPane.margin>
+                                </TextField>
+                                <TextField fx:id="tooLateConst" alignment="CENTER_RIGHT" maxWidth="-Infinity" prefHeight="25.0" prefWidth="75.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                    <GridPane.margin>
+                                        <Insets left="10.0" />
+                                    </GridPane.margin>
+                                </TextField>
+                                <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="179.0" text="Providing More 定数" />
+                                <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="180.0" text="Providing Less 定数" GridPane.rowIndex="2" />
+                                <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="180.0" text="Too Early 飛ばし数" GridPane.rowIndex="4" />
+                                <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="180.0" text="Too Late 飛ばし数" GridPane.rowIndex="5" />
 
                                 <Label text="倍" GridPane.columnIndex="2" />
-                                <Label text="倍" GridPane.columnIndex="2"
-                                       GridPane.rowIndex="1" />
-                                <Label text="個" GridPane.columnIndex="2"
-                                       GridPane.rowIndex="2" />
-                                <Label text="個" GridPane.columnIndex="2"
-                                       GridPane.rowIndex="3" />
+                                <Label text="倍（5論理値）" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                <Label text="倍" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                <Label text="倍（5論理値）" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                <Label text="個" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                <Label text="個" GridPane.columnIndex="2" GridPane.rowIndex="5" />
                             </children>
                         </GridPane>
                     </children>
                 </VBox>
             </center>
             <bottom>
-                <AnchorPane prefHeight="35.0" prefWidth="600.0"
-                            BorderPane.alignment="CENTER">
+                <AnchorPane prefHeight="35.0" prefWidth="600.0" BorderPane.alignment="CENTER">
                     <children>
-                        <Button layoutX="54.0" layoutY="5.0"
-                                mnemonicParsing="false" onAction="#saveDeviationSettingAction"
-                                text="保存" />
-                        <Button layoutX="120.0" layoutY="5.0"
-                                mnemonicParsing="false" onAction="#cancelAction" text="保存取消" />
+                        <Button layoutX="54.0" layoutY="5.0" mnemonicParsing="false" onAction="#saveDeviationSettingAction" text="保存" />
+                        <Button layoutX="120.0" layoutY="5.0" mnemonicParsing="false" onAction="#cancelAction" text="保存取消" />
                     </children>
                 </AnchorPane>
             </bottom>
