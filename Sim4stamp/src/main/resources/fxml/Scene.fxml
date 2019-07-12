@@ -144,7 +144,7 @@
                                                         <TextField fx:id="deviationStartIndex" alignment="CENTER_RIGHT" layoutX="118.0" layoutY="101.0" prefHeight="25.0" prefWidth="58.0" />
 
                                                         <Label layoutX="26.0" layoutY="193.0" text="構成要素パラメータ" />
-                                                        <TableView fx:id="itemParamTable" layoutX="28.0" layoutY="222.0" prefHeight="362.0" prefWidth="415.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="28.0" AnchorPane.topAnchor="222.0">
+                                                        <TableView fx:id="itemParamTable" layoutX="28.0" layoutY="222.0" prefHeight="362.0" prefWidth="481.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="28.0" AnchorPane.topAnchor="222.0">
                                                         </TableView>
                                                         <Label layoutX="33.0" layoutY="35.0" text="タイトル" />
                                                         <TextField fx:id="sceneTitle" layoutX="85.0" layoutY="31.0" />
@@ -153,7 +153,7 @@
                                                 </AnchorPane>
                                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                                     <children>
-                                                        <TableView fx:id="initDataTable" layoutX="42.0" layoutY="52.0" prefHeight="532.0" prefWidth="341.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="32.0">
+                                                        <TableView fx:id="initDataTable" layoutX="42.0" layoutY="52.0" prefHeight="532.0" prefWidth="441.0" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="32.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="32.0">
                                                         </TableView>
                                                     </children>
                                                 </AnchorPane>
