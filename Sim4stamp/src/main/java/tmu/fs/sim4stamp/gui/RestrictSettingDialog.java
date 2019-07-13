@@ -64,9 +64,14 @@ public class RestrictSettingDialog implements Initializable {
 	private TextField upintvalue;
 
 	@FXML
-	private TextField unboolvalue;
+	private RadioButton unboolvaltrue;
 	@FXML
-	private TextField upboolvalue;
+	private RadioButton unboolvalfalse;
+
+	@FXML
+	private RadioButton upboolvaltrue;
+	@FXML
+	private RadioButton upboolvalfalse;
 
 	@FXML
 	private RadioButton under5;
@@ -148,16 +153,37 @@ public class RestrictSettingDialog implements Initializable {
 			upintvalue.setDisable(true);
 			upintvalue.setText("");
 		}
+
 		if (type == IOParam.ValueType.BOOL) {
-			unboolvalue.setDisable(false);
-			unboolvalue.setText(under);
-			upboolvalue.setDisable(false);
-			upboolvalue.setText(upper);
+			unboolvaltrue.setDisable(false);
+			unboolvalfalse.setDisable(false);
+			if (under.startsWith("t")) {
+				unboolvaltrue.setSelected(true);
+				unboolvalfalse.setSelected(false);
+			} else {
+				unboolvaltrue.setSelected(false);
+				unboolvalfalse.setSelected(true);
+			}
+
+			upboolvaltrue.setDisable(false);
+			upboolvalfalse.setDisable(false);
+			if (upper.startsWith("t")) {
+				upboolvaltrue.setSelected(true);
+				upboolvalfalse.setSelected(false);
+			} else {
+				upboolvaltrue.setSelected(false);
+				upboolvalfalse.setSelected(true);
+			}
 		} else {
-			unboolvalue.setDisable(true);
-			unboolvalue.setText("");
-			upboolvalue.setDisable(true);
-			upboolvalue.setText("");
+			unboolvaltrue.setDisable(true);
+			unboolvaltrue.setSelected(false);
+			unboolvalfalse.setDisable(true);
+			unboolvalfalse.setSelected(false);
+
+			upboolvaltrue.setDisable(true);
+			upboolvaltrue.setSelected(false);
+			upboolvalfalse.setDisable(true);
+			upboolvalfalse.setSelected(false);
 		}
 
 		if (type == IOParam.ValueType.LOGI_VAL) {
@@ -227,7 +253,7 @@ public class RestrictSettingDialog implements Initializable {
 
 	public void saveRestrictAction(ActionEvent event) {
 		((Node) event.getSource()).getScene().getWindow().hide();
-		System.out.println("save button action!!");
+		//System.out.println("save button action!!");
 		String underVal = "*";
 		String upperVal = "*";
 		IOParam.ValueType type = elementItem.getType();
@@ -241,7 +267,7 @@ public class RestrictSettingDialog implements Initializable {
 						underVal = unrealvalue.getText();
 						break;
 					case BOOL:
-						underVal = unrealvalue.getText();
+						underVal = getBoolRadioSelection(unboolvaltrue, unboolvalfalse);
 						break;
 					case LOGI_VAL:
 						underVal = getRadioSelection(underValues);
@@ -261,7 +287,7 @@ public class RestrictSettingDialog implements Initializable {
 						upperVal = uprealvalue.getText();
 						break;
 					case BOOL:
-						upperVal = uprealvalue.getText();
+						upperVal = getBoolRadioSelection(upboolvaltrue, upboolvalfalse);
 						break;
 					case LOGI_VAL:
 						upperVal = getRadioSelection(upperValues);
@@ -283,6 +309,16 @@ public class RestrictSettingDialog implements Initializable {
 		});
 	}
 
+	private String getBoolRadioSelection(RadioButton trueButton, RadioButton falseButton) {
+		String sel = "*";
+		if (trueButton.isSelected()) {
+			sel = "true";
+		} else if (falseButton.isSelected()) {
+			sel = "false";
+		}
+		return sel;
+	}
+
 	private String getRadioSelection(RadioButton[] rbs) {
 		String sel = "*";
 		for (int i = 0; i < rbs.length; i++) {
@@ -296,7 +332,7 @@ public class RestrictSettingDialog implements Initializable {
 
 	public void cancelRestrictAction(ActionEvent event) {
 		((Node) event.getSource()).getScene().getWindow().hide();
-		System.out.println("cancel button action!!");
+		//System.out.println("cancel button action!!");
 	}
 
 }

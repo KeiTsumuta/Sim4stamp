@@ -82,7 +82,16 @@
                                                 <Insets right="14.0" />
                                             </HBox.margin>
                                         </Label>
-                                        <TextField fx:id="unboolvalue" prefHeight="25.0" prefWidth="88.0" />
+                                        <RadioButton fx:id="unboolvaltrue" mnemonicParsing="false" text="true">
+                                            <toggleGroup>
+                                                <ToggleGroup fx:id="unboolgp" />
+                                            </toggleGroup>
+                                        </RadioButton>
+                                        <RadioButton fx:id="unboolvalfalse" mnemonicParsing="false" text="false" toggleGroup="$unboolgp">
+                                            <HBox.margin>
+                                                <Insets left="10.0" />
+                                            </HBox.margin>
+                                        </RadioButton>
                                     </children>
                                     <VBox.margin>
                                         <Insets left="20.0" top="10.0" />
@@ -164,7 +173,17 @@
                                                 <Insets right="14.0" />
                                             </HBox.margin>
                                         </Label>
-                                        <TextField fx:id="upboolvalue" prefHeight="25.0" prefWidth="88.0" />
+                                        <RadioButton fx:id="upboolvaltrue" mnemonicParsing="false" text="true">
+                                            <toggleGroup>
+                                                <ToggleGroup fx:id="upboolgp" />
+                                            </toggleGroup>
+                                        </RadioButton>
+                                        <RadioButton fx:id="upboolvalfalse" mnemonicParsing="false" text="false" toggleGroup="$upboolgp">
+                                            <padding>
+                                                <Insets left="10.0" />
+                                            </padding>
+                                        </RadioButton>
+
                                     </children>
                                     <VBox.margin>
                                         <Insets left="20.0" top="10.0" />

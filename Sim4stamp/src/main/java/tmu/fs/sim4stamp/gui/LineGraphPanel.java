@@ -30,6 +30,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import tmu.fs.sim4stamp.gui.util.GraphAxis;
 import tmu.fs.sim4stamp.gui.util.GraphData;
+import static tmu.fs.sim4stamp.gui.util.GraphData.GhType.LOGICAL_VALUE;
 import tmu.fs.sim4stamp.gui.util.GuiUtil;
 import tmu.fs.sim4stamp.model.iop.SafetyConstraintValue;
 
@@ -250,12 +251,32 @@ public class LineGraphPanel implements Initializable {
 		gc.setLineDashes(5);
 		gc.setStroke(GRPAH_CONSTRAINT_COLOR);
 		if (upperValue != null && upperValue.isSetting()) {
-			double constraitMax = upperValue.getConstraintValue() - 0.45;
+			double constraitMax = upperValue.getConstraintValue();
+			if (null != ghType) {
+				switch (ghType) {
+					case BOOL:
+						constraitMax = 1.0;
+						break;
+					case LOGICAL_VALUE:
+						constraitMax = constraitMax - 0.45;
+						break;
+				}
+			}
 			double y = INSET_TOP + graphHeight * (1 - (constraitMax + xm) / yConv);
 			gc.strokeLine(W_AX_LEFT, y, wMax - INSET_RIGHT, y);
 		}
 		if (underValue != null && underValue.isSetting()) {
-			double constraitMin = underValue.getConstraintValue() + 0.45;
+			double constraitMin = underValue.getConstraintValue();
+			if (null != ghType) {
+				switch (ghType) {
+					case BOOL:
+						constraitMin = 0.2;
+						break;
+					case LOGICAL_VALUE:
+						constraitMin = constraitMin + 0.45;
+						break;
+				}
+			}
 			double y = INSET_TOP + graphHeight * (1 - (constraitMin + xm) / yConv);
 			gc.strokeLine(W_AX_LEFT, y, wMax - INSET_RIGHT, y);
 		}
