@@ -186,7 +186,17 @@ operations
 		else if value < 1.0 then return 1.0;
 		return value;
 	);
-	
+	-- マッピング
+	public op5map : real * real * real * real * real * real ==> real
+	op5map(value, mp1, mp2, mp3, mp4, mp5) == 
+	(
+		if value <= 0.0 then return 0.0
+		else if value < 1.5 then return mp1
+		else if value < 2.5 then return mp2
+		else if value < 3.5 then return mp3
+		else if value < 4.5 then return mp4
+		else return mp5;
+	);
 functions
 
 end 『作用素』
