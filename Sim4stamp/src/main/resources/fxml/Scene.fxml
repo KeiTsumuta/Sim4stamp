@@ -41,8 +41,9 @@
                                         <MenuItem fx:id="projectSettings" mnemonicParsing="false" onAction="#projectSettingsAction" text="プロジェクト選択" />
                                         <SeparatorMenuItem mnemonicParsing="false" />
                                         <MenuItem fx:id="settings" mnemonicParsing="false" onAction="#sim4StampSettingsAction" text="環境設定" />
-
                                         <MenuItem mnemonicParsing="false" onAction="#deviationPanelAction" text="偏差定数設定" />
+                                        <SeparatorMenuItem mnemonicParsing="false" />
+                                        <MenuItem fx:id="reportExport" mnemonicParsing="false" onAction="#reportExportAction" text="レポート出力" />
                                         <SeparatorMenuItem mnemonicParsing="false" />
                                         <MenuItem fx:id="conditionSave" mnemonicParsing="false" onAction="#conditionSaveActin" text="状況保存" />
                                         <SeparatorMenuItem mnemonicParsing="false" />
