@@ -17,7 +17,6 @@
  */
 package tmu.fs.sim4stamp;
 
-import tmu.fs.sim4stamp.model.LogicalValueManager;
 import javafx.application.Application;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
@@ -26,7 +25,6 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import tmu.fs.sim4stamp.gui.ModelPanel;
 
 /**
  *

@@ -18,7 +18,6 @@
 package tmu.fs.sim4stamp.gui;
 
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -43,13 +42,11 @@ import tmu.fs.sim4stamp.PanelManager;
 import tmu.fs.sim4stamp.SimService;
 import tmu.fs.sim4stamp.gui.util.GraphData;
 import tmu.fs.sim4stamp.gui.util.MakeResultTable;
-import tmu.fs.sim4stamp.model.IOParamManager;
-import tmu.fs.sim4stamp.model.LogicalValueManager;
 import tmu.fs.sim4stamp.model.em.Element;
 import tmu.fs.sim4stamp.model.iop.AppendParams;
 import tmu.fs.sim4stamp.model.iop.IOParam;
 import tmu.fs.sim4stamp.model.iop.IOScene;
-import tmu.fs.sim4stamp.model.lv.LogicalValue;
+
 
 /**
  * 結果の表示（グラフと表）に用いるデータを編集する。

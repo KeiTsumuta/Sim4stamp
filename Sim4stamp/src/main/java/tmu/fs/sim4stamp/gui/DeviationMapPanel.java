@@ -78,14 +78,7 @@ public class DeviationMapPanel implements Initializable, VdmRunStatus {
 	private static final double ELEMENT_Y_ST = 150;
 	private static final double ELEMENT_Y_DS = 34;
 
-	private static final Deviation[] CONNECTOR_DEVIATIONS = { //
-		Deviation.NORMAL, //
-		Deviation.NOT_PROVIDING, //
-		Deviation.PROVIDING_MORE, //
-		Deviation.PROVIDING_LESS, //
-		Deviation.TOO_LATE, //
-		Deviation.STOPPING_TOO_SOON, //
-		Deviation.APPLYING_TOO_LONG}; //
+	private static final Deviation[] CONNECTOR_DEVIATIONS = CommandLineExecute.CONNECTOR_DEVIATIONS;
 
 	public enum ExecuteMode {
 

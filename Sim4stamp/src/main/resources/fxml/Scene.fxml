@@ -60,7 +60,8 @@
                                 </Menu>
                                 <Menu mnemonicParsing="false" text="実行">
                                     <items>
-                                        <MenuItem mnemonicParsing="false" onAction="#overtureExecuteAction" text="VDM++コマンドライン実行" />
+                                        <MenuItem mnemonicParsing="false" onAction="#overtureExecuteAction" text="シミュレーション実行" />
+                                        <MenuItem mnemonicParsing="false" onAction="#overtureAllExecuteAction" text="偏差投入ケース一括実行" />
                                     </items>
                                 </Menu>
                                 <Menu mnemonicParsing="false" text="ヘルプ">

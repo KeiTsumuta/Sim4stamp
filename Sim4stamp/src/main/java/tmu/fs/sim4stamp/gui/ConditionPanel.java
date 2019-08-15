@@ -49,7 +49,6 @@ import javafx.util.Callback;
 import tmu.fs.sim4stamp.PanelManager;
 import tmu.fs.sim4stamp.SimService;
 import tmu.fs.sim4stamp.gui.util.GuiUtil;
-import tmu.fs.sim4stamp.gui.util.RestrictButtonTableCell;
 import tmu.fs.sim4stamp.model.IOParamManager;
 import tmu.fs.sim4stamp.model.LogicalValueManager;
 import tmu.fs.sim4stamp.model.em.Element;

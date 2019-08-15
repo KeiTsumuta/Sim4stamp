@@ -292,8 +292,6 @@ public class FXMLController implements Initializable {
 
 	@FXML
 	public void overtureExecuteAction(ActionEvent event) {
-		//log.info("overtureExecuteAction:--");
-		// Platform.runLater(() -> {
 		try {
 			DeviationMapPanel dm = PanelManager.get().getDeviationMapPanel();
 			CommandLineExecute ce = new CommandLineExecute(dm);
@@ -301,7 +299,17 @@ public class FXMLController implements Initializable {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-		// });
+	}
+
+	@FXML
+	public void overtureAllExecuteAction(ActionEvent event) {
+		try {
+			DeviationMapPanel dm = PanelManager.get().getDeviationMapPanel();
+			CommandLineExecute ce = new CommandLineExecute(dm);
+			ce.allStart();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 
 	@FXML
