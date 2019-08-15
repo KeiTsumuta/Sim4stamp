@@ -68,14 +68,6 @@ public class ConditionPanel implements Initializable {
 
 	private static final DecimalFormat D_FORMAT = new DecimalFormat("#0.00");
 	private static final DecimalFormat L_FORMAT = new DecimalFormat("#0");
-	private static final Deviation[] CONNECTOR_DEVIATIONS = { //
-		Deviation.NORMAL, //
-		Deviation.NOT_PROVIDING, //
-		Deviation.PROVIDING_MORE, //
-		Deviation.PROVIDING_LESS, //
-		Deviation.TOO_LATE, //
-		Deviation.STOPPING_TOO_SOON, //
-		Deviation.APPLYING_TOO_LONG}; //
 
 	private final TextField sceneTitle;
 	private final TableView<ElementItem> simItemParamView; // 構成要素パラメータテーブル
@@ -84,8 +76,6 @@ public class ConditionPanel implements Initializable {
 	private final TableView initDataTable; // 初期値設定テーブル
 	private final Button conditionSetButton; // 設定ボタン（条件データ初期値テーブル反映）
 	private final TextField deviationStartIndex; // 偏差投入開始インデックス
-
-	private Deviation selectedConnectorDeviation = Deviation.NORMAL;
 
 	public ConditionPanel(Control[] controls) {
 		this.sceneTitle = (TextField) controls[0];
@@ -107,7 +97,6 @@ public class ConditionPanel implements Initializable {
 			setInitTable();
 			PanelManager.get().updateCondition();
 		});
-		ObservableList<Deviation> list = FXCollections.observableArrayList(CONNECTOR_DEVIATIONS);
 
 		deviationStartIndex.textProperty().set(Integer.toString(ioScene.getDeviationStartIndex()));
 		deviationStartIndex.setTextFormatter(GuiUtil.getIntTextFormater());
@@ -454,25 +443,36 @@ public class ConditionPanel implements Initializable {
 		IOScene ioScene = iom.getCurrentScene();
 		IOValue ioValue = ioScene.getIOData(ei.getElementId(), ei.getParamId());
 		IOParam.ValueType type = ioValue.getType();
-		if (type == IOParam.ValueType.REAL) {
-			double[] d = ioScene.getData(ei.getElementId(), ei.getParamId());
-			for (int i = 0; i < d.length; i++) {
-				d[i] = 0.0;
-			}
-		} else if (type == IOParam.ValueType.INT) {
-			int[] n = ioScene.getIntData(ei.getElementId(), ei.getParamId());
-			for (int i = 0; i < n.length; i++) {
-				n[i] = 0;
-			}
-		} else if (type == IOParam.ValueType.BOOL) {
-			boolean[] b = ioScene.getBoolData(ei.getElementId(), ei.getParamId());
-			for (int i = 0; i < b.length; i++) {
-				b[i] = false;
-			}
-		} else if (type == IOParam.ValueType.LOGI_VAL) {
-			double[] d = ioScene.getData(ei.getElementId(), ei.getParamId());
-			for (int i = 0; i < d.length; i++) {
-				d[i] = 0.0;
+		if (null != type) {
+			switch (type) {
+				case REAL: {
+					double[] d = ioScene.getData(ei.getElementId(), ei.getParamId());
+					for (int i = 0; i < d.length; i++) {
+						d[i] = 0.0;
+					}
+					break;
+				}
+				case INT:
+					int[] n = ioScene.getIntData(ei.getElementId(), ei.getParamId());
+					for (int i = 0; i < n.length; i++) {
+						n[i] = 0;
+					}
+					break;
+				case BOOL:
+					boolean[] b = ioScene.getBoolData(ei.getElementId(), ei.getParamId());
+					for (int i = 0; i < b.length; i++) {
+						b[i] = false;
+					}
+					break;
+				case LOGI_VAL: {
+					double[] d = ioScene.getData(ei.getElementId(), ei.getParamId());
+					for (int i = 0; i < d.length; i++) {
+						d[i] = 0.0;
+					}
+					break;
+				}
+				default:
+					break;
 			}
 		}
 	}

@@ -28,7 +28,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" xmlns="http://javafx.com/javafx/10.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tmu.fs.sim4stamp.gui.FXMLController">
+<AnchorPane id="AnchorPane" xmlns="http://javafx.com/javafx/8.0.202" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tmu.fs.sim4stamp.gui.FXMLController">
     <children>
         <BorderPane layoutX="4.0" layoutY="-1.0" prefHeight="700.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-1.0">
             <top>
@@ -173,9 +173,14 @@
                                             <children>
                                                 <HBox prefHeight="24.0" prefWidth="989.0">
                                                     <children>
+                                                        <Button fx:id="executeAllDeviationButton" mnemonicParsing="false" text="偏差投入一括実行">
+                                                            <HBox.margin>
+                                                                <Insets left="8.0" />
+                                                            </HBox.margin>
+                                                        </Button>
                                                         <Label text="偏差投入種別">
                                                             <HBox.margin>
-                                                                <Insets left="20.0" right="4.0" top="4.0" />
+                                                                <Insets left="30.0" right="4.0" top="4.0" />
                                                             </HBox.margin>
                                                         </Label>
                                                         <ComboBox fx:id="deviationSelectionByType" layoutX="107.0" layoutY="370.0" prefWidth="160.0" />

@@ -91,6 +91,9 @@ public class FXMLController implements Initializable {
 	// @FXML
 	// private ComboBox deviationSelectBox;
 	@FXML
+	private Button executeAllDeviationButton;
+
+	@FXML
 	private TextField deviationStartIndex;
 
 	@FXML
@@ -159,7 +162,7 @@ public class FXMLController implements Initializable {
 
 		Control[] devMapPanelControls = new Control[]{deviationSelectionByType,
 			executeTypeSelection, executeSimButton, stepExecuteSimButton, executeStopButton,
-			loopDisplayButton, loopDisplayDownButton, loopDisplayUpButton, loopDisplayCount};
+			loopDisplayButton, loopDisplayDownButton, loopDisplayUpButton, loopDisplayCount, executeAllDeviationButton};
 		DeviationMapPanel devMapPanel = new DeviationMapPanel(deviationCanvas, devMapPanelControls);
 		devMapPanel.initialize(url, rb);
 		pm.setDeviationMapPanel(devMapPanel);

@@ -28,22 +28,22 @@ import java.util.Map;
 public class DeviationMap {
 
 	private static final Deviation[] DEVIATIONS = { //
-			Deviation.NORMAL, //
-			Deviation.NOT_PROVIDING, //
-			Deviation.PROVIDING_MORE, //
-			Deviation.PROVIDING_LESS, //
-			Deviation.TOO_EARLY, //
-			Deviation.TOO_LATE, //
-			Deviation.WRONG_ORDER, //
-			Deviation.STOPPING_TOO_SOON, //
-			Deviation.APPLYING_TOO_LONG //
+		Deviation.NORMAL, //
+		Deviation.NOT_PROVIDING, //
+		Deviation.PROVIDING_MORE, //
+		Deviation.PROVIDING_LESS, //
+		Deviation.TOO_EARLY, //
+		Deviation.TOO_LATE, //
+		Deviation.WRONG_ORDER, //
+		Deviation.STOPPING_TOO_SOON, //
+		Deviation.APPLYING_TOO_LONG //
 	};
 
 	private static final Map<Integer, Deviation> dmap = new HashMap<Integer, Deviation>();
 
 	static {
 		for (Deviation d : DEVIATIONS) {
-			dmap.put(new Integer(d.getId()), d);
+			dmap.put(d.getId(), d);
 		}
 	}
 

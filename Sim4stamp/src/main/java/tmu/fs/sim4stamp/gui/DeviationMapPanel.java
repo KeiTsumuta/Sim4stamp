@@ -114,6 +114,7 @@ public class DeviationMapPanel implements Initializable, VdmRunStatus {
 	private final Button loopDisplayDownButton;
 	private final Button loopDisplayUpButton;
 	private final TextField loopDisplayCount;
+	private final Button executeAllDeviationButton;
 
 	private List<Element> elementSeries;
 	private List<Element> elementDisplays;
@@ -141,6 +142,7 @@ public class DeviationMapPanel implements Initializable, VdmRunStatus {
 		this.loopDisplayDownButton = (Button) controls[6];
 		this.loopDisplayUpButton = (Button) controls[7];
 		this.loopDisplayCount = (TextField) controls[8];
+		this.executeAllDeviationButton = (Button) controls[9];
 	}
 
 	@Override
@@ -206,6 +208,11 @@ public class DeviationMapPanel implements Initializable, VdmRunStatus {
 			String count = loopDisplayCount.getText();
 			OvertureExecManager.getInstance().setDisplayCount(getInt(count) + 1);
 			drawPanel();
+		});
+
+		executeAllDeviationButton.setOnAction((ActionEvent event) -> {
+			CommandLineExecute ce = new CommandLineExecute(this);
+			ce.allStart();
 		});
 	}
 

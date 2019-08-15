@@ -35,8 +35,8 @@ public class MainApp extends Application {
 	private static Stage stage;
 
 	@Override
-	public void start(Stage stage) throws Exception {
-		this.stage = stage;
+	public void start(Stage iStage) throws Exception {
+		stage = iStage;
 		stage.setOnCloseRequest((WindowEvent t) -> {
 			System.exit(0);
 		});
@@ -45,7 +45,7 @@ public class MainApp extends Application {
 		simService.setStage(stage);
 		simService.readInfoFile();
 		simService.readProjectFile(simService.getCurrentProjectId());
-        simService.getLogicalValueManager().readInitFile();
+		simService.getLogicalValueManager().readInitFile();
 
 		Parent root = FXMLLoader.load(getClass().getResource("/fxml/Scene.fxml"));
 		Scene scene = new Scene(root);
@@ -58,13 +58,13 @@ public class MainApp extends Application {
 		// System.out.println("start main");
 
 		scene.widthProperty().addListener(
-				(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) -> {
-					PanelManager.get().getModelPanel().drawCanvasPanel();
-				});
+			(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) -> {
+				PanelManager.get().getModelPanel().drawCanvasPanel();
+			});
 		scene.heightProperty().addListener(
-				(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) -> {
-					PanelManager.get().getModelPanel().drawCanvasPanel();
-				});
+			(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) -> {
+				PanelManager.get().getModelPanel().drawCanvasPanel();
+			});
 
 	}
 

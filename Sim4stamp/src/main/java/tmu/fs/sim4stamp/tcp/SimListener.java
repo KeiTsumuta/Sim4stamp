@@ -35,147 +35,156 @@ import tmu.fs.sim4stamp.state.OvertureExecManager;
  */
 public class SimListener implements Runnable {
 
-    private final Socket client;
-    private static OvertureExecManager oeManager;
+	private final Socket client;
+	private static OvertureExecManager oeManager;
 
-    public SimListener(Socket client) {
-        this.client = client;
-        oeManager = OvertureExecManager.getInstance();
-    }
+	public SimListener(Socket client) {
+		this.client = client;
+		oeManager = OvertureExecManager.getInstance();
+	}
 
-    @Override
-    public void run() {
-        try ( InputStream fromClient = client.getInputStream();  ObjectInputStream oi = new ObjectInputStream(fromClient);  OutputStream toClient = client.getOutputStream();  ObjectOutputStream oo = new ObjectOutputStream(toClient);) {
-            boolean loop = true;
-            while (loop) {
-                TransObject inObj = (TransObject) oi.readObject();
-                String id = inObj.getId();
-                // System.out.println("TCP-IP read id:" + id);
-                if (id == null) {
-                    break;
-                }
-                TransObject sendObj = null;
-                if (id.equals("finish")) {
-                    sendObj = new TransObject("finish");
-                    oo.writeObject(sendObj);
-                    oo.flush();
-                    break;
-                }
-                sendObj = getReply(id, inObj);
-                oo.writeObject(sendObj);
-                oo.flush();
-            }
-        } catch (EOFException eoe) {
-            // System.out.println("conection close!!");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        try {
-            client.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        // System.out.println("conection out");
-    }
+	@Override
+	public void run() {
+		try ( InputStream fromClient = client.getInputStream();  ObjectInputStream oi = new ObjectInputStream(fromClient);  OutputStream toClient = client.getOutputStream();  ObjectOutputStream oo = new ObjectOutputStream(toClient);) {
+			boolean loop = true;
+			while (loop) {
+				TransObject inObj = (TransObject) oi.readObject();
+				String id = inObj.getId();
+				// System.out.println("TCP-IP read id:" + id);
+				if (id == null) {
+					break;
+				}
+				TransObject sendObj = null;
+				if (id.equals("finish")) {
+					sendObj = new TransObject("finish");
+					oo.writeObject(sendObj);
+					oo.flush();
+					break;
+				}
+				sendObj = getReply(id, inObj);
+				oo.writeObject(sendObj);
+				oo.flush();
+			}
+		} catch (EOFException eoe) {
+			// System.out.println("conection close!!");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		try {
+			client.close();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		// System.out.println("conection out");
+	}
 
-    private static TransObject getReply(String id, TransObject inObj) {
-        TransObject tobj = new TransObject(id);
-        switch (id) {
-            case "init_start":
-                oeManager.calcInit();
-                break;
-            case "is_loop":
-                if (oeManager.hasNext()) {
-                    tobj.addStValue("y");
-                } else {
-                    tobj.addStValue("n");
-                }
-                break;
-            case "breakline":
-                if (!oeManager.isStopRequest()) {
-                    String elemId = inObj.getStValues().get(0);
-                    oeManager.waitStepExecute(elemId);
-                }
-                break;
-            case "elem_order":
-                setOrder(tobj);
-                break;
-            case "read_data":
-                getReadData(inObj, tobj);
-                break;
-            case "write_data":
-                getWriteData(inObj, tobj);
-                break;
-            default:
-                break;
-        }
-        return tobj;
-    }
+	private static TransObject getReply(String id, TransObject inObj) {
+		TransObject tobj = new TransObject(id);
+		switch (id) {
+			case "init_start":
+				oeManager.calcInit();
+				break;
+			case "is_loop":
+				if (oeManager.hasNext()) {
+					tobj.addStValue("y");
+				} else {
+					tobj.addStValue("n");
+				}
+				break;
+			case "breakline":
+				if (!oeManager.isStopRequest()) {
+					String elemId = inObj.getStValues().get(0);
+					oeManager.waitStepExecute(elemId);
+				}
+				break;
+			case "elem_order":
+				setOrder(tobj);
+				break;
+			case "read_data":
+				getReadData(inObj, tobj);
+				break;
+			case "write_data":
+				getWriteData(inObj, tobj);
+				break;
+			default:
+				break;
+		}
+		return tobj;
+	}
 
-    private static void setOrder(TransObject tobj) {
-        List<String> list = oeManager.getElementOrders();
-        for (int i = 0; i < list.size(); i++) {
-            tobj.addStValue(list.get(i));
-        }
-        if (oeManager.isStepExecute()) {
-            tobj.addBValue(true);
-        }
-    }
+	private static void setOrder(TransObject tobj) {
+		List<String> list = oeManager.getElementOrders();
+		for (int i = 0; i < list.size(); i++) {
+			tobj.addStValue(list.get(i));
+		}
+		if (oeManager.isStepExecute()) {
+			tobj.addBValue(true);
+		}
+	}
 
-    private static void getReadData(TransObject inObj, TransObject tobj) {
-        String elemId = inObj.getStValues().get(0);
-        String dataId = inObj.getStValues().get(1);
-        tobj.addStValue(dataId);
-        IOScene ios = oeManager.getExecuteScene();
-        IOValue iov = ios.getIOData(elemId, dataId);
-        if (iov != null) {
-            IOParam.ValueType type = iov.getType();
-            if (type == IOParam.ValueType.REAL) {
-                tobj.addDValue(oeManager.getData(elemId, dataId));
-            } else if (type == IOParam.ValueType.INT) {
-                tobj.addIValue(oeManager.getIntData(elemId, dataId));
-            } else if (type == IOParam.ValueType.BOOL) {
-                tobj.addBValue(oeManager.getBoolData(elemId, dataId));
-            } else if (type == IOParam.ValueType.LOGI_VAL) {
-                tobj.addDValue(get5Limit(oeManager.getData(elemId, dataId)));
-            }
-        } else { // 未定義データは実数としてとりあえず設定する。
-            tobj.addDValue(oeManager.getData(elemId, dataId));
-        }
-    }
+	private static void getReadData(TransObject inObj, TransObject tobj) {
+		String elemId = inObj.getStValues().get(0);
+		String dataId = inObj.getStValues().get(1);
+		tobj.addStValue(dataId);
+		IOScene ios = oeManager.getExecuteScene();
+		IOValue iov = ios.getIOData(elemId, dataId);
+		if (iov != null) {
+			IOParam.ValueType type = iov.getType();
+			if (null != type) {
+				switch (type) {
+					case REAL:
+						tobj.addDValue(oeManager.getData(elemId, dataId));
+						break;
+					case INT:
+						tobj.addIValue(oeManager.getIntData(elemId, dataId));
+						break;
+					case BOOL:
+						tobj.addBValue(oeManager.getBoolData(elemId, dataId));
+						break;
+					case LOGI_VAL:
+						tobj.addDValue(get5Limit(oeManager.getData(elemId, dataId)));
+						break;
+					default:
+						break;
+				}
+			}
+		} else { // 未定義データは実数としてとりあえず設定する。
+			tobj.addDValue(oeManager.getData(elemId, dataId));
+		}
+	}
 
-    private static void getWriteData(TransObject inObj, TransObject tobj) {
-        String elemId = inObj.getStValues().get(0);
-        String dataId = inObj.getStValues().get(1);
-        IOScene ios = oeManager.getExecuteScene();
-        IOValue iov = ios.getIOData(elemId, dataId);
-        if (iov != null) {
-            IOParam.ValueType type = iov.getType();
-            if (type == IOParam.ValueType.REAL && inObj.getDValues() != null) {
-                oeManager.setData(elemId, dataId, inObj.getDValues().get(0));
-            } else if (type == IOParam.ValueType.INT && inObj.getIValues() != null) {
-                oeManager.setIntData(elemId, dataId, inObj.getIValues().get(0));
-            } else if (type == IOParam.ValueType.BOOL && inObj.getBValues() != null) {
-                oeManager.setBoolData(elemId, dataId, inObj.getBValues().get(0));
-            } else if (type == IOParam.ValueType.LOGI_VAL && inObj.getDValues() != null) {
-                oeManager.setData(elemId, dataId, get5Limit(inObj.getDValues().get(0)));
-            }
-        } else { // 未定義データは実数としてとりあえず処理する。
-            if (inObj.getDValues() != null) {
-                oeManager.setData(elemId, dataId, inObj.getDValues().get(0));
-            }
-        }
-        // tobj.addStValue("status");
-        // tobj.addIntValue(0);
-    }
+	private static void getWriteData(TransObject inObj, TransObject tobj) {
+		String elemId = inObj.getStValues().get(0);
+		String dataId = inObj.getStValues().get(1);
+		IOScene ios = oeManager.getExecuteScene();
+		IOValue iov = ios.getIOData(elemId, dataId);
+		if (iov != null) {
+			IOParam.ValueType type = iov.getType();
+			if (type == IOParam.ValueType.REAL && inObj.getDValues() != null) {
+				oeManager.setData(elemId, dataId, inObj.getDValues().get(0));
+			} else if (type == IOParam.ValueType.INT && inObj.getIValues() != null) {
+				oeManager.setIntData(elemId, dataId, inObj.getIValues().get(0));
+			} else if (type == IOParam.ValueType.BOOL && inObj.getBValues() != null) {
+				oeManager.setBoolData(elemId, dataId, inObj.getBValues().get(0));
+			} else if (type == IOParam.ValueType.LOGI_VAL && inObj.getDValues() != null) {
+				oeManager.setData(elemId, dataId, get5Limit(inObj.getDValues().get(0)));
+			}
+		} else { // 未定義データは実数としてとりあえず処理する。
+			if (inObj.getDValues() != null) {
+				oeManager.setData(elemId, dataId, inObj.getDValues().get(0));
+			}
+		}
+		// tobj.addStValue("status");
+		// tobj.addIntValue(0);
+	}
 
-    private static double get5Limit(double value) {
-        if (value > 5.0) {
-            return 5.0;
-        }
-        if (value < 1.0) {
-            return 1.0;
-        }
-        return value;
-    }
+	private static double get5Limit(double value) {
+		if (value > 5.0) {
+			return 5.0;
+		}
+		if (value < 1.0) {
+			return 1.0;
+		}
+		return value;
+	}
 }

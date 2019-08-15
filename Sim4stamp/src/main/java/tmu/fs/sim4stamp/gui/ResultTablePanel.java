@@ -18,7 +18,6 @@
 package tmu.fs.sim4stamp.gui;
 
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.property.SimpleStringProperty;

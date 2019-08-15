@@ -20,7 +20,6 @@ package tmu.fs.sim4stamp.gui;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
