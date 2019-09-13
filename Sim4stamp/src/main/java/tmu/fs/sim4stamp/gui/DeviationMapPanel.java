@@ -251,6 +251,7 @@ public class DeviationMapPanel implements Initializable, VdmRunStatus {
 	private void executeStop() {
 		//log.info("overtureExecute StopAction:--");
 		clearStepSelect();
+		CommandLineExecute.setStop();
 		OvertureExecManager.getInstance().setStopRequest(true);
 		executeButton.setDisable(false);
 		stepExecuteSimButton.setDisable(true);

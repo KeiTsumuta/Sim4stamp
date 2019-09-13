@@ -56,12 +56,14 @@ public class CommandLineExecute implements Runnable {
 	private static final String VDMJ = "org.overture.interpreter.VDMJ";
 	private static volatile boolean isAllDeviationRun = false;
 	private static volatile boolean runStatus = false;
+	private static volatile boolean isStop = false;
 	private static LogQueue logQue;
 
 	private static VdmRunStatus exeComp = null;
 
 	public CommandLineExecute(VdmRunStatus ec) {
 		exeComp = ec;
+		isStop = false;
 		if (logQue == null) {
 			logQue = new LogQueue();
 		}
@@ -139,6 +141,9 @@ public class CommandLineExecute implements Runnable {
 
 	private void executeAllCases() throws Exception {
 		for (Deviation deviation : CONNECTOR_DEVIATIONS) {
+			if (isStop) {
+				return;
+			}
 			SimService.getInstance().getIoParamManager().getCurrentScene().setDeviation(deviation);
 			executeVdm();
 		}
@@ -154,6 +159,20 @@ public class CommandLineExecute implements Runnable {
 				logQue.add(line + "\n");
 			}
 		}
+	}
+
+	/**
+	 * @return the isStop
+	 */
+	public static boolean isStop() {
+		return isStop;
+	}
+
+	/**
+	 * @param aIsStop the isStop to set
+	 */
+	public static void setStop() {
+		isStop = true;
 	}
 
 	class LogQueue {

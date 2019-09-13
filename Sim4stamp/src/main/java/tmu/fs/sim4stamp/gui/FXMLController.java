@@ -222,10 +222,10 @@ public class FXMLController implements Initializable {
 		dirChooser.setInitialDirectory(new File(System.getProperty("user.home")));
 		// フォルダ選択
 		File dir = dirChooser.showDialog(MainApp.getStage());
-
-		ExportResults er = new ExportResults();
-		er.exportFiles(dir);
-
+		if (dir != null) {
+			ExportResults er = new ExportResults();
+			er.exportFiles(dir);
+		}
 	}
 
 	@FXML
