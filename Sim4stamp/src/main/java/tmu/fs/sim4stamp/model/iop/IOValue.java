@@ -38,7 +38,8 @@ public class IOValue implements JSONConvert {
 	private int[] intValues;
 	private boolean[] boolValues;
 
-	private boolean[] attentions;
+	private boolean[] attentionsUpper;
+	private boolean[] attentionsUnder;
 
 	public IOValue(AppendParams.ParamType ptype, IOParam ioParam, int size) {
 		this.paramType = ptype;
@@ -61,7 +62,8 @@ public class IOValue implements JSONConvert {
 		}
 		upperValue = new SafetyConstraintValue(ioParam.getType());
 		underValue = new SafetyConstraintValue(ioParam.getType());
-		attentions = new boolean[size];
+		attentionsUpper = new boolean[size];
+		attentionsUnder = new boolean[size];
 	}
 
 	/**
@@ -242,7 +244,8 @@ public class IOValue implements JSONConvert {
 		initFlag = sj.optBoolean("init");
 		upperValue.setVaue(sj.optString("upper", "*"));
 		underValue.setVaue(sj.optString("under", "*"));
-		attentions = new boolean[size];
+		attentionsUpper = new boolean[size];
+		attentionsUnder = new boolean[size];
 		//System.out.println("IOV parse:"+getId()+":"+sj.optString("id")+", "+list+","+initFlag);
 	}
 
@@ -323,23 +326,23 @@ public class IOValue implements JSONConvert {
 		return underValue.getValue();
 	}
 
-	public void makeAttentions() {
+	public void makeAttentions(int startIndex) {
 		switch (ioParam.getType()) {
 			case REAL:
 				if (doubleValues != null) {
 					if (upperValue.isSetting()) {
 						double upper = upperValue.getDoubleValue();
-						for (int i = 0; i < size; i++) {
+						for (int i = startIndex; i < size; i++) {
 							if (doubleValues[i] > upper) {
-								attentions[i] = true;
+								attentionsUpper[i] = true;
 							}
 						}
 					}
 					if (underValue.isSetting()) {
 						double under = underValue.getDoubleValue();
-						for (int i = 0; i < size; i++) {
+						for (int i = startIndex; i < size; i++) {
 							if (doubleValues[i] < under) {
-								attentions[i] = true;
+								attentionsUnder[i] = true;
 							}
 						}
 					}
@@ -349,17 +352,17 @@ public class IOValue implements JSONConvert {
 				if (intValues != null) {
 					if (upperValue.isSetting()) {
 						int upper2 = upperValue.getIntegerValue();
-						for (int i = 0; i < size; i++) {
+						for (int i = startIndex; i < size; i++) {
 							if (intValues[i] > upper2) {
-								attentions[i] = true;
+								attentionsUpper[i] = true;
 							}
 						}
 					}
 					if (underValue.isSetting()) {
 						int under2 = underValue.getIntegerValue();
-						for (int i = 0; i < size; i++) {
+						for (int i = startIndex; i < size; i++) {
 							if (intValues[i] < under2) {
-								attentions[i] = true;
+								attentionsUnder[i] = true;
 							}
 						}
 					}
@@ -369,17 +372,17 @@ public class IOValue implements JSONConvert {
 				if (boolValues != null) {
 					if (upperValue.isSetting()) {
 						boolean upper3 = upperValue.isBooleanValue();
-						for (int i = 0; i < size; i++) {
+						for (int i = startIndex; i < size; i++) {
 							if (boolValues[i] == upper3) {
-								attentions[i] = true;
+								attentionsUpper[i] = true;
 							}
 						}
 					}
 					if (underValue.isSetting()) {
 						boolean under3 = underValue.isBooleanValue();
-						for (int i = 0; i < size; i++) {
+						for (int i = startIndex; i < size; i++) {
 							if (boolValues[i] == under3) {
-								attentions[i] = true;
+								attentionsUnder[i] = true;
 							}
 						}
 					}
@@ -388,18 +391,18 @@ public class IOValue implements JSONConvert {
 			case LOGI_VAL:
 				if (doubleValues != null) {
 					if (upperValue.isSetting()) {
-						double upper = upperValue.getDoubleValue();
-						for (int i = 0; i < size; i++) {
+						double upper = upperValue.getDoubleValue() - 0.5;
+						for (int i = startIndex; i < size; i++) {
 							if (doubleValues[i] > upper) {
-								attentions[i] = true;
+								attentionsUpper[i] = true;
 							}
 						}
 					}
 					if (underValue.isSetting()) {
-						double under = underValue.getDoubleValue();
-						for (int i = 0; i < size; i++) {
+						double under = underValue.getDoubleValue() + 0.5;
+						for (int i = startIndex; i < size; i++) {
 							if (doubleValues[i] < under) {
-								attentions[i] = true;
+								attentionsUnder[i] = true;
 							}
 						}
 					}
@@ -411,8 +414,12 @@ public class IOValue implements JSONConvert {
 	/**
 	 * @return the attentions
 	 */
-	public boolean[] getAttentions() {
-		return attentions;
+	public boolean[] getAttentionsUpper() {
+		return attentionsUpper;
+	}
+
+	public boolean[] getAttentionsUnder() {
+		return attentionsUnder;
 	}
 
 	public SafetyConstraintValue getSafetyConstraintUpper() {

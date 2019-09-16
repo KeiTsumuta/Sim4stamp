@@ -46,6 +46,7 @@ import tmu.fs.sim4stamp.PanelManager;
 import tmu.fs.sim4stamp.Sim4stampVersion;
 import tmu.fs.sim4stamp.SimService;
 import tmu.fs.sim4stamp.export.ExportResults;
+import tmu.fs.sim4stamp.export.UCAHintsExport;
 import tmu.fs.sim4stamp.state.CommandLineExecute;
 import tmu.fs.sim4stamp.vdm.VdmCodeMaker;
 
@@ -225,6 +226,20 @@ public class FXMLController implements Initializable {
 		if (dir != null) {
 			ExportResults er = new ExportResults();
 			er.exportFiles(dir);
+		}
+	}
+
+	@FXML
+	public void ucaHintsExportAction(ActionEvent event) {
+		DirectoryChooser dirChooser = new DirectoryChooser();
+		dirChooser.setTitle("UCAヒント出力データフォルダ選択");
+		// 初期ディレクトリをホームにする。
+		dirChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+		// フォルダ選択
+		File dir = dirChooser.showDialog(MainApp.getStage());
+		if (dir != null) {
+			UCAHintsExport uca = new UCAHintsExport();
+			uca.exportFile(dir);
 		}
 	}
 

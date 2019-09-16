@@ -28,7 +28,7 @@ import tmu.fs.sim4stamp.gui.util.MakeResultTable;
 import tmu.fs.sim4stamp.model.iop.IOScene;
 
 /**
- *
+ * シミュレーション結果をCSV出力する。
  * @author Keiichi Tsumuta
  */
 public class ExportResults {
@@ -91,7 +91,7 @@ public class ExportResults {
 				//System.out.println(sb.toString());
 
 			}
-			writeFile(findFileName(exportDir), sb.toString());
+			FileUtil.writeFile(findFileName(exportDir), sb.toString());
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -101,17 +101,6 @@ public class ExportResults {
 		Date now = new Date();
 		String ymdhms = fmt.format(now);
 		return dir.getAbsolutePath() + SP + CSV_FILE_NAME + ymdhms + ".csv";
-	}
-
-	private void writeFile(String fileName, String data) {
-		File file = new File(fileName);
-		try ( FileOutputStream fo = new FileOutputStream(file)) {
-			byte[] buf = data.getBytes("MS932");
-			fo.write(buf);
-			fo.flush();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
 	}
 
 }

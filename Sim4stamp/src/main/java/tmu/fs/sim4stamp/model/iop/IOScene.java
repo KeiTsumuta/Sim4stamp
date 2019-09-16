@@ -181,8 +181,8 @@ public class IOScene implements JSONConvert {
 		ic.devWorkInitBoolValue = devWorkInitBoolValue;
 		ic.devWorkBoolValue = devWorkBoolValue;
 		ic.deviationConnParamId = deviationConnParamId;
-		ic.deviationConnParamFromId = deviationConnParamFromId;
-		ic.deviationConnParamToId = deviationConnParamToId;
+		ic.deviationConnParamFromId = getDeviationConnParamFromId();
+		ic.deviationConnParamToId = getDeviationConnParamToId();
 		ic.deviationStartIndex = deviationStartIndex;
 		return ic;
 	}
@@ -274,7 +274,7 @@ public class IOScene implements JSONConvert {
 								|| index < (dsi - 1)) {
 								sValue = ioNf.getDoubleValues()[index];
 							} else {
-								if (deviationConnParamFromId.equals(nfId) && deviationConnParamToId.equals(ntId)
+								if (getDeviationConnParamFromId().equals(nfId) && getDeviationConnParamToId().equals(ntId)
 									&& deviationConnParamId.equals(paramId)) {
 									sValue = getDeviationValue(ioNf, index);
 								} else {
@@ -288,7 +288,7 @@ public class IOScene implements JSONConvert {
 								|| index < (dsi - 1)) {
 								iValue = ioNf.getIntValues()[index];
 							} else {
-								if (deviationConnParamFromId.equals(nfId) && deviationConnParamToId.equals(ntId)
+								if (getDeviationConnParamFromId().equals(nfId) && getDeviationConnParamToId().equals(ntId)
 									&& deviationConnParamId.equals(paramId)) {
 									iValue = getDeviationIntValue(ioNf, index);
 								} else {
@@ -302,7 +302,7 @@ public class IOScene implements JSONConvert {
 								|| index < (dsi - 1)) {
 								bValue = ioNf.getBoolValues()[index];
 							} else {
-								if (deviationConnParamFromId.equals(nfId) && deviationConnParamToId.equals(ntId)
+								if (getDeviationConnParamFromId().equals(nfId) && getDeviationConnParamToId().equals(ntId)
 									&& deviationConnParamId.equals(paramId)) {
 									bValue = getDeviationBoolValue(ioNf, index);
 								} else {
@@ -317,7 +317,7 @@ public class IOScene implements JSONConvert {
 								|| index < (dsi - 1)) {
 								sValue = ioNf.getDoubleValues()[index];
 							} else {
-								if (deviationConnParamFromId.equals(nfId) && deviationConnParamToId.equals(ntId)
+								if (getDeviationConnParamFromId().equals(nfId) && getDeviationConnParamToId().equals(ntId)
 									&& deviationConnParamId.equals(paramId)) {
 									sValue = getDeviationLogicalValue(ioNf, index);
 								} else {
@@ -778,6 +778,10 @@ public class IOScene implements JSONConvert {
 		this.deviationConnParamToId = to;
 		// System.out.println("setDeviationSetting id:" + paramId);
 	}
+	
+	public List<IOValue> getIOValues(String eleid){
+		return nodeValues.get(eleid);
+	}
 
 	/**
 	 * @return the providingMore
@@ -886,7 +890,7 @@ public class IOScene implements JSONConvert {
 
 	public boolean isDeviationConnector(Connector c) {
 		try {
-			if (deviationConnParamFromId.equals(c.getNodeFromId()) && deviationConnParamToId.equals(c.getNodeToId())) {
+			if (getDeviationConnParamFromId().equals(c.getNodeFromId()) && getDeviationConnParamToId().equals(c.getNodeToId())) {
 				AppendParams ap = c.getAppendParams();
 				List<IOParam> aps = ap.getParams();
 				if (aps.size() > 0) {
@@ -899,5 +903,19 @@ public class IOScene implements JSONConvert {
 
 		}
 		return false;
+	}
+
+	/**
+	 * @return the deviationConnParamFromId
+	 */
+	public String getDeviationConnParamFromId() {
+		return deviationConnParamFromId;
+	}
+
+	/**
+	 * @return the deviationConnParamToId
+	 */
+	public String getDeviationConnParamToId() {
+		return deviationConnParamToId;
 	}
 }
