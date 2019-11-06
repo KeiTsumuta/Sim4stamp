@@ -39,7 +39,9 @@ public class IOValue implements JSONConvert {
 	private boolean[] boolValues;
 
 	private boolean[] attentionsUpper;
+	private boolean upperWarning;
 	private boolean[] attentionsUnder;
+	private boolean underWarning;
 
 	public IOValue(AppendParams.ParamType ptype, IOParam ioParam, int size) {
 		this.paramType = ptype;
@@ -64,6 +66,8 @@ public class IOValue implements JSONConvert {
 		underValue = new SafetyConstraintValue(ioParam.getType());
 		attentionsUpper = new boolean[size];
 		attentionsUnder = new boolean[size];
+		upperWarning = false;
+		underWarning = false;
 	}
 
 	/**
@@ -409,6 +413,18 @@ public class IOValue implements JSONConvert {
 				}
 				break;
 		}
+		for (int i = startIndex; i < size; i++) {
+			if (attentionsUpper[i]) {
+				upperWarning = true;
+				break;
+			}
+		}
+		for (int i = startIndex; i < size; i++) {
+			if (attentionsUnder[i]) {
+				underWarning = true;
+				break;
+			}
+		}
 	}
 
 	/**
@@ -432,6 +448,20 @@ public class IOValue implements JSONConvert {
 
 	public String getUnit() {
 		return ioParam.getUnit();
+	}
+
+	/**
+	 * @return the upperWarning
+	 */
+	public boolean isUpperWarning() {
+		return upperWarning;
+	}
+
+	/**
+	 * @return the underWarning
+	 */
+	public boolean isUnderWarning() {
+		return underWarning;
 	}
 
 }

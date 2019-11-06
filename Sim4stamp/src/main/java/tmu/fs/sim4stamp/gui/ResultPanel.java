@@ -46,7 +46,7 @@ import tmu.fs.sim4stamp.model.em.Element;
 import tmu.fs.sim4stamp.model.iop.AppendParams;
 import tmu.fs.sim4stamp.model.iop.IOParam;
 import tmu.fs.sim4stamp.model.iop.IOScene;
-
+import tmu.fs.sim4stamp.model.iop.IOValue;
 
 /**
  * 結果の表示（グラフと表）に用いるデータを編集する。
@@ -374,6 +374,8 @@ public class ResultPanel implements Initializable {
 		for (int i = 0; i < graphSize; i++) {
 			linePanels[i].reset();
 		}
+		resultTable.initData();
+		makeResultSelect();
 	}
 
 	public void displayFirstData() {

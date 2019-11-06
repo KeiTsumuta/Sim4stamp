@@ -71,7 +71,7 @@ public class SystemParamPanel implements Initializable {
 		resultGraphColumSize.setText(Integer.toString(gsize));
 		resultGraphWidth.setValue(s.getResultGraphWidth());
 		resultGraphWidth.valueProperty().addListener((
-				ObservableValue<? extends Number> ov, Number old_val, Number new_val) -> {
+			ObservableValue<? extends Number> ov, Number old_val, Number new_val) -> {
 			SimService.getInstance().setResultGraphWidth(new_val.doubleValue());
 		});
 	}
@@ -137,9 +137,13 @@ public class SystemParamPanel implements Initializable {
 		final FileChooser fc = new FileChooser();
 		fc.setTitle("Overture commandlinetool選択");
 		fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("jar", "*.jar"));
+		SimService s = SimService.getInstance();
+		String overtureHome = s.getOvertureHome();
+		if (overtureHome != null && overtureHome.length() > 0) {
+			fc.setInitialDirectory(new File(overtureHome + "/commandline"));
+		}
 		File jarFile = fc.showOpenDialog(stage);
 		if (jarFile != null) {
-			SimService s = SimService.getInstance();
 			s.setOvertureCommandLine(jarFile.getName());
 			commandTool.textProperty().set(s.getOvertureCommandLine());
 		}

@@ -56,6 +56,7 @@ import tmu.fs.sim4stamp.model.em.Sensor;
 import tmu.fs.sim4stamp.model.iop.AppendParams;
 import tmu.fs.sim4stamp.model.iop.IOParam;
 import tmu.fs.sim4stamp.model.iop.IOScene;
+import tmu.fs.sim4stamp.model.iop.IOValue;
 import tmu.fs.sim4stamp.state.CommandLineExecute;
 import tmu.fs.sim4stamp.state.OvertureExecManager;
 import tmu.fs.sim4stamp.util.Deviation;
@@ -235,6 +236,7 @@ public class DeviationMapPanel implements Initializable, VdmRunStatus {
 			if (selectEcecuteMode == ExecuteMode.STEP) {
 				stepExecuteSimButton.setDisable(false);
 			}
+			executeAllDeviationButton.setDisable(true);
 			drawMapPanel();
 			CommandLineExecute ce = new CommandLineExecute(this);
 			ce.start();
@@ -255,17 +257,20 @@ public class DeviationMapPanel implements Initializable, VdmRunStatus {
 		OvertureExecManager.getInstance().setStopRequest(true);
 		executeButton.setDisable(false);
 		stepExecuteSimButton.setDisable(true);
+		executeAllDeviationButton.setDisable(false);
 	}
 
 	@Override
 	public void startExec() {
 		executeButton.setDisable(true);
+		executeAllDeviationButton.setDisable(true);
 	}
 
 	@Override
 	public void complete() {
 		executeButton.setDisable(false);
 		stepExecuteSimButton.setDisable(true);
+		executeAllDeviationButton.setDisable(false);
 	}
 
 	private void initPopupMenu() {

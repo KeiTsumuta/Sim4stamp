@@ -219,8 +219,15 @@ public class FXMLController implements Initializable {
 	public void reportExportAction(ActionEvent event) {
 		DirectoryChooser dirChooser = new DirectoryChooser();
 		dirChooser.setTitle("レポート出力データフォルダ選択");
-		// 初期ディレクトリをホームにする。
-		dirChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+		SimService simService = SimService.getInstance();
+		String currentPj = simService.getCurrentProjectId();
+		if (currentPj != null) {
+			String dir = simService.getProjectHome(currentPj);
+			dirChooser.setInitialDirectory(new File(dir));
+		} else {
+			// 初期ディレクトリをホームにする。
+			dirChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+		}
 		// フォルダ選択
 		File dir = dirChooser.showDialog(MainApp.getStage());
 		if (dir != null) {
@@ -233,8 +240,15 @@ public class FXMLController implements Initializable {
 	public void ucaHintsExportAction(ActionEvent event) {
 		DirectoryChooser dirChooser = new DirectoryChooser();
 		dirChooser.setTitle("UCAヒント出力データフォルダ選択");
-		// 初期ディレクトリをホームにする。
-		dirChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+		SimService simService = SimService.getInstance();
+		String currentPj = simService.getCurrentProjectId();
+		if (currentPj != null) {
+			String dir = simService.getProjectHome(currentPj);
+			dirChooser.setInitialDirectory(new File(dir));
+		} else {
+			// 初期ディレクトリをホームにする。
+			dirChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+		}
 		// フォルダ選択
 		File dir = dirChooser.showDialog(MainApp.getStage());
 		if (dir != null) {

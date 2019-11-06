@@ -64,24 +64,11 @@ public class UCAHintsExport {
 				for (String elemId : elemIds) {
 					List<IOValue> ioValues = ioScene.getIOValues(elemId);
 					for (IOValue ioVal : ioValues) {
-						boolean upperStatus = false; // 上限逸脱ありフラグ
-						boolean underStatus = false; // 下限b逸脱ありフラグ
 						ioVal.makeAttentions(deviationStart);
 						String id = ioVal.getId();
+						boolean upperStatus = ioVal.isUpperWarning(); // 上限逸脱ありフラグ
+						boolean underStatus = ioVal.isUnderWarning(); // 下限逸脱ありフラグ
 						boolean[] att = ioVal.getAttentionsUpper();
-						for (int i = deviationStart; i < att.length; i++) {
-							if (att[i]) {
-								upperStatus = true;
-								break;
-							}
-						}
-						att = ioVal.getAttentionsUnder();
-						for (int i = deviationStart; i < att.length; i++) {
-							if (att[i]) {
-								underStatus = true;
-								break;
-							}
-						}
 						if (upperStatus || underStatus) {
 							String devParamId = ioScene.getDeviationConnParamId();
 							String nf = ioScene.getDeviationConnParamFromId();
@@ -95,7 +82,6 @@ public class UCAHintsExport {
 			//for (UCAItem uca : ucaItems) {
 			//	System.out.println(uca.toString());
 			//}
-
 			if (ucaItems.size() > 0) {
 				UCAItem ucaItem = ucaItems.get(0);
 				String p = ucaItem.getNf() + "-" + ucaItem.getNt() + "_" + ucaItem.getDeviationParamId();
@@ -116,10 +102,10 @@ public class UCAHintsExport {
 			sb.append(i).append(",******,");
 			sb.append(ucaItem.getDeviationType()).append(",");
 			sb.append(" ********** ,").append(ucaItem.getElementId()).append(" > ").append(ucaItem.getItemId());
-			if(ucaItem.isAttentionUpper()){
+			if (ucaItem.isAttentionUpper()) {
 				sb.append(" 上限");
 			}
-			if(ucaItem.isAttentionUnder()){
+			if (ucaItem.isAttentionUnder()) {
 				sb.append(" 下限");
 			}
 			sb.append("逸脱,");
