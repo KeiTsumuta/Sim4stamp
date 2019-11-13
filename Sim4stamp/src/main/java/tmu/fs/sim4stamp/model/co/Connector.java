@@ -46,7 +46,7 @@ public class Connector implements JSONConvert, DisplayLevel {
 	private static final Color STROKE_COLOR = Color.BLUE;
 	private static final Color STROKE2_COLOR = Color.SEASHELL;
 	private static final Color MARKED_COLOR = Color.RED;
-	private static final double DELTA = 8.0;
+	private static final double DELTA = 12.0;
 
 	private String nodeFromId;
 	private String nodeToId;
@@ -110,7 +110,7 @@ public class Connector implements JSONConvert, DisplayLevel {
 	}
 
 	public void resetSelect() {
-		selectedIndex = -1;
+		setSelectedIndex(-1);
 	}
 
 	/**
@@ -339,12 +339,12 @@ public class Connector implements JSONConvert, DisplayLevel {
 		if (elementId.equals(nodeFromId)) {
 			pointXDelta = pointX - points.get(0).getX();
 			pointYDelta = pointY - points.get(0).getY();
-			selectedIndex = -1;
+			setSelectedIndex(-1);
 		} else if (elementId.equals(nodeToId)) {
 			int toIndex = points.size() - 1;
 			pointXDelta = pointX - points.get(toIndex).getX();
 			pointYDelta = pointY - points.get(toIndex).getY();
-			selectedIndex = -1;
+			setSelectedIndex(-1);
 		}
 	}
 
@@ -352,11 +352,11 @@ public class Connector implements JSONConvert, DisplayLevel {
 		if (elementId.equals(nodeFromId)) {
 			Point2D.Double point = new Point2D.Double(x - pointXDelta, y - pointYDelta);
 			points.set(0, point);
-			selectedIndex = -1;
+			setSelectedIndex(-1);
 		} else if (elementId.equals(nodeToId)) {
 			Point2D.Double point = new Point2D.Double(x - pointXDelta, y - pointYDelta);
 			points.set(points.size() - 1, point);
-			selectedIndex = -1;
+			setSelectedIndex(-1);
 		}
 	}
 
@@ -395,7 +395,7 @@ public class Connector implements JSONConvert, DisplayLevel {
 
 	public boolean selectDistance(double x, double y) {
 		jointSelected = -1;
-		selectedIndex = -1;
+		setSelectedIndex(-1);
 		if (points.size() >= 2) {
 			for (int i = 1; i < points.size(); i++) {
 				Point2D.Double p1 = points.get(i - 1);
@@ -406,10 +406,10 @@ public class Connector implements JSONConvert, DisplayLevel {
 				double y2 = p2.getY();
 
 				if (p1.distanceSq(x, y) <= DISTANCE_CLOSED) {
-					selectedIndex = i - 1;
+					setSelectedIndex(i - 1);
 					return true;
 				} else if (p2.distanceSq(x, y) <= DISTANCE_CLOSED) {
-					selectedIndex = i;
+					setSelectedIndex(i);
 					return true;
 				}
 				if (Math.abs(x - x1) < DISTANCE_CLOSED) {
@@ -524,9 +524,19 @@ public class Connector implements JSONConvert, DisplayLevel {
 		if (jointSelected == -1) {
 			return;
 		}
+		for (int i = 0; i < points.size(); i++) {
+			Point2D.Double p = points.get(i);
+			double px = p.getX();
+			double py = p.getY();
+			double distance = Math.sqrt((px - x) * (px - x) + (py - y) * (py - y));
+			if (distance < DELTA) {
+				jointSelected = -1;
+				return;
+			}
+		}
 		Point2D.Double point = new Point2D.Double(x, y);
 		points.add(jointSelected, point);
-		selectedIndex = jointSelected;
+		setSelectedIndex(jointSelected);
 		jointSelected = -1;
 	}
 
@@ -624,6 +634,15 @@ public class Connector implements JSONConvert, DisplayLevel {
 	public void setMarked(boolean marked, String comment) {
 		this.marked = marked;
 		this.markedComment = comment;
+	}
+
+	/**
+	 * @param selectedIndex the selectedIndex to set
+	 */
+	public void setSelectedIndex(int selectedIndex) {
+		if (points != null && points.size() > selectedIndex && selectedIndex >= -1) {
+			this.selectedIndex = selectedIndex;
+		}
 	}
 
 }
