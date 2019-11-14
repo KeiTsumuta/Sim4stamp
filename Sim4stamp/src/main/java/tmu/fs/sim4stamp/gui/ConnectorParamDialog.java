@@ -200,6 +200,7 @@ public class ConnectorParamDialog implements Initializable {
             addButton.setDisable(true);
             addParamId.setText("");
             PanelManager.get().getModelPanel().drawCanvasPanel();
+			SimService.setChanged(true);
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR, "", ButtonType.OK);
             alert.setTitle("パラメータ追加");
@@ -231,6 +232,7 @@ public class ConnectorParamDialog implements Initializable {
             iop.setItems();
             makeDisplayList();
             PanelManager.get().getModelPanel().drawCanvasPanel();
+			SimService.setChanged(true);
         }
     }
 

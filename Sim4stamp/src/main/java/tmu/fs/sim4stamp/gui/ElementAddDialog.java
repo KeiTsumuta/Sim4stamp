@@ -76,21 +76,21 @@ public class ElementAddDialog implements Initializable {
 		// System.out.println("init!! " + eType);
 		String title = "";
 		switch (eType) {
-		case CONTROLLER:
-			title = "コントローラ";
-			break;
-		case ACTUATOR:
-			title = "アクチュエータ";
-			break;
-		case SENSOR:
-			title = "センサ";
-			break;
-		case CONTROLLED_EQUIPMENT:
-			title = "被コントロールプロセス";
-			break;
-		case INJECTOR:
-			title = "インジェクタ";
-			break;
+			case CONTROLLER:
+				title = "コントローラ";
+				break;
+			case ACTUATOR:
+				title = "アクチュエータ";
+				break;
+			case SENSOR:
+				title = "センサ";
+				break;
+			case CONTROLLED_EQUIPMENT:
+				title = "被コントロールプロセス";
+				break;
+			case INJECTOR:
+				title = "インジェクタ";
+				break;
 		}
 		elementAddTitleId.setText("＜" + title + "＞ ");
 		errorMessageDisplay.setText("");
@@ -128,31 +128,32 @@ public class ElementAddDialog implements Initializable {
 			em.addElement(ce);
 		}
 		modelPanel.drawCanvasPanel();
+		SimService.setChanged(true);
 		((Node) event.getSource()).getScene().getWindow().hide();
 	}
 
 	private Element createElement(double x, double y, String id) {
 		switch (eType) {
-		case CONTROLLER:
-			Controller cl = new Controller(id);
-			cl.setPoint(x, y);
-			return cl;
-		case ACTUATOR:
-			Actuator ac = new Actuator(id);
-			ac.setPoint(x, y);
-			return ac;
-		case SENSOR:
-			Sensor ss = new Sensor(id);
-			ss.setPoint(x, y);
-			return ss;
-		case CONTROLLED_EQUIPMENT:
-			ControllledEquipment ce = new ControllledEquipment(id);
-			ce.setPoint(x, y);
-			return ce;
-		case INJECTOR:
-			Injector ij = new Injector(id);
-			ij.setPoint(x, y);
-			return ij;
+			case CONTROLLER:
+				Controller cl = new Controller(id);
+				cl.setPoint(x, y);
+				return cl;
+			case ACTUATOR:
+				Actuator ac = new Actuator(id);
+				ac.setPoint(x, y);
+				return ac;
+			case SENSOR:
+				Sensor ss = new Sensor(id);
+				ss.setPoint(x, y);
+				return ss;
+			case CONTROLLED_EQUIPMENT:
+				ControllledEquipment ce = new ControllledEquipment(id);
+				ce.setPoint(x, y);
+				return ce;
+			case INJECTOR:
+				Injector ij = new Injector(id);
+				ij.setPoint(x, y);
+				return ij;
 		}
 		return null;
 	}

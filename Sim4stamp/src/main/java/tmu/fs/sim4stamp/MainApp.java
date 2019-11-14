@@ -19,12 +19,14 @@ package tmu.fs.sim4stamp;
 
 import javafx.application.Application;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import tmu.fs.sim4stamp.gui.FXMLController;
 
 /**
  *
@@ -38,7 +40,7 @@ public class MainApp extends Application {
 	public void start(Stage iStage) throws Exception {
 		stage = iStage;
 		stage.setOnCloseRequest((WindowEvent t) -> {
-			System.exit(0);
+			FXMLController.systemExit();
 		});
 
 		SimService simService = SimService.getInstance();

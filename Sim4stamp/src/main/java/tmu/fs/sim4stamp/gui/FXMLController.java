@@ -273,8 +273,22 @@ public class FXMLController implements Initializable {
 
 	@FXML
 	public void appExitAction(ActionEvent event) {
-		SimService simService = SimService.getInstance();
-		simService.close();
+		systemExit();
+	}
+
+	public static void systemExit() {
+
+		if (SimService.isChanged()) {
+			Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.OK, ButtonType.CANCEL);
+			alert.setTitle("終了警告");
+			alert.getDialogPane().setHeaderText("プロジェクトデータの変更あり");
+			alert.getDialogPane().setContentText("保存しないと設定データが消失します。\nそれでも終了しますか？");
+			ButtonType bt = alert.showAndWait().orElse(ButtonType.CANCEL);
+			if (bt == ButtonType.CANCEL) {
+				return;
+			}
+		}
+		SimService.getInstance().close();
 		//log.info("Exit sim4stamp");
 		Platform.exit();
 		System.exit(0);
@@ -348,7 +362,7 @@ public class FXMLController implements Initializable {
 	public void aboutAction(ActionEvent event) {
 		Alert alert = new Alert(Alert.AlertType.INFORMATION);
 		alert.setTitle("sim4stamp");
-		alert.setHeaderText("STAMP/STAPシミュレータ");
+		alert.setHeaderText("sim4stamp : The simulation tool for STAMP/STPA");
 		alert.setContentText(
 			"Version : " + Sim4stampVersion.version + "\n\n" + "License : GNU General Public License version 3");
 		alert.showAndWait();

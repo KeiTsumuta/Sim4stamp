@@ -299,6 +299,7 @@ public class RestrictSettingDialog implements Initializable {
 		}
 		elementItem.setUnderRestrict(underVal);
 		elementItem.setUpperRestrict(upperVal);
+		SimService.setChanged(true);
 		Platform.runLater(() -> {
 			try {
 				ConditionPanel sp = PanelManager.get().getConditionPanel();

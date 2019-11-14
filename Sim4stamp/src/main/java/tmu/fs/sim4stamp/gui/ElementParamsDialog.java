@@ -58,201 +58,204 @@ import tmu.fs.sim4stamp.model.iop.IOParam;
  */
 public class ElementParamsDialog implements Initializable {
 
-    @FXML
-    private Label paramType;
+	@FXML
+	private Label paramType;
 
-    @FXML
-    private ListView paramList;
+	@FXML
+	private ListView paramList;
 
-    @FXML
-    private Button addButton;
+	@FXML
+	private Button addButton;
 
-    @FXML
-    private TextField addParamId;
+	@FXML
+	private TextField addParamId;
 
-    @FXML
-    private RadioButton realParam;
+	@FXML
+	private RadioButton realParam;
 
-    @FXML
-    private RadioButton intParam;
+	@FXML
+	private RadioButton intParam;
 
-    @FXML
-    private RadioButton boolParam;
+	@FXML
+	private RadioButton boolParam;
 
-    @FXML
-    private RadioButton lvParam;
+	@FXML
+	private RadioButton lvParam;
 
-    @FXML
-    private ChoiceBox lvUnitSelection;
+	@FXML
+	private ChoiceBox lvUnitSelection;
 
-    @FXML
-    private TextField deleteParamId;
+	@FXML
+	private TextField deleteParamId;
 
-    private Stage stage;
-    private static String subTitle;
-    private static AppendParams.ParamType aType;
-    private static AppendParams appendParams;
-    private static ObservableList<String> displayList;
-    private static ObservableList<String> unitList;
-    private static ToggleGroup group = new ToggleGroup();
-    private String unit;
+	private Stage stage;
+	private static String subTitle;
+	private static AppendParams.ParamType aType;
+	private static AppendParams appendParams;
+	private static ObservableList<String> displayList;
+	private static ObservableList<String> unitList;
+	private static ToggleGroup group = new ToggleGroup();
+	private String unit;
 
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // System.out.println("--- init:" + subTitle);
-        paramType.setText(subTitle);
-        makeDisplayList();
-        realParam.setToggleGroup(group);
-        realParam.setSelected(true);
-        intParam.setToggleGroup(group);
-        boolParam.setToggleGroup(group);
-        lvParam.setToggleGroup(group);
-        makeUnitList();
-    }
+	@Override
+	public void initialize(URL url, ResourceBundle rb) {
+		// System.out.println("--- init:" + subTitle);
+		paramType.setText(subTitle);
+		makeDisplayList();
+		realParam.setToggleGroup(group);
+		realParam.setSelected(true);
+		intParam.setToggleGroup(group);
+		boolParam.setToggleGroup(group);
+		lvParam.setToggleGroup(group);
+		makeUnitList();
+	}
 
-    private void makeDisplayList() {
-        displayList = FXCollections.observableArrayList();
-        if (appendParams != null) {
-            List<IOParam> ioParams = appendParams.getParams();
-            for (IOParam io : ioParams) {
-                if (aType == io.getParamType()) {
-                    displayList.add(io.getId());
-                }
-            }
-        }
-        addButton.setDisable(false);
-        paramList.setItems(displayList);
-        paramList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                deleteParamId.setText(newValue);
-            }
-        });
-    }
+	private void makeDisplayList() {
+		displayList = FXCollections.observableArrayList();
+		if (appendParams != null) {
+			List<IOParam> ioParams = appendParams.getParams();
+			for (IOParam io : ioParams) {
+				if (aType == io.getParamType()) {
+					displayList.add(io.getId());
+				}
+			}
+		}
+		addButton.setDisable(false);
+		paramList.setItems(displayList);
+		paramList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				deleteParamId.setText(newValue);
+				SimService.setChanged(true);
+			}
+		});
+	}
 
-    private void makeUnitList() {
-        unitList = FXCollections.observableArrayList();
-        List<String> units = LogicalValueManager.getUnitList();
-        for (String unit : units) {
-            unitList.add(unit);
-        }
-        lvUnitSelection.setItems(unitList);
-        if (unitList.size() > 0) {
-            lvUnitSelection.setValue(units.get(0));
-        }
-    }
+	private void makeUnitList() {
+		unitList = FXCollections.observableArrayList();
+		List<String> units = LogicalValueManager.getUnitList();
+		for (String unit : units) {
+			unitList.add(unit);
+		}
+		lvUnitSelection.setItems(unitList);
+		if (unitList.size() > 0) {
+			lvUnitSelection.setValue(units.get(0));
+		}
+	}
 
-    public void set(AppendParams.ParamType a, String sTitle, AppendParams ap) {
-        subTitle = sTitle;
-        aType = a;
-        appendParams = ap;
-        // System.out.println("--- set:" + subTitle);
-    }
+	public void set(AppendParams.ParamType a, String sTitle, AppendParams ap) {
+		subTitle = sTitle;
+		aType = a;
+		appendParams = ap;
+		// System.out.println("--- set:" + subTitle);
+	}
 
-    public void show(ActionEvent event) throws IOException {
-        stage = new Stage();
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/elementParamsSettingDialog.fxml"));
-        stage.setScene(new Scene(root));
-        stage.setTitle("sim4stamp");
-        stage.initModality(Modality.WINDOW_MODAL);
-        SimService s = SimService.getInstance();
-        stage.initOwner(s.getStage());
-        stage.show();
-    }
+	public void show(ActionEvent event) throws IOException {
+		stage = new Stage();
+		Parent root = FXMLLoader.load(getClass().getResource("/fxml/elementParamsSettingDialog.fxml"));
+		stage.setScene(new Scene(root));
+		stage.setTitle("sim4stamp");
+		stage.initModality(Modality.WINDOW_MODAL);
+		SimService s = SimService.getInstance();
+		stage.initOwner(s.getStage());
+		stage.show();
+	}
 
-    @FXML
-    public void addAction(ActionEvent event) {
-        String error = null;
-        IOParam ioParam = null;
-        String id = addParamId.getText();
-        if (id == null) {
-            return;
-        }
-        id = id.trim();
-        if (id.length() == 0) {
-            return;
-        }
-        ElementManager em = SimService.getInstance().getElementManger();
-        for (Element el : em.getElements()) {
-            AppendParams aps = el.getAppendParams();
-            if (aps == null) {
-                continue;
-            }
-            for (IOParam iop : aps.getParams()) {
-                if (iop.getId().equals(id)) {
-                    error = "？？？ すでに使用済みです";
-                    break;
-                }
-            }
-        }
-        if (error == null) {
-            if (aType == AppendParams.ParamType.Element) {
-                IOParam.ValueType type = IOParam.ValueType.REAL;
-                if (intParam.isSelected()) {
-                    type = IOParam.ValueType.INT;
-                } else if (boolParam.isSelected()) {
-                    type = IOParam.ValueType.BOOL;
-                } else if (lvParam.isSelected()) {
-                    type = IOParam.ValueType.LOGI_VAL;
-                    unit = lvUnitSelection.getValue().toString();
-                }
-                ioParam = new IOParam(AppendParams.ParamType.Element, null, id, type, unit);
-                appendParams.addIOParam(ioParam);
-            }
-            IOParamManager ipm = SimService.getInstance().getIoParamManager();
-            ipm.setItems();
-            // IOScene ioScene = ipm.getCurrentScene();
-            // ioScene.setSize(ioScene.getSize());
-            displayList.add(id);
-            addButton.setDisable(false);
-            addParamId.setText("");
-            PanelManager.get().getModelPanel().drawCanvasPanel();
-        } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "", ButtonType.OK);
-            alert.setTitle("パラメータ追加");
-            alert.getDialogPane().setHeaderText("エラー");
-            alert.getDialogPane().setContentText(error);
-            alert.showAndWait();
-        }
-    }
+	@FXML
+	public void addAction(ActionEvent event) {
+		String error = null;
+		IOParam ioParam = null;
+		String id = addParamId.getText();
+		if (id == null) {
+			return;
+		}
+		id = id.trim();
+		if (id.length() == 0) {
+			return;
+		}
+		ElementManager em = SimService.getInstance().getElementManger();
+		for (Element el : em.getElements()) {
+			AppendParams aps = el.getAppendParams();
+			if (aps == null) {
+				continue;
+			}
+			for (IOParam iop : aps.getParams()) {
+				if (iop.getId().equals(id)) {
+					error = "？？？ すでに使用済みです";
+					break;
+				}
+			}
+		}
+		if (error == null) {
+			if (aType == AppendParams.ParamType.Element) {
+				IOParam.ValueType type = IOParam.ValueType.REAL;
+				if (intParam.isSelected()) {
+					type = IOParam.ValueType.INT;
+				} else if (boolParam.isSelected()) {
+					type = IOParam.ValueType.BOOL;
+				} else if (lvParam.isSelected()) {
+					type = IOParam.ValueType.LOGI_VAL;
+					unit = lvUnitSelection.getValue().toString();
+				}
+				ioParam = new IOParam(AppendParams.ParamType.Element, null, id, type, unit);
+				appendParams.addIOParam(ioParam);
+			}
+			IOParamManager ipm = SimService.getInstance().getIoParamManager();
+			ipm.setItems();
+			// IOScene ioScene = ipm.getCurrentScene();
+			// ioScene.setSize(ioScene.getSize());
+			displayList.add(id);
+			addButton.setDisable(false);
+			addParamId.setText("");
+			PanelManager.get().getModelPanel().drawCanvasPanel();
+			SimService.setChanged(true);
+		} else {
+			Alert alert = new Alert(Alert.AlertType.ERROR, "", ButtonType.OK);
+			alert.setTitle("パラメータ追加");
+			alert.getDialogPane().setHeaderText("エラー");
+			alert.getDialogPane().setContentText(error);
+			alert.showAndWait();
+		}
+	}
 
-    @FXML
-    public void deleteAction(ActionEvent event) {
-        // System.out.println("deleteAction!!");
-        String deleteId = deleteParamId.getText();
-        if (deleteId != null && deleteId.length() > 0) {
-            ElementManager em = SimService.getInstance().getElementManger();
-            for (Element el : em.getElements()) {
-                AppendParams aps = el.getAppendParams();
-                if (aps == null) {
-                    continue;
-                }
-                for (IOParam iop : aps.getParams()) {
-                    if (iop.getId().equals(deleteId)) {
-                        aps.deleteIOParam(iop);
-                        deleteParamId.setText("");
-                        break;
-                    }
-                }
-            }
-            IOParamManager iop = SimService.getInstance().getIoParamManager();
-            iop.setItems();
-            makeDisplayList();
-            PanelManager.get().getModelPanel().drawCanvasPanel();
-        }
-    }
+	@FXML
+	public void deleteAction(ActionEvent event) {
+		// System.out.println("deleteAction!!");
+		String deleteId = deleteParamId.getText();
+		if (deleteId != null && deleteId.length() > 0) {
+			ElementManager em = SimService.getInstance().getElementManger();
+			for (Element el : em.getElements()) {
+				AppendParams aps = el.getAppendParams();
+				if (aps == null) {
+					continue;
+				}
+				for (IOParam iop : aps.getParams()) {
+					if (iop.getId().equals(deleteId)) {
+						aps.deleteIOParam(iop);
+						deleteParamId.setText("");
+						break;
+					}
+				}
+			}
+			IOParamManager iop = SimService.getInstance().getIoParamManager();
+			iop.setItems();
+			makeDisplayList();
+			PanelManager.get().getModelPanel().drawCanvasPanel();
+			SimService.setChanged(true);
+		}
+	}
 
-    @FXML
-    public void returnAction(ActionEvent event) {
+	@FXML
+	public void returnAction(ActionEvent event) {
 
-        ((Node) event.getSource()).getScene().getWindow().hide();
-    }
+		((Node) event.getSource()).getScene().getWindow().hide();
+	}
 
-    /**
-     * @return the appendParams
-     */
-    public AppendParams getAppendParams() {
-        return appendParams;
-    }
+	/**
+	 * @return the appendParams
+	 */
+	public AppendParams getAppendParams() {
+		return appendParams;
+	}
 
 }

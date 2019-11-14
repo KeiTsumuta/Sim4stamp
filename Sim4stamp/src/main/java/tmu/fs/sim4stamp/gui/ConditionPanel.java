@@ -96,6 +96,7 @@ public class ConditionPanel implements Initializable {
 		this.conditionSetButton.setOnAction((ActionEvent event) -> {
 			setInitTable();
 			PanelManager.get().updateCondition();
+			SimService.setChanged(true);
 		});
 
 		deviationStartIndex.textProperty().set(Integer.toString(ioScene.getDeviationStartIndex()));
@@ -119,6 +120,7 @@ public class ConditionPanel implements Initializable {
 				@Override
 				public void changed(ObservableValue<? extends Boolean> ov, Boolean old_val, Boolean new_val) {
 					elem.setSelected(new_val);
+					SimService.setChanged(true);
 				}
 			});
 			return new SimpleObjectProperty<CheckBox>(checkBox);
@@ -338,6 +340,7 @@ public class ConditionPanel implements Initializable {
 									initDataTable.getSelectionModel().clearAndSelect(row + 1, event.getTableColumn());
 								}
 								initDataTable.requestFocus();
+								SimService.setChanged(true);
 							}
 						});
 						column.setEditable(true);

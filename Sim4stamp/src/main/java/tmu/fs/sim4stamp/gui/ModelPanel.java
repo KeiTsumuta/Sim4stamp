@@ -239,6 +239,7 @@ public class ModelPanel implements Initializable {
 		connector.setSelectedIndex(1);
 		cm.add(connector);
 		drawCanvasPanel();
+		SimService.setChanged(true);
 	}
 
 	private void setDisplayLevel(DisplayLevel.Level level) {
@@ -273,6 +274,7 @@ public class ModelPanel implements Initializable {
 			for (Connector c : cm.getConnectors()) {
 				c.checkNode(id);
 			}
+			SimService.setChanged(true);
 		}
 		drawCanvasPanel();
 	}
@@ -288,6 +290,7 @@ public class ModelPanel implements Initializable {
 			}
 		}
 		drawCanvasPanel();
+		SimService.setChanged(true);
 	}
 
 	private void addConnectorJoint() {
@@ -297,6 +300,7 @@ public class ModelPanel implements Initializable {
 			c.addJoint(popupX, popupY);
 		}
 		drawCanvasPanel();
+		SimService.setChanged(true);
 	}
 
 	private void deleteConnectorJoint() {
@@ -306,6 +310,7 @@ public class ModelPanel implements Initializable {
 			c.deleteJoint();
 		}
 		drawCanvasPanel();
+		SimService.setChanged(true);
 	}
 
 	private void deleteConnector() {
@@ -320,6 +325,7 @@ public class ModelPanel implements Initializable {
 		}
 
 		drawCanvasPanel();
+		SimService.setChanged(true);
 	}
 
 	public void initSize() {
@@ -428,6 +434,7 @@ public class ModelPanel implements Initializable {
 				if (c.selectDistance(x, y)) {
 					c.setPointed(true);
 					selectJointConnector = c;
+					SimService.setChanged(true);
 					break;
 				}
 			}
@@ -440,6 +447,7 @@ public class ModelPanel implements Initializable {
 						for (Connector c : connectors) {
 							c.elementFocus(selectNodeId, x, y);
 						}
+						SimService.setChanged(true);
 						break;
 					}
 				}

@@ -45,435 +45,450 @@ import tmu.fs.sim4stamp.util.ResourceFileIO;
  */
 public class SimService extends ResourceFileIO implements java.io.Serializable {
 
-    private static final int SERVER_PORT = 8001;
+	private static final int SERVER_PORT = 8001;
 
-    private static final String SIMINFO_INI = "/info/siminfo.json";
-    public static final String SP = System.getProperty("file.separator");
-    public static final String PAS = System.getProperty("path.separator");
-    public static final String INFO_DIR_NAME = SP + ".stamp";
-    public static final String INFO_FILE_NAME = SP + ".stamp" + SP + "siminfo.json";
-    private static final int JSON_SIZE_MAX = 1024 * 100;
+	private static final String SIMINFO_INI = "/info/siminfo.json";
+	public static final String SP = System.getProperty("file.separator");
+	public static final String PAS = System.getProperty("path.separator");
+	public static final String INFO_DIR_NAME = SP + ".stamp";
+	public static final String INFO_FILE_NAME = SP + ".stamp" + SP + "siminfo.json";
+	private static final int JSON_SIZE_MAX = 1024 * 100;
 
-    private volatile static SimService simService = new SimService();
+	private volatile static boolean changed = false;
 
-    private Stage stage;
-    private List<String> projectList;
-    private String currentProjectId = null;
-    private Map<String, String> paramMap;
-    private ElementManager elementManager;
-    private ConnectorManager connectorManager;
-    private IOParamManager ioParamManager;
-    private LogicalValueManager logicalValueManager;
-    private List<List<IOParamManager>> timeLines;
+	private volatile static SimService simService = new SimService();
 
-    private SimServer simServer;
+	private Stage stage;
+	private List<String> projectList;
+	private String currentProjectId = null;
+	private Map<String, String> paramMap;
+	private ElementManager elementManager;
+	private ConnectorManager connectorManager;
+	private IOParamManager ioParamManager;
+	private LogicalValueManager logicalValueManager;
 
-    private SimService() {
-        this.paramMap = new HashMap<>();
-        this.projectList = new ArrayList<>();
-        elementManager = new ElementManager();
-        connectorManager = new ConnectorManager();
-        ioParamManager = new IOParamManager(elementManager, connectorManager);
-        logicalValueManager = new LogicalValueManager();
-        try {
-            simServer = new SimServer(SERVER_PORT);
-            new Thread(simServer).start();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        // readInfoFile();
-    }
+	private SimServer simServer;
 
-    public static SimService getInstance() {
-        return simService;
-    }
+	private SimService() {
+		this.paramMap = new HashMap<>();
+		this.projectList = new ArrayList<>();
+		elementManager = new ElementManager();
+		connectorManager = new ConnectorManager();
+		ioParamManager = new IOParamManager(elementManager, connectorManager);
+		logicalValueManager = new LogicalValueManager();
+		try {
+			simServer = new SimServer(SERVER_PORT);
+			new Thread(simServer).start();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		// readInfoFile();
+	}
 
-    public void setStage(Stage stage) {
-        this.stage = stage;
-    }
+	public static SimService getInstance() {
+		return simService;
+	}
 
-    /**
-     * システム設定ファイル読込み
-     */
-    public void readInfoFile() {
-        try {
-            File f = new File(System.getProperty("user.home") + INFO_FILE_NAME);
-            if (!f.exists()) {
-                String iop = getResource(SIMINFO_INI);
-                writeFile(System.getProperty("user.home") + INFO_FILE_NAME, iop.getBytes("UTF-8"));
-            }
-            parseSimInfo(readJsonFile(f));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
+	public void setStage(Stage stage) {
+		this.stage = stage;
+	}
 
-    private void parseSimInfo(JSONObject jObj) {
-        if (jObj == null) {
-            return;
-        }
-        // System.out.println("--- parseSimInfo");
-        JSONObject sj = jObj.getJSONObject("siminfos");
-        JSONObject overture = sj.getJSONObject("overture");
-        paramMap.put("overture.home", overture.getString("home"));
-        paramMap.put("overture.commandline", overture.getString("commandline"));
+	/**
+	 * システム設定ファイル読込み
+	 */
+	public void readInfoFile() {
+		try {
+			File f = new File(System.getProperty("user.home") + INFO_FILE_NAME);
+			if (!f.exists()) {
+				String iop = getResource(SIMINFO_INI);
+				writeFile(System.getProperty("user.home") + INFO_FILE_NAME, iop.getBytes("UTF-8"));
+			}
+			parseSimInfo(readJsonFile(f));
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 
-        int ghColum = 1;
-        JSONObject sp = sj.optJSONObject("systemparams");
-        if (sp != null) {
-            ghColum = sp.optInt("graphcolums", 1);
-        }
-        paramMap.put("systemparams.graphcolums", Integer.toString(ghColum));
+	private void parseSimInfo(JSONObject jObj) {
+		if (jObj == null) {
+			return;
+		}
+		// System.out.println("--- parseSimInfo");
+		JSONObject sj = jObj.getJSONObject("siminfos");
+		JSONObject overture = sj.getJSONObject("overture");
+		paramMap.put("overture.home", overture.getString("home"));
+		paramMap.put("overture.commandline", overture.getString("commandline"));
 
-        double ghWidth = 1.0;
-        if (sp != null) {
-            ghWidth = sp.optDouble("graphwidth", 1);
-        }
-        paramMap.put("systemparams.graphwidth", Double.toString(ghWidth));
+		int ghColum = 1;
+		JSONObject sp = sj.optJSONObject("systemparams");
+		if (sp != null) {
+			ghColum = sp.optInt("graphcolums", 1);
+		}
+		paramMap.put("systemparams.graphcolums", Integer.toString(ghColum));
 
-        JSONObject devparams = sj.optJSONObject("deviationParams");
-        if (devparams != null) {
-            IOScene.setProvidingMoreParam(devparams.optDouble("providingMore"));
-            IOScene.setProvidingLessParam(devparams.optDouble("providingLess"));
-            IOScene.setDeviationTooEarly(devparams.optInt("deviationTooEarly"));
-            IOScene.setDeviationTooLate(devparams.optInt("deviationTooLate"));
-        }
+		double ghWidth = 1.0;
+		if (sp != null) {
+			ghWidth = sp.optDouble("graphwidth", 1);
+		}
+		paramMap.put("systemparams.graphwidth", Double.toString(ghWidth));
 
-        String currentPjObj = sj.optString("currentProject");
-        setCurrentProjectId(null);
-        setCurrentProjectId(currentPjObj);
+		JSONObject devparams = sj.optJSONObject("deviationParams");
+		if (devparams != null) {
+			IOScene.setProvidingMoreParam(devparams.optDouble("providingMore"));
+			IOScene.setProvidingLessParam(devparams.optDouble("providingLess"));
+			IOScene.setDeviationTooEarly(devparams.optInt("deviationTooEarly"));
+			IOScene.setDeviationTooLate(devparams.optInt("deviationTooLate"));
+		}
 
-        //log.info("o-home -> " + paramMap.get("overture.home"));
-        // log.info("commandlinetool -> " + paramMap.get("overture.commandline"));
-        JSONArray pjs = sj.getJSONArray("projects");
-        int len = pjs.length();
-        projectList = new ArrayList<>();
-        for (int i = 0; i < len; i++) {
-            JSONObject pj = pjs.getJSONObject(i);
-            if (pj.has("project")) {
-                JSONObject base = pj.getJSONObject("project");
-                String id = base.optString("id");
-                projectList.add(id);
-                paramMap.put("project.home." + id, base.optString("home"));
-                paramMap.put("project.pjparams." + id, base.optString("pjparams"));
-            }
-        }
-    }
+		String currentPjObj = sj.optString("currentProject");
+		setCurrentProjectId(null);
+		setCurrentProjectId(currentPjObj);
 
-    /**
-     * システム設定ファイルの書込み
-     */
-    public void writeInfoFile() {
-        try {
-            File f = new File(System.getProperty("user.home") + INFO_FILE_NAME);
-            writeInfos(f, getSimInfoJson().toString(2));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
+		//log.info("o-home -> " + paramMap.get("overture.home"));
+		// log.info("commandlinetool -> " + paramMap.get("overture.commandline"));
+		JSONArray pjs = sj.getJSONArray("projects");
+		int len = pjs.length();
+		projectList = new ArrayList<>();
+		for (int i = 0; i < len; i++) {
+			JSONObject pj = pjs.getJSONObject(i);
+			if (pj.has("project")) {
+				JSONObject base = pj.getJSONObject("project");
+				String id = base.optString("id");
+				projectList.add(id);
+				paramMap.put("project.home." + id, base.optString("home"));
+				paramMap.put("project.pjparams." + id, base.optString("pjparams"));
+			}
+		}
+	}
 
-    private JSONObject getSimInfoJson() {
-        JSONObject jobj = new JSONObject();
-        JSONObject ov = new JSONObject();
-        ov.accumulate("home", paramMap.get("overture.home"));
-        ov.accumulate("commandline", paramMap.get("overture.commandline"));
-        jobj.accumulate("overture", ov);
+	/**
+	 * システム設定ファイルの書込み
+	 */
+	public void writeInfoFile() {
+		try {
+			File f = new File(System.getProperty("user.home") + INFO_FILE_NAME);
+			writeInfos(f, getSimInfoJson().toString(2));
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 
-        JSONObject sp = new JSONObject();
-        sp.accumulate("graphcolums", paramMap.get("systemparams.graphcolums"));
-        sp.accumulate("graphwidth", paramMap.get("systemparams.graphwidth"));
-        jobj.accumulate("systemparams", sp);
+	private JSONObject getSimInfoJson() {
+		JSONObject jobj = new JSONObject();
+		JSONObject ov = new JSONObject();
+		ov.accumulate("home", paramMap.get("overture.home"));
+		ov.accumulate("commandline", paramMap.get("overture.commandline"));
+		jobj.accumulate("overture", ov);
 
-        ov = new JSONObject();
-        ov.accumulate("providingMore", IOScene.getProvidingMoreParam());
-        ov.accumulate("providingLess", IOScene.getProvidingLessParam());
-        ov.accumulate("deviationTooEarly", IOScene.getDeviationTooEarly());
-        ov.accumulate("deviationTooLate", IOScene.getDeviationTooLate());
-        jobj.accumulate("deviationParams", ov);
+		JSONObject sp = new JSONObject();
+		sp.accumulate("graphcolums", paramMap.get("systemparams.graphcolums"));
+		sp.accumulate("graphwidth", paramMap.get("systemparams.graphwidth"));
+		jobj.accumulate("systemparams", sp);
 
-        jobj.accumulate("currentProject", getCurrentProjectId());
+		ov = new JSONObject();
+		ov.accumulate("providingMore", IOScene.getProvidingMoreParam());
+		ov.accumulate("providingLess", IOScene.getProvidingLessParam());
+		ov.accumulate("deviationTooEarly", IOScene.getDeviationTooEarly());
+		ov.accumulate("deviationTooLate", IOScene.getDeviationTooLate());
+		jobj.accumulate("deviationParams", ov);
 
-        List<JSONObject> list = new ArrayList<>();
-        for (String pjId : projectList) {
-            JSONObject pjt = new JSONObject();
-            JSONObject jp = new JSONObject();
-            jp.accumulate("id", pjId);
-            jp.accumulate("home", paramMap.get("project.home." + pjId));
-            jp.accumulate("pjparams", paramMap.get("project.pjparams." + pjId));
-            pjt.accumulate("project", jp);
-            list.add(pjt);
-        }
-        jobj.accumulate("projects", list);
+		jobj.accumulate("currentProject", getCurrentProjectId());
 
-        JSONObject mobj = new JSONObject();
-        mobj.accumulate("siminfos", jobj);
-        return mobj;
-    }
+		List<JSONObject> list = new ArrayList<>();
+		for (String pjId : projectList) {
+			JSONObject pjt = new JSONObject();
+			JSONObject jp = new JSONObject();
+			jp.accumulate("id", pjId);
+			jp.accumulate("home", paramMap.get("project.home." + pjId));
+			jp.accumulate("pjparams", paramMap.get("project.pjparams." + pjId));
+			pjt.accumulate("project", jp);
+			list.add(pjt);
+		}
+		jobj.accumulate("projects", list);
 
-    /**
-     * プロジェクト毎ファイル （project param.json）読込み
-     */
-    public void readProjectFile(String id) {
-        if (projectList.size() == 0) {
-            return;
-        }
-        String pf = paramMap.get("project.home." + id) + "/" + paramMap.get("project.pjparams." + id);
-        //log.info("param.json -> " + pf);
-        elementManager.init();
-        connectorManager.init();
-        ioParamManager.init();
-        File paramFile = new File(pf);
-        if (paramFile.exists()) {
-            JSONObject ob = readJsonFile(paramFile);
-            parseProjectParams(ob);
-        } else {
-            System.out.println("project params file no exists:" + pf);
-        }
-        OvertureExecManager.getInstance().init();
-        /* Debug */
-        // Map<String, List<IOParam>> map = ioParamManager.getParamMap();
-        // for (String key : map.keySet()) {
-        // System.out.println("-- node=" + key);
-        // for (IOParam iop : map.get(key)) {
-        // System.out.println(iop.getId());
-        // }
-        // }
-    }
+		JSONObject mobj = new JSONObject();
+		mobj.accumulate("siminfos", jobj);
+		return mobj;
+	}
 
-    private JSONObject readJsonFile(File jsonFile) {
-        JSONObject jobj = null;
-        String json = "";
-        try ( FileInputStream in = new FileInputStream(jsonFile);) {
-            int size = (int) jsonFile.length();
-            if (size < JSON_SIZE_MAX) {
-                byte[] buf = new byte[size];
-                int readSize = in.read(buf);
-                if (readSize > 0) {
-                    json = new String(buf, "UTF-8");
-                    jobj = new JSONObject(json);
-                }
-            } else {
-                System.out.println("ERROR:JSONデータサイズオーバー");
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return jobj;
-    }
+	/**
+	 * プロジェクト毎ファイル （project param.json）読込み
+	 */
+	public void readProjectFile(String id) {
+		if (projectList.isEmpty()) {
+			return;
+		}
+		String pf = paramMap.get("project.home." + id) + "/" + paramMap.get("project.pjparams." + id);
+		//log.info("param.json -> " + pf);
+		elementManager.init();
+		connectorManager.init();
+		ioParamManager.init();
+		File paramFile = new File(pf);
+		if (paramFile.exists()) {
+			JSONObject ob = readJsonFile(paramFile);
+			parseProjectParams(ob);
+		} else {
+			System.out.println("project params file no exists:" + pf);
+		}
+		OvertureExecManager.getInstance().init();
+		/* Debug */
+		// Map<String, List<IOParam>> map = ioParamManager.getParamMap();
+		// for (String key : map.keySet()) {
+		// System.out.println("-- node=" + key);
+		// for (IOParam iop : map.get(key)) {
+		// System.out.println(iop.getId());
+		// }
+		// }
+	}
 
-    public void parseProjectParams(JSONObject jObj) {
-        elementManager.init();
-        connectorManager.init();
-        ioParamManager.init();
-        JSONObject sj = jObj.getJSONObject("pjparams");
-        elementManager.parseJson(sj);
-        connectorManager.parseJson(sj);
-        ioParamManager.setItems();
-        ioParamManager.parseJson(sj);
-    }
+	private JSONObject readJsonFile(File jsonFile) {
+		JSONObject jobj = null;
+		try ( FileInputStream in = new FileInputStream(jsonFile);) {
+			int size = (int) jsonFile.length();
+			if (size < JSON_SIZE_MAX) {
+				byte[] buf = new byte[size];
+				int readSize = in.read(buf);
+				if (readSize > 0) {
+					String json = new String(buf, "UTF-8");
+					jobj = new JSONObject(json);
+				}
+			} else {
+				System.out.println("ERROR:JSONデータサイズオーバー");
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return jobj;
+	}
 
-    private double getDouble(String t) {
-        try {
-            return Double.parseDouble(t);
-        } catch (Exception ex) {
+	public void parseProjectParams(JSONObject jObj) {
+		elementManager.init();
+		connectorManager.init();
+		ioParamManager.init();
+		JSONObject sj = jObj.getJSONObject("pjparams");
+		elementManager.parseJson(sj);
+		connectorManager.parseJson(sj);
+		ioParamManager.setItems();
+		ioParamManager.parseJson(sj);
+	}
 
-        }
-        return 0.0;
-    }
+	private double getDouble(String t) {
+		try {
+			return Double.parseDouble(t);
+		} catch (Exception ex) {
 
-    private void writeInfos(File f, String contents) {
-        File dir = new File(System.getProperty("user.home") + INFO_DIR_NAME);
-        dir.mkdir();
-        try ( FileOutputStream fo = new FileOutputStream(f);  BufferedOutputStream out = new BufferedOutputStream(fo);) {
-            out.write(contents.getBytes("UTF-8"));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
+		}
+		return 0.0;
+	}
 
-    private Map<String, String> getParamMap() {
-        return paramMap;
-    }
+	private void writeInfos(File f, String contents) {
+		File dir = new File(System.getProperty("user.home") + INFO_DIR_NAME);
+		dir.mkdir();
+		try ( FileOutputStream fo = new FileOutputStream(f);  BufferedOutputStream out = new BufferedOutputStream(fo);) {
+			out.write(contents.getBytes("UTF-8"));
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 
-    public String getOvertureHome() {
-        return paramMap.get("overture.home");
-    }
+	private Map<String, String> getParamMap() {
+		return paramMap;
+	}
 
-    public void setOvertureHome(String dir) {
-        paramMap.put("overture.home", dir);
-    }
+	public String getOvertureHome() {
+		return paramMap.get("overture.home");
+	}
 
-    public String getOvertureCommandLine() {
-        return paramMap.get("overture.commandline");
-    }
+	public void setOvertureHome(String dir) {
+		paramMap.put("overture.home", dir);
+	}
 
-    public void setOvertureCommandLine(String oc) {
-        paramMap.put("overture.commandline", oc);
-    }
+	public String getOvertureCommandLine() {
+		return paramMap.get("overture.commandline");
+	}
 
-    public String getOvertureCommandLineJar() {
-        return paramMap.get("overture.home") + SP + "commandline" + SP + paramMap.get("overture.commandline");
-    }
+	public void setOvertureCommandLine(String oc) {
+		paramMap.put("overture.commandline", oc);
+	}
 
-    public void setResultGraphColumSize(int colSize) {
-        if (colSize > 0) {
-            paramMap.put("systemparams.graphcolums", Integer.toString(colSize));
-        }
-    }
+	public String getOvertureCommandLineJar() {
+		return paramMap.get("overture.home") + SP + "commandline" + SP + paramMap.get("overture.commandline");
+	}
 
-    public int getResultGraphColumSize() {
-        String size = paramMap.get("systemparams.graphcolums");
-        try {
-            return Integer.parseInt(size);
-        } catch (Exception ex) {
-        }
-        return 1;
-    }
+	public void setResultGraphColumSize(int colSize) {
+		if (colSize > 0) {
+			paramMap.put("systemparams.graphcolums", Integer.toString(colSize));
+		}
+	}
 
-    public void setResultGraphWidth(double width) {
-        if (width > 0.0) {
-            paramMap.put("systemparams.graphwidth", Double.toString(width));
-        }
-    }
+	public int getResultGraphColumSize() {
+		String size = paramMap.get("systemparams.graphcolums");
+		try {
+			return Integer.parseInt(size);
+		} catch (Exception ex) {
+		}
+		return 1;
+	}
 
-    public double getResultGraphWidth() {
-        String width = paramMap.get("systemparams.graphwidth");
-        try {
-            return Double.parseDouble(width);
-        } catch (Exception ex) {
-        }
-        return 1.0;
-    }
+	public void setResultGraphWidth(double width) {
+		if (width > 0.0) {
+			paramMap.put("systemparams.graphwidth", Double.toString(width));
+		}
+	}
 
-    public List<String> getProjects() {
-        return projectList;
-    }
+	public double getResultGraphWidth() {
+		String width = paramMap.get("systemparams.graphwidth");
+		try {
+			return Double.parseDouble(width);
+		} catch (Exception ex) {
+		}
+		return 1.0;
+	}
 
-    public void addProject(String id, String home, String params) {
-        if (id == null || home == null || params == null) {
-            return;
-        }
-        for (int i = 0; i < projectList.size(); i++) {
-            if (projectList.get(i).equals(id)) {
-                return;
-            }
-        }
-        projectList.add(id);
-        paramMap.put("project.home." + id, home);
-        paramMap.put("project.pjparams." + id, params);
-    }
+	public List<String> getProjects() {
+		return projectList;
+	}
 
-    public String getProjectHome(String id) {
-        return paramMap.get("project.home." + id);
-    }
+	public void addProject(String id, String home, String params) {
+		if (id == null || home == null || params == null) {
+			return;
+		}
+		for (int i = 0; i < projectList.size(); i++) {
+			if (projectList.get(i).equals(id)) {
+				return;
+			}
+		}
+		projectList.add(id);
+		paramMap.put("project.home." + id, home);
+		paramMap.put("project.pjparams." + id, params);
+	}
 
-    public String getProjectParams(String id) {
-        return paramMap.get("project.pjparams." + id);
-    }
+	public String getProjectHome(String id) {
+		return paramMap.get("project.home." + id);
+	}
 
-    public void deleteProject(String id) {
-        for (int i = 0; i < projectList.size(); i++) {
-            if (projectList.get(i).equals(id)) {
-                projectList.remove(i);
-                paramMap.remove("project.home." + id);
-                paramMap.remove("project.pjparams." + id);
-                if (id.equals(currentProjectId)) {
-                    initCurrentProject();
-                }
-                return;
-            }
-        }
-    }
+	public String getProjectParams(String id) {
+		return paramMap.get("project.pjparams." + id);
+	}
 
-    public void initCurrentProject() {
-        currentProjectId = null;
-        elementManager.init();
-        connectorManager.init();
-        ioParamManager.init();
-    }
+	public void deleteProject(String id) {
+		for (int i = 0; i < projectList.size(); i++) {
+			if (projectList.get(i).equals(id)) {
+				projectList.remove(i);
+				paramMap.remove("project.home." + id);
+				paramMap.remove("project.pjparams." + id);
+				if (id.equals(currentProjectId)) {
+					initCurrentProject();
+				}
+				return;
+			}
+		}
+	}
 
-    public List<Element> getElements() {
-        return elementManager.getElements();
-    }
+	public void initCurrentProject() {
+		currentProjectId = null;
+		elementManager.init();
+		connectorManager.init();
+		ioParamManager.init();
+	}
 
-    public List<Connector> getConnectors() {
-        return connectorManager.getConnectors();
-    }
+	public List<Element> getElements() {
+		return elementManager.getElements();
+	}
 
-    public ConnectorManager getConnectorManager() {
-        return connectorManager;
-    }
+	public List<Connector> getConnectors() {
+		return connectorManager.getConnectors();
+	}
 
-    public LogicalValueManager getLogicalValueManager() {
-        return logicalValueManager;
-    }
+	public ConnectorManager getConnectorManager() {
+		return connectorManager;
+	}
 
-    public String toJson() {
-        JSONObject jobj = new JSONObject();
-        // elementManager section
-        elementManager.addJSON(jobj);
+	public LogicalValueManager getLogicalValueManager() {
+		return logicalValueManager;
+	}
 
-        // connections section
-        connectorManager.addJSON(jobj);
+	public String toJson() {
+		JSONObject jobj = new JSONObject();
+		// elementManager section
+		elementManager.addJSON(jobj);
 
-        // ioparams section
-        ioParamManager.addJSON(jobj);
+		// connections section
+		connectorManager.addJSON(jobj);
 
-        JSONObject mobj = new JSONObject();
-        mobj.accumulate("pjparams", jobj);
-        return mobj.toString(2);
-    }
+		// ioparams section
+		ioParamManager.addJSON(jobj);
 
-    public void saveProjectParams(File jfile) {
-        try ( FileOutputStream fo = new FileOutputStream(jfile);  BufferedOutputStream out = new BufferedOutputStream(fo);) {
-            out.write(toJson().getBytes("UTF-8"));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
+		JSONObject mobj = new JSONObject();
+		mobj.accumulate("pjparams", jobj);
+		return mobj.toString(2);
+	}
 
-    /**
-     * @return the stage
-     */
-    public Stage getStage() {
-        return stage;
-    }
+	public void saveProjectParams(File jfile) {
+		try ( FileOutputStream fo = new FileOutputStream(jfile);  BufferedOutputStream out = new BufferedOutputStream(fo);) {
+			out.write(toJson().getBytes("UTF-8"));
+			setChanged(false);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 
-    /**
-     * @return the currentProjectId
-     */
-    public String getCurrentProjectId() {
-        if (currentProjectId == null) {
-            return "";
-        }
-        return currentProjectId;
-    }
+	/**
+	 * @return the stage
+	 */
+	public Stage getStage() {
+		return stage;
+	}
 
-    /**
-     * @param currentProjectId the currentProjectId to set
-     */
-    public void setCurrentProjectId(String currentProjectId) {
-        this.currentProjectId = currentProjectId;
-    }
+	/**
+	 * @return the currentProjectId
+	 */
+	public String getCurrentProjectId() {
+		if (currentProjectId == null) {
+			return "";
+		}
+		return currentProjectId;
+	}
 
-    public ElementManager getElementManger() {
-        return elementManager;
-    }
+	/**
+	 * @param currentProjectId the currentProjectId to set
+	 */
+	public void setCurrentProjectId(String currentProjectId) {
+		this.currentProjectId = currentProjectId;
+	}
 
-    /**
-     * @return the ioParamManager
-     */
-    public IOParamManager getIoParamManager() {
-        return ioParamManager;
-    }
+	public ElementManager getElementManger() {
+		return elementManager;
+	}
 
-    public String getCurrentProjectHome() {
-        // System.out.println("@@@@ " + "project.home." + getCurrentProjectId() + " : "
-        // + paramMap.get("project.home." + getCurrentProjectId()));
-        return paramMap.get("project.home." + getCurrentProjectId());
-    }
+	/**
+	 * @return the ioParamManager
+	 */
+	public IOParamManager getIoParamManager() {
+		return ioParamManager;
+	}
 
-    public void close() {
-        simServer.close();
-    }
+	public String getCurrentProjectHome() {
+		// System.out.println("@@@@ " + "project.home." + getCurrentProjectId() + " : "
+		// + paramMap.get("project.home." + getCurrentProjectId()));
+		return paramMap.get("project.home." + getCurrentProjectId());
+	}
+
+	public void close() {
+		simServer.close();
+	}
+
+	/**
+	 * @return the changed
+	 */
+	public static boolean isChanged() {
+		return changed;
+	}
+
+	/**
+	 * @param flag the changed to set
+	 */
+	public static void setChanged(boolean flag) {
+		changed = flag;
+	}
 }
