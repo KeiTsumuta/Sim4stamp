@@ -56,7 +56,6 @@ import tmu.fs.sim4stamp.model.em.Sensor;
 import tmu.fs.sim4stamp.model.iop.AppendParams;
 import tmu.fs.sim4stamp.model.iop.IOParam;
 import tmu.fs.sim4stamp.model.iop.IOScene;
-import tmu.fs.sim4stamp.model.iop.IOValue;
 import tmu.fs.sim4stamp.state.CommandLineExecute;
 import tmu.fs.sim4stamp.state.OvertureExecManager;
 import tmu.fs.sim4stamp.util.Deviation;
@@ -316,7 +315,6 @@ public class DeviationMapPanel implements Initializable, VdmRunStatus {
 		if (selectedConnector == null) {
 			return;
 		}
-		IOScene ioScene = SimService.getInstance().getIoParamManager().getCurrentScene();
 		AppendParams ap = selectedConnector.getAppendParams();
 		List<IOParam> aps = ap.getParams();
 		if (aps != null && aps.size() > 0) {

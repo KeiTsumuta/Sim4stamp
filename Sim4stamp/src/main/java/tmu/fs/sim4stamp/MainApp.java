@@ -19,7 +19,6 @@ package tmu.fs.sim4stamp;
 
 import javafx.application.Application;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -54,7 +53,7 @@ public class MainApp extends Application {
 		scene.getStylesheets().add("/styles/Styles.css");
 
 		stage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/icon/s4s.png")));
-		stage.setTitle("sim4stamp : STAMP/STPA シミュレータ");
+		stage.setTitle("sim4stamp : The simulation tool for STAMP/STPA");
 		stage.setScene(scene);
 		stage.show();
 		// System.out.println("start main");

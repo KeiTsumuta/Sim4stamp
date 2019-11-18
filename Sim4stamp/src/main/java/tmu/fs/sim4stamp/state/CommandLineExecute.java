@@ -145,6 +145,7 @@ public class CommandLineExecute implements Runnable {
 				return;
 			}
 			SimService.getInstance().getIoParamManager().getCurrentScene().setDeviation(deviation);
+			PanelManager.get().getDeviationMapPanel().drawPanel();
 			executeVdm();
 		}
 	}
