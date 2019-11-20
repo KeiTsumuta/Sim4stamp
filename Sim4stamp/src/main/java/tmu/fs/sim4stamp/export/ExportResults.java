@@ -18,7 +18,6 @@
 package tmu.fs.sim4stamp.export;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,6 +28,7 @@ import tmu.fs.sim4stamp.model.iop.IOScene;
 
 /**
  * シミュレーション結果をCSV出力する。
+ *
  * @author Keiichi Tsumuta
  */
 public class ExportResults {
@@ -51,6 +51,7 @@ public class ExportResults {
 			int p = 0;
 			StringBuilder sb = new StringBuilder();
 			for (IOScene ioScene : resultScenes) {
+				String deviationConnParamId = ioScene.getDeviationConnParamId();
 				String deviation = ioScene.getDeviation().toString();
 				MakeResultTable mrt = new MakeResultTable(MakeResultTable.NUM_VALUE_MODE);
 				mrt.makeResultTable(ioScene);
@@ -58,6 +59,7 @@ public class ExportResults {
 				List<List<String>> dIds = mrt.getDataIds();
 				List<String[]> dataList = mrt.getDataList();
 
+				sb.append(deviationConnParamId).append(",");
 				sb.append(deviation);
 				int dataColumn = 0;
 				int dataRow = 0;
@@ -76,13 +78,13 @@ public class ExportResults {
 				for (int i = 0; i < title1s.size(); i++) {
 					sb.append(",").append(title1s.get(i));
 				}
-				sb.append("\n").append(",パラメータ");
+				sb.append("\n").append(",,パラメータ");
 				for (int i = 0; i < title2s.size(); i++) {
 					sb.append(",").append(title2s.get(i));
 				}
 				sb.append("\n");
 				for (int n = 0; n < arr.get(0).length; n++) {
-					sb.append(",").append((n + 1));
+					sb.append(",,").append((n + 1));
 					for (int i = 0; i < arr.size(); i++) {
 						sb.append(",").append(arr.get(i)[n]);
 					}

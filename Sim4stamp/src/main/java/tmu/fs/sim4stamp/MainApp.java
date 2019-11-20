@@ -39,7 +39,10 @@ public class MainApp extends Application {
 	public void start(Stage iStage) throws Exception {
 		stage = iStage;
 		stage.setOnCloseRequest((WindowEvent t) -> {
-			FXMLController.systemExit();
+			boolean end = FXMLController.systemExit();
+			if (!end) {
+				t.consume();
+			}
 		});
 
 		SimService simService = SimService.getInstance();

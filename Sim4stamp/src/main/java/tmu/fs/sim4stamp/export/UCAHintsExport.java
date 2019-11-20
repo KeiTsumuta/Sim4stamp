@@ -84,9 +84,9 @@ public class UCAHintsExport {
 			//}
 			if (ucaItems.size() > 0) {
 				UCAItem ucaItem = ucaItems.get(0);
-				String p = ucaItem.getNf() + "-" + ucaItem.getNt() + "_" + ucaItem.getDeviationParamId();
-				String buf = makeData(ucaItems, p);
-				FileUtil.writeFile(findFileName(exportDir, p), buf);
+
+				String buf = makeData(ucaItems);
+				FileUtil.writeFile(findFileName(exportDir, "uca"), buf);
 			}
 
 		} catch (Exception ex) {
@@ -94,7 +94,7 @@ public class UCAHintsExport {
 		}
 	}
 
-	private String makeData(List<UCAItem> ucaItems, String p) {
+	private String makeData(List<UCAItem> ucaItems) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(TITLE).append("\n");
 		for (int i = 0; i < ucaItems.size(); i++) {
@@ -109,6 +109,7 @@ public class UCAHintsExport {
 				sb.append(" 下限");
 			}
 			sb.append("逸脱,");
+			String p = ucaItem.getNf() + "-" + ucaItem.getNt() + "_" + ucaItem.getDeviationParamId();
 			sb.append(p).append("偏差投入");
 			sb.append("\n");
 		}

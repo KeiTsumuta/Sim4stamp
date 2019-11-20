@@ -10,9 +10,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="381.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/10.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tmu.fs.sim4stamp.gui.GraphDisplayDialog">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="381.0" prefWidth="828.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tmu.fs.sim4stamp.gui.GraphDisplayDialog">
     <children>
-        <BorderPane layoutX="14.0" layoutY="14.0" prefHeight="411.0" prefWidth="576.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <BorderPane layoutX="14.0" layoutY="14.0" prefHeight="381.0" prefWidth="744.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <top>
                 <FlowPane prefHeight="33.0" prefWidth="576.0">
                     <Label prefHeight="38.0" text="データ：" BorderPane.alignment="CENTER">
@@ -41,15 +41,16 @@
                                 <AnchorPane fx:id="displayedGraph" BorderPane.alignment="CENTER" />
                             </center>
                             <right>
-                                <ScrollPane prefHeight="303.0" prefWidth="208.0" BorderPane.alignment="CENTER">
-                                    <content>
-                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="301.0" prefWidth="206.0">
-                                            <children>
-                                                <VBox fx:id="graphInfoPane2" prefHeight="301.0" prefWidth="208.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                            </children>
-                                        </AnchorPane>
-                                    </content>
-                                </ScrollPane>
+                                <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="301.0" prefWidth="206.0">
+                                    <children>
+
+                                        <ScrollPane prefHeight="303.0" prefWidth="203.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="0.0" BorderPane.alignment="CENTER">
+                                            <content>
+                                                <VBox fx:id="graphInfoPane2" maxWidth="180.0" minWidth="180.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                            </content>
+                                        </ScrollPane>
+                                    </children>
+                                </AnchorPane>
                             </right>
                         </BorderPane>
                     </children>

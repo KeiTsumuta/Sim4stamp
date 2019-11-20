@@ -41,6 +41,8 @@ import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeLineJoin;
 import tmu.fs.sim4stamp.SimService;
 import tmu.fs.sim4stamp.model.ConnectorManager;
 import tmu.fs.sim4stamp.model.ElementManager;
@@ -369,6 +371,9 @@ public class ModelPanel implements Initializable {
 
 		gc.setFill(FILL_BACK_COLOR);
 		gc.fillRect(0, 0, wMax, hMax);
+
+		gc.setLineCap(StrokeLineCap.ROUND);
+		gc.setLineJoin(StrokeLineJoin.ROUND);
 
 		DisplayLevel.Level level = DisplayLevel.Level.Base;
 		if (isDetailDisplayMode) {

@@ -27,6 +27,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.text.Font;
 import tmu.fs.sim4stamp.gui.util.GraphAxis;
 import tmu.fs.sim4stamp.gui.util.GraphData;
@@ -346,7 +348,15 @@ public class LineGraphPanel implements Initializable {
 					d = dg.getDoubleData();
 					for (int i = 0; i < x_count - 1; i++) {
 						xarr.add(W_AX_LEFT + graphWidth / x_count * (i + 1));
-						yarr.add(INSET_TOP + graphHeight * (1 - (d[i] + xm) / yConv));
+						double val = d[i];
+						if(val != 0.0){
+							if(val > 5.0){
+								val = 5.0;
+							}else if(val < 1.0){
+								val = 1.0;
+							}
+						}
+						yarr.add(INSET_TOP + graphHeight * (1 - (val + xm) / yConv));
 					}
 					break;
 			}
@@ -374,7 +384,10 @@ public class LineGraphPanel implements Initializable {
 				xas[i] = xarr.get(i);
 				yas[i] = yarr.get(i);
 			}
+			StrokeLineJoin sj = gc.getLineJoin();
+			gc.setLineJoin(StrokeLineJoin.ROUND);
 			gc.strokePolyline(xas, yas, xsize);
+			gc.setLineJoin(sj);
 		}
 
 	}
@@ -433,6 +446,13 @@ public class LineGraphPanel implements Initializable {
 	 */
 	public List<GraphData> getGraphDataList() {
 		return graphDataList;
+	}
+	
+	public void selectDisplayData(int index, boolean select) {
+		if(graphDataList.size() > index){
+		    GraphData gData = graphDataList.get(index);
+			gData.setDisabled(!select);
+		}
 	}
 
 }

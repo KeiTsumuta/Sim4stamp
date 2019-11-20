@@ -22,6 +22,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -30,6 +31,9 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
@@ -75,34 +79,79 @@ public class GraphDisplayDialog implements Initializable {
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
 		linePanel.reset();
+		final ToggleGroup group = new ToggleGroup();
 		graphInfoPane2.getChildren().clear();
 		if (subTitles != null) {
-			for (int i = 0; i < subTitles.size(); i++) {
-				linePanel.addData(i + "：" + subTitles.get(i), gdata.get(i));
-				Label li = new Label();
-				List<IOScene> resultScenes = SimService.getInstance().getIoParamManager().getResultScenes();
-				if (resultScenes.size() == 0) {
-					continue;
+			List<IOScene> resultScenes = SimService.getInstance().getIoParamManager().getResultScenes();
+			if (resultScenes.size() > 0) {
+				String oldDeviationConnParamId = "";
+				for (int i = 0; i < subTitles.size(); i++) {
+					IOScene ios = resultScenes.get(i);
+					String deviationConnParamId = ios.getDeviationConnParamId();
+					if (!oldDeviationConnParamId.equals(deviationConnParamId)) {
+						FlowPane dfp = new FlowPane();
+						RadioButton rbt = new RadioButton(deviationConnParamId);
+						rbt.setToggleGroup(group);
+						rbt.setUserData(i);
+						if (oldDeviationConnParamId.equals("")) {
+							rbt.setSelected(true);
+						}
+						dfp.getChildren().addAll(rbt);
+						graphInfoPane2.getChildren().add(dfp);
+						oldDeviationConnParamId = deviationConnParamId;
+					}
+					Label li = new Label();
+					li.setText("●");
+					li.setTextFill(Color.web(GRAPH_LINE_COLORS[(i) % GRAPH_LINE_COLORS.length]));
+					li.setFont(new Font("Arial", 12));
+					Label la = new Label();
+					String deviation = (i + 1) + ":" + ios.getDeviation().toString();
+					la.setText(deviation);
+					//la.setTextFill(Color.web(GRAPH_LINE_COLORS[(i - 1) % GRAPH_LINE_COLORS.length]));
+					la.setFont(new Font("Arial", 12));
+					FlowPane fp = new FlowPane();
+					fp.setStyle("-fx-padding: 4.0 2.0 0 8.0;");
+					fp.getChildren().addAll(li, la);
+					graphInfoPane2.getChildren().add(fp);
+
+					linePanel.addData(i + "：" + subTitles.get(i), gdata.get(i));
 				}
-				IOScene ios = resultScenes.get(i);
-				li.setText("●");
-				li.setTextFill(Color.web(GRAPH_LINE_COLORS[(i) % GRAPH_LINE_COLORS.length]));
-				li.setFont(new Font("Arial", 15));
-				Label la = new Label();
-				String deviation = (i + 1) + ":" + ios.getDeviation().toString();
-				la.setText(deviation);
-				//la.setTextFill(Color.web(GRAPH_LINE_COLORS[(i - 1) % GRAPH_LINE_COLORS.length]));
-				la.setFont(new Font("Arial", 15));
-				FlowPane fp = new FlowPane();
-				fp.getChildren().addAll(li, la);
-				graphInfoPane2.getChildren().add(fp);
+				setSelectDevSettind(0);
+				group.selectedToggleProperty().addListener(
+					(ObservableValue<? extends Toggle> ov, Toggle old_toggle,
+						Toggle new_toggle) -> {
+						if (group.getSelectedToggle() != null) {
+							Integer index = (Integer) (group.getSelectedToggle().getUserData());
+							setSelectDevSettind(index);
+						}
+					});
+
 			}
 			graphTitle.textProperty().set(mainTitle);
 		} else {
 			graphTitle.textProperty().set("");
 		}
 		displayedGraph.getChildren().add(linePanel.getCanvas());
+	}
 
+	private void setSelectDevSettind(int index) {
+		List<IOScene> resultScenes = SimService.getInstance().getIoParamManager().getResultScenes();
+		if (resultScenes.size() <= 0) {
+			return;
+		}
+		for (int i = 0; i < linePanel.getGraphDataList().size(); i++) {
+			linePanel.selectDisplayData(i, false);
+		}
+		String startDcp = resultScenes.get(index).getDeviationConnParamId();
+		linePanel.selectDisplayData(index, true);
+		for (int i = index + 1; i < resultScenes.size(); i++) {
+			String dcp = resultScenes.get(i).getDeviationConnParamId();
+			if (!dcp.equals(startDcp)) {
+				break;
+			}
+			linePanel.selectDisplayData(i, true);
+		}
+		linePanel.drawCanvasPanel();
 	}
 
 	public void reset(String title) {

@@ -56,7 +56,7 @@ import tmu.fs.sim4stamp.model.iop.IOValue;
 public class ResultPanel implements Initializable {
 
 	public static final String[] GRAPH_LINE_COLORS = {"#32cd32", "#ffa500", "#ff0000", "#4d66cc",
-		"#b22222", "#0000ff", "#daa520", "#40e0d0"};
+		"#b22222", "#0000ff", "#daa520"};
 
 	private static final double CHART_INIT_WIDTH = 400.0;
 	private static final double CHART_INIT_HEIGHT = 200.0;
@@ -225,7 +225,6 @@ public class ResultPanel implements Initializable {
 			AppendParams ap = e.getAppendParams();
 			if (!(ap == null)) {
 				String nodeId = e.getNodeId();
-				List<String> colChildren = new ArrayList<>();
 				List<IOParam> ios = ap.getParams();
 				for (IOParam ip : ios) {
 					if (ip.getParamType() == AppendParams.ParamType.Element) {
@@ -322,24 +321,36 @@ public class ResultPanel implements Initializable {
 		}
 		graphInfoPane.getChildren().clear();
 		graph.reset();
+		String oldDeviationConnParamId = "";
 		for (int i = 0; i < resultScenes.size(); i++) {
 			IOScene ios = resultScenes.get(i);
+			String deviationConnParamId = ios.getDeviationConnParamId();
+			if (!oldDeviationConnParamId.equals(deviationConnParamId)) {
+				FlowPane dfp = new FlowPane();
+				Label ld = new Label();
+				ld.setText(deviationConnParamId);
+				ld.setFont(new Font("Arial", 12));
+				dfp.getChildren().addAll(ld);
+				graphInfoPane.getChildren().add(dfp);
+				oldDeviationConnParamId = deviationConnParamId;
+			}
 			GraphData data = ios.getGraphData(parentId, id);
 			FlowPane fp = new FlowPane();
-			String deviation = (i + 1) + ":" + ios.getDeviation().toString();
+			fp.setStyle("-fx-padding: 4.0 2.0 0 8.0;");
+			String deviation = (i + 1) + " : " + ios.getDeviation().toString();
 			CheckBox cb = new CheckBox();
 			cb.setSelected(!data.isDisabled());
-			cb.setStyle("-fx-padding: 8.0;");
+			cb.setStyle("-fx-padding: 0 2.0 0 8.0;");  // 上 右 下 左
 			final int index = i;
 			cb.setOnAction((ActionEvent) -> selectGraphData(index, cb.isSelected()));
 			Label li = new Label();
 			li.setText("●");
 			li.setTextFill(Color.web(GRAPH_LINE_COLORS[(i) % GRAPH_LINE_COLORS.length]));
-			li.setFont(new Font("Arial", 15));
+			li.setFont(new Font("Arial", 14));
 			Label la = new Label();
 			la.setText(deviation);
 			//la.setTextFill(Color.web(GRAPH_LINE_COLORS[(i - 1) % GRAPH_LINE_COLORS.length]));
-			la.setFont(new Font("Arial", 15));
+			la.setFont(new Font("Arial", 12));
 			fp.getChildren().addAll(cb, li, la);
 			graphInfoPane.getChildren().add(fp);
 			graph.setTitle(id);
@@ -350,16 +361,7 @@ public class ResultPanel implements Initializable {
 	private void selectGraphData(int index, boolean select) {
 		for (LineGraphPanel lp : linePanels) {
 			List<GraphData> gds = lp.getGraphDataList();
-			for (int i = 0; i < gds.size(); i++) {
-				GraphData data = gds.get(i);
-				if (i == index) {
-					if (select) {
-						data.setDisabled(false);
-					} else {
-						data.setDisabled(true);
-					}
-				}
-			}
+			lp.selectDisplayData(index, select);
 			lp.drawCanvasPanel();
 		}
 	}

@@ -276,7 +276,7 @@ public class FXMLController implements Initializable {
 		systemExit();
 	}
 
-	public static void systemExit() {
+	public static boolean systemExit() {
 
 		if (SimService.isChanged()) {
 			Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.OK, ButtonType.CANCEL);
@@ -285,13 +285,14 @@ public class FXMLController implements Initializable {
 			alert.getDialogPane().setContentText("保存しないと設定データが消失します。\nそれでも終了しますか？");
 			ButtonType bt = alert.showAndWait().orElse(ButtonType.CANCEL);
 			if (bt == ButtonType.CANCEL) {
-				return;
+				return false;
 			}
 		}
 		SimService.getInstance().close();
 		//log.info("Exit sim4stamp");
 		Platform.exit();
 		System.exit(0);
+		return true;
 	}
 
 	@FXML

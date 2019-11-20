@@ -28,7 +28,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" xmlns="http://javafx.com/javafx/8.0.202" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tmu.fs.sim4stamp.gui.FXMLController">
+<AnchorPane id="AnchorPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tmu.fs.sim4stamp.gui.FXMLController">
     <children>
         <BorderPane layoutX="4.0" layoutY="-1.0" prefHeight="700.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-1.0">
             <top>
@@ -271,13 +271,12 @@
                                                 <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
                                                     <tabs>
                                                         <Tab text="偏差投入">
-                                                            <content>
-                                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                                                    <children>
-                                                                        <VBox fx:id="graphInfoPane" layoutX="5.0" layoutY="16.0" prefHeight="594.0" prefWidth="172.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="16.0" />
-                                                                    </children>
-                                                                </AnchorPane>
-                                                            </content>
+
+                                                            <ScrollPane prefWidth="200.0">
+                                                                <content>
+                                                                    <VBox fx:id="graphInfoPane" prefWidth="195.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="16.0" />
+                                                                </content>
+                                                            </ScrollPane>
                                                         </Tab>
                                                         <Tab text="構成要素">
                                                             <content>
@@ -296,7 +295,7 @@
                                                 </TabPane>
                                                 <AnchorPane minHeight="0.0" minWidth="0.0">
                                                     <children>
-                                                        <ScrollPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                        <ScrollPane layoutX="7.0" layoutY="6.0" prefHeight="634.0" prefWidth="961.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="7.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="6.0">
                                                             <content>
                                                                 <GridPane fx:id="resultGraphGrid" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">												
                                                                 </GridPane>
