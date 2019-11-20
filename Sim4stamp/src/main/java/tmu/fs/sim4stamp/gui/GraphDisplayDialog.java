@@ -116,13 +116,13 @@ public class GraphDisplayDialog implements Initializable {
 
 					linePanel.addData(i + "：" + subTitles.get(i), gdata.get(i));
 				}
-				setSelectDevSettind(0);
+				setSelectDevSetting(0);
 				group.selectedToggleProperty().addListener(
 					(ObservableValue<? extends Toggle> ov, Toggle old_toggle,
 						Toggle new_toggle) -> {
 						if (group.getSelectedToggle() != null) {
 							Integer index = (Integer) (group.getSelectedToggle().getUserData());
-							setSelectDevSettind(index);
+							setSelectDevSetting(index);
 						}
 					});
 
@@ -134,7 +134,7 @@ public class GraphDisplayDialog implements Initializable {
 		displayedGraph.getChildren().add(linePanel.getCanvas());
 	}
 
-	private void setSelectDevSettind(int index) {
+	private void setSelectDevSetting(int index) {
 		List<IOScene> resultScenes = SimService.getInstance().getIoParamManager().getResultScenes();
 		if (resultScenes.size() <= 0) {
 			return;

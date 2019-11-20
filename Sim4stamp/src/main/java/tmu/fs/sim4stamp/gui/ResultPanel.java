@@ -30,7 +30,10 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
@@ -62,6 +65,7 @@ public class ResultPanel implements Initializable {
 	private static final double CHART_INIT_HEIGHT = 200.0;
 
 	private final ChoiceBox<String> resultChoice;
+	private List<CheckBox> resultGraphs;
 
 	private int graphSize = 0;
 	private VBox graphInfoPane;
@@ -315,34 +319,46 @@ public class ResultPanel implements Initializable {
 	}
 
 	private void addGraphDisplay(LineGraphPanel graph, String title, String parentId, String id) {
+		graphInfoPane.getChildren().clear();
+		graph.reset();
 		List<IOScene> resultScenes = SimService.getInstance().getIoParamManager().getResultScenes();
 		if (resultScenes.size() == 0) {
 			return;
 		}
-		graphInfoPane.getChildren().clear();
-		graph.reset();
+
+		resultGraphs = new ArrayList<>();
+		boolean f = false;
+		final ToggleGroup group = new ToggleGroup();
 		String oldDeviationConnParamId = "";
 		for (int i = 0; i < resultScenes.size(); i++) {
 			IOScene ios = resultScenes.get(i);
 			String deviationConnParamId = ios.getDeviationConnParamId();
 			if (!oldDeviationConnParamId.equals(deviationConnParamId)) {
 				FlowPane dfp = new FlowPane();
-				Label ld = new Label();
-				ld.setText(deviationConnParamId);
-				ld.setFont(new Font("Arial", 12));
-				dfp.getChildren().addAll(ld);
+				RadioButton rbt = new RadioButton(deviationConnParamId);
+				rbt.setToggleGroup(group);
+				rbt.setUserData(i);
+				rbt.setStyle("-fx-padding: 4.0 2.0 0 1.0;"); // 上 右 下 左
+				if (oldDeviationConnParamId.equals("")) {
+					rbt.setSelected(true);
+					f = true;
+				} else {
+					f = false;
+				}
+				dfp.getChildren().addAll(rbt);
 				graphInfoPane.getChildren().add(dfp);
 				oldDeviationConnParamId = deviationConnParamId;
 			}
 			GraphData data = ios.getGraphData(parentId, id);
+			data.setDisabled(!f);
 			FlowPane fp = new FlowPane();
-			fp.setStyle("-fx-padding: 4.0 2.0 0 8.0;");
+			fp.setStyle("-fx-padding: 4.0 2.0 0 8.0;"); // 上 右 下 左
 			String deviation = (i + 1) + " : " + ios.getDeviation().toString();
 			CheckBox cb = new CheckBox();
-			cb.setSelected(!data.isDisabled());
-			cb.setStyle("-fx-padding: 0 2.0 0 8.0;");  // 上 右 下 左
+			cb.setSelected(f);
 			final int index = i;
 			cb.setOnAction((ActionEvent) -> selectGraphData(index, cb.isSelected()));
+			resultGraphs.add(cb);
 			Label li = new Label();
 			li.setText("●");
 			li.setTextFill(Color.web(GRAPH_LINE_COLORS[(i) % GRAPH_LINE_COLORS.length]));
@@ -355,6 +371,35 @@ public class ResultPanel implements Initializable {
 			graphInfoPane.getChildren().add(fp);
 			graph.setTitle(id);
 			graph.addData(null, data);
+		}
+		group.selectedToggleProperty().addListener(
+			(ObservableValue<? extends Toggle> ov, Toggle old_toggle,
+				Toggle new_toggle) -> {
+				if (group.getSelectedToggle() != null) {
+					Integer index = (Integer) (group.getSelectedToggle().getUserData());
+					setSelectDevSetting(index);
+				}
+			});
+	}
+
+	private void setSelectDevSetting(int index) {
+		List<IOScene> resultScenes = SimService.getInstance().getIoParamManager().getResultScenes();
+		if (resultScenes.size() <= 0) {
+			return;
+		}
+		for (int i = 0; i < resultScenes.size(); i++) {
+			selectGraphData(i, false);
+			resultGraphs.get(i).setSelected(false);
+		}
+		selectGraphData(index, true);
+		resultGraphs.get(index).setSelected(true);
+		String selId = resultScenes.get(index).getDeviationConnParamId();
+		for (int i = index + 1; i < resultScenes.size(); i++) {
+			String deviationConnParamId = resultScenes.get(i).getDeviationConnParamId();
+			if (selId.equals(deviationConnParamId)) {
+				selectGraphData(i, true);
+				resultGraphs.get(i).setSelected(true);
+			}
 		}
 	}
 
