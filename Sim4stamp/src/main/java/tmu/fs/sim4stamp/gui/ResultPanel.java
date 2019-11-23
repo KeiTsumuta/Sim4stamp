@@ -287,6 +287,8 @@ public class ResultPanel implements Initializable {
 		});
 	}
 
+	private boolean[] graphWarns = null;
+
 	public void resultDisplay() {
 		// 結果データのプルダウンリスト
 		makeResultSelect();
@@ -316,6 +318,7 @@ public class ResultPanel implements Initializable {
 		if (sel != null) {
 			resultChoice.getSelectionModel().select(sel);
 		}
+		graphWarns = new boolean[resultScenes.size()];
 	}
 
 	private void addGraphDisplay(LineGraphPanel graph, String title, String parentId, String id) {
@@ -347,20 +350,36 @@ public class ResultPanel implements Initializable {
 				}
 				dfp.getChildren().addAll(rbt);
 				graphInfoPane.getChildren().add(dfp);
+				if (f) {
+					graph.setFillIndex(i);
+				}
 				oldDeviationConnParamId = deviationConnParamId;
 			}
+			// グラフ描画
 			GraphData data = ios.getGraphData(parentId, id);
 			data.setDisabled(!f);
+			graph.setTitle(id);
+			graph.addData(null, data);
+			// グラフタイトル描画
+			IOValue iov = ios.getIOData(parentId, id);
+			int deviationStart = ios.getDeviationStartIndex() + 1;
+			iov.makeAttentions(deviationStart);
+			boolean isWarn = iov.isUpperWarning() | iov.isUnderWarning();
+			graphWarns[i] |= isWarn;
 			FlowPane fp = new FlowPane();
 			fp.setStyle("-fx-padding: 4.0 2.0 0 8.0;"); // 上 右 下 左
 			String deviation = (i + 1) + " : " + ios.getDeviation().toString();
 			CheckBox cb = new CheckBox();
 			cb.setSelected(f);
 			final int index = i;
-			cb.setOnAction((ActionEvent) -> selectGraphData(index, cb.isSelected()));
+			cb.setOnAction((ActionEvent) -> selectGraphData(index, cb.isSelected(), false));
 			resultGraphs.add(cb);
 			Label li = new Label();
-			li.setText("●");
+			if (graphWarns[i]) {
+				li.setText("✖");
+			} else {
+				li.setText("●");
+			}
 			li.setTextFill(Color.web(GRAPH_LINE_COLORS[(i) % GRAPH_LINE_COLORS.length]));
 			li.setFont(new Font("Arial", 14));
 			Label la = new Label();
@@ -369,8 +388,6 @@ public class ResultPanel implements Initializable {
 			la.setFont(new Font("Arial", 12));
 			fp.getChildren().addAll(cb, li, la);
 			graphInfoPane.getChildren().add(fp);
-			graph.setTitle(id);
-			graph.addData(null, data);
 		}
 		group.selectedToggleProperty().addListener(
 			(ObservableValue<? extends Toggle> ov, Toggle old_toggle,
@@ -388,25 +405,27 @@ public class ResultPanel implements Initializable {
 			return;
 		}
 		for (int i = 0; i < resultScenes.size(); i++) {
-			selectGraphData(i, false);
+			selectGraphData(i, false, false);
 			resultGraphs.get(i).setSelected(false);
 		}
-		selectGraphData(index, true);
+		selectGraphData(index, true, true);
 		resultGraphs.get(index).setSelected(true);
 		String selId = resultScenes.get(index).getDeviationConnParamId();
 		for (int i = index + 1; i < resultScenes.size(); i++) {
 			String deviationConnParamId = resultScenes.get(i).getDeviationConnParamId();
 			if (selId.equals(deviationConnParamId)) {
-				selectGraphData(i, true);
+				selectGraphData(i, true, false);
 				resultGraphs.get(i).setSelected(true);
 			}
 		}
 	}
 
-	private void selectGraphData(int index, boolean select) {
+	private void selectGraphData(int index, boolean select, boolean fill) {
 		for (LineGraphPanel lp : linePanels) {
-			List<GraphData> gds = lp.getGraphDataList();
 			lp.selectDisplayData(index, select);
+			if (fill) {
+				lp.setFillIndex(index);
+			}
 			lp.drawCanvasPanel();
 		}
 	}

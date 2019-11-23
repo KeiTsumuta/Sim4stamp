@@ -144,6 +144,7 @@ public class GraphDisplayDialog implements Initializable {
 		}
 		String startDcp = resultScenes.get(index).getDeviationConnParamId();
 		linePanel.selectDisplayData(index, true);
+		linePanel.setFillIndex(index);
 		for (int i = index + 1; i < resultScenes.size(); i++) {
 			String dcp = resultScenes.get(i).getDeviationConnParamId();
 			if (!dcp.equals(startDcp)) {

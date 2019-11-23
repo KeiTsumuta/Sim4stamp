@@ -75,6 +75,8 @@ public class LineGraphPanel implements Initializable {
 	private String[] graphLineColors;
 
 	private String title = null;
+	
+	private int fillIndex = 0;
 
 	public LineGraphPanel() {
 		modelCanvas = new Canvas();
@@ -361,7 +363,7 @@ public class LineGraphPanel implements Initializable {
 					break;
 			}
 			int xsize = xarr.size();
-			if (k == 0 && xsize >= 2) {
+			if (k == fillIndex) {
 				double[] xas0 = new double[xsize + 2];
 				double[] yas0 = new double[xsize + 2];
 				xas0[0] = xarr.get(0);
@@ -453,6 +455,20 @@ public class LineGraphPanel implements Initializable {
 		    GraphData gData = graphDataList.get(index);
 			gData.setDisabled(!select);
 		}
+	}
+
+	/**
+	 * @return the fillIndex
+	 */
+	public int getFillIndex() {
+		return fillIndex;
+	}
+
+	/**
+	 * @param fillIndex the fillIndex to set
+	 */
+	public void setFillIndex(int fillIndex) {
+		this.fillIndex = fillIndex;
 	}
 
 }
