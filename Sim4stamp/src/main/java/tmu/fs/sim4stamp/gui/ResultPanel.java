@@ -85,6 +85,8 @@ public class ResultPanel implements Initializable {
 
 	private VBox displaySelectParams;
 
+	private List<Boolean> graphWarns = new ArrayList<>();
+
 	public ResultPanel(Control[] controls, VBox graphInfoPane, AnchorPane lineChartPanel, GridPane resultGraphGrid, VBox displaySelectParams) {
 		this.resultChoice = (ChoiceBox) controls[0];
 		this.graphInfoPane = graphInfoPane;
@@ -287,12 +289,11 @@ public class ResultPanel implements Initializable {
 		});
 	}
 
-	private boolean[] graphWarns = null;
-
 	public void resultDisplay() {
 		// 結果データのプルダウンリスト
 		makeResultSelect();
 		// グラフ
+		initGraphWarn();
 		for (int i = 0; i < graphSize; i++) {
 			if (currentSelectParentIds[i] != null) {
 				//lineCharts[i].setPrefSize(gw, gh);
@@ -318,7 +319,6 @@ public class ResultPanel implements Initializable {
 		if (sel != null) {
 			resultChoice.getSelectionModel().select(sel);
 		}
-		graphWarns = new boolean[resultScenes.size()];
 	}
 
 	private void addGraphDisplay(LineGraphPanel graph, String title, String parentId, String id) {
@@ -365,7 +365,7 @@ public class ResultPanel implements Initializable {
 			int deviationStart = ios.getDeviationStartIndex() + 1;
 			iov.makeAttentions(deviationStart);
 			boolean isWarn = iov.isUpperWarning() | iov.isUnderWarning();
-			graphWarns[i] |= isWarn;
+			addGraphWarn(i, isWarn);
 			FlowPane fp = new FlowPane();
 			fp.setStyle("-fx-padding: 4.0 2.0 0 8.0;"); // 上 右 下 左
 			String deviation = (i + 1) + " : " + ios.getDeviation().toString();
@@ -375,7 +375,7 @@ public class ResultPanel implements Initializable {
 			cb.setOnAction((ActionEvent) -> selectGraphData(index, cb.isSelected(), false));
 			resultGraphs.add(cb);
 			Label li = new Label();
-			if (graphWarns[i]) {
+			if (graphWarns.get(i)) {
 				li.setText("✖");
 			} else {
 				li.setText("●");
@@ -397,6 +397,19 @@ public class ResultPanel implements Initializable {
 					setSelectDevSetting(index);
 				}
 			});
+	}
+
+	private void initGraphWarn() {
+		graphWarns = new ArrayList<>();
+	}
+
+	private void addGraphWarn(int index, Boolean status) {
+		if (graphWarns.size() <= index) {
+			graphWarns.add(status);
+		} else {
+			Boolean value = graphWarns.get(index) | status;
+			graphWarns.set(index, value);
+		}
 	}
 
 	private void setSelectDevSetting(int index) {
