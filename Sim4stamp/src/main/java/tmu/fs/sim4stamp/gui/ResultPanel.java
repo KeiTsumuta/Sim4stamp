@@ -98,12 +98,12 @@ public class ResultPanel implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		initGraphSize();
+		initGraphInfos();
 		getResultTable().initialize(location, resources);
 		PanelManager.get().setResultTablePanel(getResultTable());
 	}
 
-	private void initGraphSize() {
+	private void initGraphInfos() {
 		graphSize = getGraphSize();
 		//System.out.println("graph size=" + graphSize);
 		int gridColumnSize = SimService.getInstance().getResultGraphColumSize();
@@ -114,22 +114,23 @@ public class ResultPanel implements Initializable {
 		initSelectIds = new String[graphSize];
 		currentSelectParentIds = new String[graphSize];
 		currentSelectIds = new String[graphSize];
-		displaySelects = new boolean[graphSize];
+		setGraphDisplaySelect();
 		double chartWidth = CHART_INIT_WIDTH * SimService.getInstance().getResultGraphWidth();
 		for (int i = 0; i < graphSize; i++) {
 			LineGraphPanel gpanel = new LineGraphPanel();
 			gpanel.setGraphLineColors(GRAPH_LINE_COLORS);
 			gpanel.setChartSize(chartWidth, CHART_INIT_HEIGHT);
 			linePanels[i] = gpanel;
-			displaySelects[i] = true;
 		}
 
 		// グラフの割り付け
 		resultGraphGrid.getChildren().clear();
 		for (int i = 0; i < graphSize; i++) {
-			BorderPane bp = new BorderPane();
-			bp.setCenter(linePanels[i].getCanvas());
-			resultGraphGrid.add(bp, i % gridColumnSize, i / gridColumnSize);
+			if (displaySelects[i]) {
+				BorderPane bp = new BorderPane();
+				bp.setCenter(linePanels[i].getCanvas());
+				resultGraphGrid.add(bp, i % gridColumnSize, i / gridColumnSize);
+			}
 		}
 	}
 
@@ -150,9 +151,31 @@ public class ResultPanel implements Initializable {
 		return count;
 	}
 
+	private void setGraphDisplaySelect() {
+		int count = 0;
+		displaySelects = new boolean[graphSize];
+		IOScene currentIoScene = SimService.getInstance().getIoParamManager().getCurrentScene();
+		List<Element> elements = SimService.getInstance().getElementManger().getElements();
+		for (Element e : elements) {
+			AppendParams ap = e.getAppendParams();
+			if (!(ap == null)) {
+				List<IOParam> ios = ap.getParams();
+				for (IOParam ip : ios) {
+					if (ip.getParamType() == AppendParams.ParamType.Element) {
+						IOValue ioValue = currentIoScene.getIOData(e.getNodeId(), ip.getId());
+						if (!ioValue.isInitFlag()) {
+							displaySelects[count] = true;
+						}
+						count++;
+					}
+				}
+			}
+		}
+	}
+
 	public void initDisplay() {
 		if (getGraphSize() != graphSize || gridColumnSizeOld != SimService.getInstance().getResultGraphColumSize()) {
-			initGraphSize();
+			initGraphInfos();
 		}
 		graphInfoPane.getChildren().clear();
 		resultGraphGrid.setStyle("-fx-background-color: #eaf0f0;");
@@ -225,7 +248,7 @@ public class ResultPanel implements Initializable {
 		//
 		ObservableList<String> eis = FXCollections.observableArrayList();
 		List<Element> elements = SimService.getInstance().getElementManger().getElements();
-		elements.sort((a, b) -> b.getOrder() - a.getOrder());
+		//elements.sort((a, b) -> b.getOrder() - a.getOrder());
 		elements.forEach((e) -> {
 			Element.EType eType = e.getType();
 			AppendParams ap = e.getAppendParams();
@@ -454,6 +477,7 @@ public class ResultPanel implements Initializable {
 			linePanels[i].reset();
 		}
 		resultTable.initData();
+		graphInfoPane.getChildren().clear();
 		makeResultSelect();
 	}
 

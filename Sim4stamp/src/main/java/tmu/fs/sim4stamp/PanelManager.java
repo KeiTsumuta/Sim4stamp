@@ -188,6 +188,7 @@ public class PanelManager {
 				IOParamManager iom = SimService.getInstance().getIoParamManager();
 				iom.initResultScenes();
 				getResutPanel().resetData();
+				executeLogPanel.clear();
 				// System.out.println("Reset result!!");
 			} catch (Exception ex) {
 				ex.printStackTrace();

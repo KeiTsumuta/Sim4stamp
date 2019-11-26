@@ -102,7 +102,7 @@
                                                                 <Insets left="20.0" top="4.0" />
                                                             </HBox.margin>
                                                         </CheckBox>
-                                                        <Button mnemonicParsing="false" onAction="#modelInfoUpdateAction" text="データ更新">
+                                                        <Button mnemonicParsing="false" onAction="#modelInfoUpdateAction" text="データ更新設定">
                                                             <HBox.margin>
                                                                 <Insets left="20.0" />
                                                             </HBox.margin>
@@ -140,7 +140,7 @@
                                                                 <Font size="14.0" />
                                                             </font>
                                                         </Label>
-                                                        <Button fx:id="conditionSetButton" layoutX="333.0" layoutY="31.0" mnemonicParsing="false" text="設定" />
+                                                        <Button fx:id="conditionSetButton" layoutX="333.0" layoutY="31.0" mnemonicParsing="false" text="データ更新設定" />
                                                         <Label layoutX="33.0" layoutY="67.0" text="データ数" />
                                                         <TextField fx:id="simInitSeqSize" alignment="CENTER_RIGHT" layoutX="85.0" layoutY="63.0" prefHeight="25.0" prefWidth="69.0" />
                                                         <Label layoutX="33.0" layoutY="105.0" text="投入開始位置" />

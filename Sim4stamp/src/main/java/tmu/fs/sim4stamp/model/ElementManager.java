@@ -48,6 +48,7 @@ public class ElementManager implements JSONConvert {
 
 	public void addElement(Element element) {
 		elements.add(element);
+		elements.sort((a, b) -> b.getOrder() - a.getOrder());
 	}
 
 	public void deleteElement(String id) {
