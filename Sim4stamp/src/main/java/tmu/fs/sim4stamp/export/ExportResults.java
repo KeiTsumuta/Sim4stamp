@@ -51,6 +51,8 @@ public class ExportResults {
 			int p = 0;
 			StringBuilder sb = new StringBuilder();
 			for (IOScene ioScene : resultScenes) {
+				String title = ioScene.getScene();
+				sb.append(title).append("\n");
 				String deviationConnParamId = ioScene.getDeviationConnParamId();
 				String deviation = ioScene.getDeviation().toString();
 				MakeResultTable mrt = new MakeResultTable(MakeResultTable.NUM_VALUE_MODE);

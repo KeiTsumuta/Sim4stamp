@@ -24,6 +24,7 @@ package tmu.fs.sim4stamp.util;
  */
 public class UCAItem {
 
+	private final String title; // タイトル
 	private final String nf;  // 偏差投入のコネクタ位置
 	private final String nt;  // 偏差投入のコネクタ位置
 	private final String deviationParamId; // 偏差投入コネクタ
@@ -33,7 +34,8 @@ public class UCAItem {
 	private final boolean attentionUpper;
 	private final boolean attentionUnder;
 
-	public UCAItem(String nf, String nt, String dId, String type, String elementId, String itemId, boolean attentionUpper, boolean attentionUnder) {
+	public UCAItem(String title, String nf, String nt, String dId, String type, String elementId, String itemId, boolean attentionUpper, boolean attentionUnder) {
+		this.title = title;
 		this.nf = nf;
 		this.nt = nt;
 		this.deviationParamId = dId;
@@ -42,6 +44,13 @@ public class UCAItem {
 		this.itemId = itemId;
 		this.attentionUpper = attentionUpper;
 		this.attentionUnder = attentionUnder;
+	}
+
+	/**
+	 * @return the title
+	 */
+	public String getTitle() {
+		return title;
 	}
 
 	/**

@@ -625,18 +625,25 @@ public class IOScene implements JSONConvert {
 		IOValue iv = getIOData(elementId, paramId);
 		if (iv != null) {
 			IOParam.ValueType type = iv.getType();
-			if (type == IOParam.ValueType.REAL) {
-				gd.setDoubleData(iv.getDoubleValues());
-			} else if (type == IOParam.ValueType.INT) {
-				gd.setIntData(iv.getIntValues());
-			} else if (type == IOParam.ValueType.BOOL) {
-				gd.setBoolData(iv.getBoolValues());
-			} else if (type == IOParam.ValueType.LOGI_VAL) {
-				gd.setLogicalValueData(iv.getDoubleValues());
-				String unit = iv.getUnit();
-				gd.setUnit(unit);
-				LogicalValue lv = LogicalValueManager.getLogicalValue(unit);
-				gd.setUnitValues(lv.getValues());
+			if (null != type) switch (type) {
+				case REAL:
+					gd.setDoubleData(iv.getDoubleValues());
+					break;
+				case INT:
+					gd.setIntData(iv.getIntValues());
+					break;
+				case BOOL:
+					gd.setBoolData(iv.getBoolValues());
+					break;
+				case LOGI_VAL:
+					gd.setLogicalValueData(iv.getDoubleValues());
+					String unit = iv.getUnit();
+					gd.setUnit(unit);
+					LogicalValue lv = LogicalValueManager.getLogicalValue(unit);
+					gd.setUnitValues(lv.getValues());
+					break;
+				default:
+					break;
 			}
 			gd.setUpperValue(iv.getSafetyConstraintUpper());
 			gd.setUnderValue(iv.getSafetyConstraintUnder());

@@ -88,13 +88,17 @@ public class ConditionPanel implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		IOScene ioScene = SimService.getInstance().getIoParamManager().getCurrentScene();
-		sceneTitle.setText(ioScene.getScene());
+		sceneTitle.textProperty().set(ioScene.getScene());
+		sceneTitle.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+			SimService.getInstance().getIoParamManager().getCurrentScene().setScene(newValue);
+		});
 		simInitSeqSize.textProperty().set(Integer.toString(ioScene.getSize()));
 		simInitSeqSize.setTextFormatter(GuiUtil.getIntTextFormater());
 		setItemTableView();
 		this.conditionSetButton.setOnAction((ActionEvent event) -> {
 			setInitTable();
 			PanelManager.get().updateCondition();
+			PanelManager.get().resetResult();
 			SimService.setChanged(true);
 		});
 
@@ -365,7 +369,6 @@ public class ConditionPanel implements Initializable {
 				}
 				ioScene.dataInitSelection();
 				ioScene.setScene(sceneTitle.getText());
-				// sceneTitle.setText(ioScene.getScene());
 				initDataTable.getColumns().setAll(columnList);
 				int startIndex = getInt(deviationStartIndex.getText());
 				ioScene.setDeviationStartIndex(startIndex);

@@ -35,7 +35,6 @@ import tmu.fs.sim4stamp.util.UCAItem;
  */
 public class UCAHintsExport {
 
-	private static final String CSV_FILE_NAME = "s4s_result";
 	private static final String SP = System.getProperty("file.separator");
 	private static final SimpleDateFormat fmt = new SimpleDateFormat("'_'yyyyMMdd'_'HHmmss");
 
@@ -54,8 +53,8 @@ public class UCAHintsExport {
 		int deviationStart = 1;
 		List<UCAItem> ucaItems = new ArrayList<>();
 		try {
-			System.out.println("export results ---");
 			for (IOScene ioScene : resultScenes) {
+				String title = ioScene.getScene();
 				deviationStart = ioScene.getDeviationStartIndex() + 1;
 				String deviationType = ioScene.getDeviation().toString();
 
@@ -73,7 +72,7 @@ public class UCAHintsExport {
 							String devParamId = ioScene.getDeviationConnParamId();
 							String nf = ioScene.getDeviationConnParamFromId();
 							String nt = ioScene.getDeviationConnParamToId();
-							ucaItems.add(new UCAItem(nf, nt, devParamId, deviationType, elemId, id, upperStatus, underStatus));
+							ucaItems.add(new UCAItem(title, nf, nt, devParamId, deviationType, elemId, id, upperStatus, underStatus));
 						}
 					}
 				}
@@ -109,8 +108,9 @@ public class UCAHintsExport {
 				sb.append(" 下限");
 			}
 			sb.append("逸脱,");
+			sb.append(ucaItem.getTitle()).append("(");
 			String p = ucaItem.getNf() + "-" + ucaItem.getNt() + "_" + ucaItem.getDeviationParamId();
-			sb.append(p).append("偏差投入");
+			sb.append(p).append("偏差投入)");
 			sb.append("\n");
 		}
 		return sb.toString();
