@@ -266,7 +266,7 @@ public class FXMLController implements Initializable {
 			String dir = simService.getProjectHome(currentPj);
 			String file = simService.getProjectParams(currentPj);
 			File f = new File(dir + SP + file);
-			simService.saveProjectParams(f);
+			simService.saveProjectParams(f, false);
 			//log.log(Level.INFO, "save file:{0}", f.getAbsolutePath());
 		}
 	}

@@ -409,14 +409,27 @@ public class SimService extends ResourceFileIO implements java.io.Serializable {
 	}
 
 	public String toJson() {
+		return toObjJson(false);
+	}
+
+	private String toObjJson(boolean init) {
 		JSONObject jobj = new JSONObject();
 		// elementManager section
+		if (init) {
+			elementManager.init();
+		}
 		elementManager.addJSON(jobj);
 
 		// connections section
+		if (init) {
+			connectorManager.init();
+		}
 		connectorManager.addJSON(jobj);
 
 		// ioparams section
+		if (init) {
+			ioParamManager.init();
+		}
 		ioParamManager.addJSON(jobj);
 
 		JSONObject mobj = new JSONObject();
@@ -424,9 +437,9 @@ public class SimService extends ResourceFileIO implements java.io.Serializable {
 		return mobj.toString(2);
 	}
 
-	public void saveProjectParams(File jfile) {
+	public void saveProjectParams(File jfile, boolean init) {
 		try ( FileOutputStream fo = new FileOutputStream(jfile);  BufferedOutputStream out = new BufferedOutputStream(fo);) {
-			out.write(toJson().getBytes("UTF-8"));
+			out.write(toObjJson(init).getBytes("UTF-8"));
 			setChanged(false);
 		} catch (Exception ex) {
 			ex.printStackTrace();
