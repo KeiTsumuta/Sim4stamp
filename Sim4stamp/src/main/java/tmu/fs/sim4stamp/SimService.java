@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -159,6 +160,7 @@ public class SimService extends ResourceFileIO implements java.io.Serializable {
 				paramMap.put("project.pjparams." + id, base.optString("pjparams"));
 			}
 		}
+		Collections.sort(projectList);
 	}
 
 	/**
@@ -359,6 +361,7 @@ public class SimService extends ResourceFileIO implements java.io.Serializable {
 			}
 		}
 		projectList.add(id);
+		Collections.sort(projectList);
 		paramMap.put("project.home." + id, home);
 		paramMap.put("project.pjparams." + id, params);
 	}

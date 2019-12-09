@@ -70,6 +70,15 @@ public class ProjectSelectionPanel implements Initializable {
 	@FXML
 	private TextField createPjParam;
 
+	@FXML
+	private TextField importProjectId;
+
+	@FXML
+	private TextField importPjHome;
+
+	@FXML
+	private TextField importPjParam;
+
 	private Stage stage;
 	private String selectedProjectId = null;
 
@@ -83,6 +92,9 @@ public class ProjectSelectionPanel implements Initializable {
 		createProjectId.setText("");
 		createPjHome.setText("");
 		createPjParam.setText(DEFAULT_PARAM_NAME);
+		importProjectId.setText("");
+		importPjHome.setText("");
+		importPjParam.setText(DEFAULT_PARAM_NAME);
 		setCurrentEditale(false);
 	}
 
@@ -291,6 +303,62 @@ public class ProjectSelectionPanel implements Initializable {
 			selectParam.textProperty().set("");
 			// 画面更新
 			PanelManager.get().initDisplay();
+		}
+	}
+
+	@FXML
+	public void importProjectAction(ActionEvent event) {
+		importProject();
+		// 画面更新
+		PanelManager.get().initDisplay();
+		closeDialog(event);
+	}
+
+	private void importProject() {
+		SimService ss = SimService.getInstance();
+		String importPjId = importProjectId.getText();
+		String impPjHome = importPjHome.getText();
+		String impPjParam = importPjParam.getText();
+		if (!isPjIdExists(importPjId)) {
+			if (importPjId.length() > 0 && impPjHome.length() > 0 && impPjParam.length() > 0) {
+				ss.setCurrentProjectId(importPjId);
+				ss.addProject(importPjId, impPjHome, impPjParam);
+				selectedProjectId = importPjId;
+				setProjectBoxInfos();
+				ss.writeInfoFile();
+				ss.readProjectFile(importPjId);
+				Alert alert = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
+				alert.setTitle("インポート");
+				alert.getDialogPane().setHeaderText("プロジェクト・インポート");
+				alert.getDialogPane().setContentText("インポートしました。");
+				alert.showAndWait();
+			} else {
+				Alert alert = new Alert(Alert.AlertType.ERROR, "", ButtonType.OK);
+				alert.setTitle("パラメータ追加");
+				alert.getDialogPane().setHeaderText("エラー");
+				alert.getDialogPane().setContentText("未入力データがあります。");
+				alert.showAndWait();
+			}
+		} else {
+			Alert alert = new Alert(Alert.AlertType.ERROR, "", ButtonType.OK);
+			alert.setTitle("パラメータ追加");
+			alert.getDialogPane().setHeaderText("エラー");
+			alert.getDialogPane().setContentText("プロジェクト名が重複しています。");
+			alert.showAndWait();
+		}
+
+	}
+
+	@FXML
+	public void importHomeAction(ActionEvent event) {
+		final DirectoryChooser fc = new DirectoryChooser();
+		fc.setTitle("Project Home選択");
+		File dir = fc.showDialog(stage);
+		if (dir != null) {
+			String dirPath = dir.getAbsolutePath();
+			selectedProjectId = dir.getName();
+			importProjectId.textProperty().set(dir.getName());
+			importPjHome.textProperty().set(dirPath);
 		}
 	}
 }
