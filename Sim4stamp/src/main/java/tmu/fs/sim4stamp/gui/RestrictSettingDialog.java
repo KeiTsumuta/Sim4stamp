@@ -186,7 +186,7 @@ public class RestrictSettingDialog implements Initializable {
 			upboolvalfalse.setSelected(false);
 		}
 
-		if (type == IOParam.ValueType.LOGI_VAL) {
+		if (type == IOParam.ValueType.F_VAL_LOGIC) {
 			String unitId = elementItem.getIOParam().getUnit();
 			LogicalValue lv = LogicalValueManager.getLogicalValue(unitId);
 			IOValue ioValue = elementItem.getIOValue();
@@ -269,7 +269,7 @@ public class RestrictSettingDialog implements Initializable {
 					case BOOL:
 						underVal = getBoolRadioSelection(unboolvaltrue, unboolvalfalse);
 						break;
-					case LOGI_VAL:
+					case F_VAL_LOGIC:
 						underVal = getRadioSelection(underValues);
 						break;
 					default:
@@ -289,7 +289,7 @@ public class RestrictSettingDialog implements Initializable {
 					case BOOL:
 						upperVal = getBoolRadioSelection(upboolvaltrue, upboolvalfalse);
 						break;
-					case LOGI_VAL:
+					case F_VAL_LOGIC:
 						upperVal = getRadioSelection(upperValues);
 						break;
 					default:

@@ -43,7 +43,7 @@ public class GraphAxis {
     }
 
     public double[] getScale(double max, double min, GraphData.GhType ghType) {
-        if (ghType == GraphData.GhType.LOGICAL_VALUE) {
+        if (ghType == GraphData.GhType.FIVE_VALUE) {
             return new double[]{0.0, 1.0, 2.0, 3.0, 4.0, 5.0};
         }
         double[] retList = new double[]{0.0, 1.0};

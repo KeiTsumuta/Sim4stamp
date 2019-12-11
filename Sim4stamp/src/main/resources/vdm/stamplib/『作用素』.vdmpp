@@ -51,6 +51,20 @@ operations
 		return iCtl.setValue(i要素ID, key, 値);
 	);
 	
+	public get5ValData : seq of char ==> real
+	get5ValData(key) ==
+	(dcl val : real := iCtl.getInputValue(i要素ID, key);
+		--IO`print("getData:");IO`print(key);IO`print(":");IO`println(val);
+		return val;
+	);
+		
+	public set5ValData : seq of char * real ==> ()
+	set5ValData(key, data) ==
+	(dcl 値 : real := data;
+		--IO`print("setData:");IO`print(i構成種別);IO`print(":");IO`print(key);IO`print(",");IO`println(値);
+		return iCtl.setValue(i要素ID, key, 値);
+	);
+	
 	public getIntData : seq of char ==> int
 	getIntData(key) ==
 	(dcl val : int := iCtl.getInputIntValue(i要素ID, key);

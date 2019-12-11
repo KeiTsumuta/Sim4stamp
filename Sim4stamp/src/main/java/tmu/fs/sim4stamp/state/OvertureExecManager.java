@@ -108,7 +108,7 @@ public class OvertureExecManager implements DisplayItem {
             for (IOParam iop : iops) {
                 IOValue ioValue = executeScene.getIOData(nodeId, iop.getId());
                 IOParam.ValueType type = ioValue.getType();
-                if (type == IOParam.ValueType.LOGI_VAL) {
+                if (type == IOParam.ValueType.F_VAL_LOGIC) {
                     double[] dVals = ioValue.getDoubleValues();
                     if (dVals != null && dVals[0] == 0.0) {
                         dVals[0] = 3.0; // 初期値設定なしなら、中心値を与える。
@@ -147,7 +147,7 @@ public class OvertureExecManager implements DisplayItem {
                                     if (bVals != null) {
                                         bVals[loopCounter] = bVals[loopCounter - 1];
                                     }
-                                } else if (type == IOParam.ValueType.LOGI_VAL) {
+                                } else if (type == IOParam.ValueType.F_VAL_LOGIC) {
                                     double[] dVals = ioValue.getDoubleValues();
                                     if (dVals != null) {
                                         dVals[loopCounter] = dVals[loopCounter - 1];
@@ -267,7 +267,7 @@ public class OvertureExecManager implements DisplayItem {
                         if (bVals != null) {
                             return Boolean.toString(bVals[displayCount - 1]);
                         }
-                    } else if (type == IOParam.ValueType.LOGI_VAL) {
+                    } else if (type == IOParam.ValueType.F_VAL_LOGIC) {
                         double[] dVals = ioValue.getDoubleValues();
                         if (dVals != null) {
                             return FORMAT.format(dVals[displayCount - 1]);

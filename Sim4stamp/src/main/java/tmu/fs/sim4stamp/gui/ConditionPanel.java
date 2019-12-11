@@ -291,7 +291,7 @@ public class ConditionPanel implements Initializable {
 						if (null == type) {
 							column.setCellFactory(TextFieldTableCell.<ObservableList>forTableColumn());
 						} else switch (type) {
-							case LOGI_VAL:
+							case F_VAL_LOGIC:
 								String unit = ei.getUnit();
 								LogicalValue lv = LogicalValueManager.getLogicalValue(unit);
 								String[] vals = lv.getValues();
@@ -341,7 +341,7 @@ public class ConditionPanel implements Initializable {
 											dispVal = "false";
 										}
 										break;
-									case LOGI_VAL:{
+									case F_VAL_LOGIC:{
 										double[] d = ioScene.getData(idel[0], idel[1]);
 										String val = event.getNewValue();
 										String unit = ioValue.getUnit();
@@ -410,7 +410,7 @@ public class ConditionPanel implements Initializable {
 								} else {
 									rows.add("false");
 								}	break;
-							case LOGI_VAL:{
+							case F_VAL_LOGIC:{
 							    double[] d = ioScene.getData(ei.getElementId(), ei.getParamId());
 							    String unitValue = getLogicalValueName(ei.getUnit(), (int) d[i]);
 							    rows.add(unitValue + "(" + L_FORMAT.format(d[i]) + ")");
@@ -493,7 +493,7 @@ public class ConditionPanel implements Initializable {
 						b[i] = false;
 					}
 					break;
-				case LOGI_VAL: {
+				case F_VAL_LOGIC: {
 					double[] d = ioScene.getData(ei.getElementId(), ei.getParamId());
 					for (int i = 0; i < d.length; i++) {
 						d[i] = 0.0;
@@ -548,7 +548,7 @@ public class ConditionPanel implements Initializable {
 
 		private void setUnderRes(String unVal) {
 			IOParam.ValueType type = ioValue.getType();
-			if (type != null && type == IOParam.ValueType.LOGI_VAL) {
+			if (type != null && type == IOParam.ValueType.F_VAL_LOGIC) {
 				if (!unVal.equals("*")) {
 					unVal = getLogicalValueName(getUnit(), (int) getDouble(unVal));
 				}
@@ -558,7 +558,7 @@ public class ConditionPanel implements Initializable {
 
 		private void setUpperRes(String upVal) {
 			IOParam.ValueType type = ioValue.getType();
-			if (type != null && type == IOParam.ValueType.LOGI_VAL) {
+			if (type != null && type == IOParam.ValueType.F_VAL_LOGIC) {
 				if (!upVal.equals("*")) {
 					upVal = getLogicalValueName(getUnit(), (int) getDouble(upVal));
 				}

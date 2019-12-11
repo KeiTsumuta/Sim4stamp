@@ -311,7 +311,7 @@ public class IOScene implements JSONConvert {
 							}
 							ioNt.getBoolValues()[index] = bValue;
 						}
-						if (type == IOParam.ValueType.LOGI_VAL) {
+						if (type == IOParam.ValueType.F_VAL_LOGIC) {
 							double sValue = 0.0;
 							if (deviation == Deviation.NORMAL || deviationConnParamId == null
 								|| index < (dsi - 1)) {
@@ -635,7 +635,7 @@ public class IOScene implements JSONConvert {
 				case BOOL:
 					gd.setBoolData(iv.getBoolValues());
 					break;
-				case LOGI_VAL:
+				case F_VAL_LOGIC:
 					gd.setLogicalValueData(iv.getDoubleValues());
 					String unit = iv.getUnit();
 					gd.setUnit(unit);

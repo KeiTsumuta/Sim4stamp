@@ -212,7 +212,7 @@ public abstract class Element implements JSONConvert, DisplayLevel {
                         id += "<I>";
                     } else if (type == IOParam.ValueType.BOOL) {
                         id += "<B>";
-                    } else if (type == IOParam.ValueType.LOGI_VAL) {
+                    } else if (type == IOParam.ValueType.F_VAL_LOGIC) {
                         id += "<" + ioParam.getUnit() + ">";
                     }
                 }

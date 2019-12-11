@@ -88,7 +88,7 @@ public class MakeResultTable {
 								}
 							}
 							break;
-						case LOGI_VAL:
+						case F_VAL_LOGIC:
 							String unitId = iop.getUnit();
 							LogicalValue lv = LogicalValueManager.getLogicalValue(unitId);
 							String[] licalVals = lv.getValues();

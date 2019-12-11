@@ -141,7 +141,7 @@ public class SimListener implements Runnable {
 					case BOOL:
 						tobj.addBValue(oeManager.getBoolData(elemId, dataId));
 						break;
-					case LOGI_VAL:
+					case F_VAL_LOGIC:
 						tobj.addDValue(get5Limit(oeManager.getData(elemId, dataId)));
 						break;
 					default:
@@ -166,7 +166,7 @@ public class SimListener implements Runnable {
 				oeManager.setIntData(elemId, dataId, inObj.getIValues().get(0));
 			} else if (type == IOParam.ValueType.BOOL && inObj.getBValues() != null) {
 				oeManager.setBoolData(elemId, dataId, inObj.getBValues().get(0));
-			} else if (type == IOParam.ValueType.LOGI_VAL && inObj.getDValues() != null) {
+			} else if (type == IOParam.ValueType.F_VAL_LOGIC && inObj.getDValues() != null) {
 				oeManager.setData(elemId, dataId, get5Limit(inObj.getDValues().get(0)));
 			}
 		} else { // 未定義データは実数としてとりあえず処理する。

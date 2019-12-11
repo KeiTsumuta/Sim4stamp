@@ -32,9 +32,9 @@ import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.text.Font;
 import tmu.fs.sim4stamp.gui.util.GraphAxis;
 import tmu.fs.sim4stamp.gui.util.GraphData;
-import static tmu.fs.sim4stamp.gui.util.GraphData.GhType.LOGICAL_VALUE;
 import tmu.fs.sim4stamp.gui.util.GuiUtil;
 import tmu.fs.sim4stamp.model.iop.SafetyConstraintValue;
+import static tmu.fs.sim4stamp.gui.util.GraphData.GhType.FIVE_VALUE;
 
 /**
  * 時系列グラフの表示
@@ -50,7 +50,8 @@ public class LineGraphPanel implements Initializable {
 	private static final Color GRPAH_MESH_COLOR = Color.GREY;
 	private static final Color GRPAH_METRIC_COLOR = Color.BLACK;
 	private static final Color GRPAH_TITLE_COLOR = Color.BLACK;
-	private static final Color GRPAH_CONSTRAINT_COLOR = Color.MAGENTA;
+	private static final Color UPPER_CONSTRAINT_COLOR = Color.MAGENTA;
+	private static final Color UNDER_CONSTRAINT_COLOR = Color.PURPLE;
 	private static final double W_AX_LEFT = 60.0;
 	private static final double H_AX_BOTTOM = 30.0;
 	private static final double INSET_TOP = 25.0;
@@ -144,7 +145,7 @@ public class LineGraphPanel implements Initializable {
 					heightMinValue = 0.0;
 					break;
 				}
-				case LOGICAL_VALUE: {
+				case FIVE_VALUE: {
 					heightMaxValue = 5.0;
 					heightMinValue = 0.0;
 					break;
@@ -253,15 +254,16 @@ public class LineGraphPanel implements Initializable {
 
 		gc.setLineWidth(2.0);
 		gc.setLineDashes(5);
-		gc.setStroke(GRPAH_CONSTRAINT_COLOR);
+		
 		if (upperValue != null && upperValue.isSetting()) {
+			gc.setStroke(UPPER_CONSTRAINT_COLOR);
 			double constraitMax = upperValue.getConstraintValue();
 			if (null != ghType) {
 				switch (ghType) {
 					case BOOL:
 						constraitMax = 1.0;
 						break;
-					case LOGICAL_VALUE:
+					case FIVE_VALUE:
 						constraitMax = constraitMax - 0.45;
 						break;
 				}
@@ -269,14 +271,16 @@ public class LineGraphPanel implements Initializable {
 			double y = INSET_TOP + graphHeight * (1 - (constraitMax + xm) / yConv);
 			gc.strokeLine(W_AX_LEFT, y, wMax - INSET_RIGHT, y);
 		}
+		
 		if (underValue != null && underValue.isSetting()) {
+			gc.setStroke(UNDER_CONSTRAINT_COLOR);
 			double constraitMin = underValue.getConstraintValue();
 			if (null != ghType) {
 				switch (ghType) {
 					case BOOL:
 						constraitMin = 0.2;
 						break;
-					case LOGICAL_VALUE:
+					case FIVE_VALUE:
 						constraitMin = constraitMin + 0.45;
 						break;
 				}
@@ -346,7 +350,7 @@ public class LineGraphPanel implements Initializable {
 						bOld = b[i];
 					}
 					break;
-				case LOGICAL_VALUE:
+				case FIVE_VALUE:
 					d = dg.getDoubleData();
 					for (int i = 0; i < x_count - 1; i++) {
 						xarr.add(W_AX_LEFT + graphWidth / x_count * (i + 1));
@@ -415,7 +419,7 @@ public class LineGraphPanel implements Initializable {
 					yScVals[yScVals.length - 1] = "TRUE";
 					break;
 				}
-				case LOGICAL_VALUE: {
+				case FIVE_VALUE: {
 					String[] vals = getGraphDataList().get(0).getUnitValues();
 					for (int i = 0; i < vals.length; i++) {
 						yScVals[i] = vals[i];

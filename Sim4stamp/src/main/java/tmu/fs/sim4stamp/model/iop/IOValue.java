@@ -58,7 +58,7 @@ public class IOValue implements JSONConvert {
 			case BOOL:
 				boolValues = new boolean[size];
 				break;
-			case LOGI_VAL:
+			case F_VAL_LOGIC:
 				doubleValues = new double[size];
 				break;
 		}
@@ -141,7 +141,7 @@ public class IOValue implements JSONConvert {
 					}
 					boolValues = newBoolValues;
 					break;
-				case LOGI_VAL:
+				case F_VAL_LOGIC:
 					newDoubleValues = new double[newSize];
 					for (int i = 0; i < size; i++) {
 						newDoubleValues[i] = doubleValues[i];
@@ -235,7 +235,7 @@ public class IOValue implements JSONConvert {
 					}
 				}
 				break;
-			case LOGI_VAL:
+			case F_VAL_LOGIC:
 				doubleValues = new double[size];
 				for (int i = 0; i < size; i++) {
 					try {
@@ -287,7 +287,7 @@ public class IOValue implements JSONConvert {
 					}
 				}
 				break;
-			case LOGI_VAL:
+			case F_VAL_LOGIC:
 				if (doubleValues != null) {
 					sb.append(ioParam.getUnit());
 					for (double d : doubleValues) {
@@ -392,7 +392,7 @@ public class IOValue implements JSONConvert {
 					}
 				}
 				break;
-			case LOGI_VAL:
+			case F_VAL_LOGIC:
 				if (doubleValues != null) {
 					if (upperValue.isSetting()) {
 						double upper = upperValue.getDoubleValue() - 0.5;

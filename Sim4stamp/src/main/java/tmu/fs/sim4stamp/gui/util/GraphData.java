@@ -26,7 +26,7 @@ import tmu.fs.sim4stamp.model.iop.SafetyConstraintValue;
 public class GraphData {
 
 	public enum GhType {
-		DOUBLE, INT, BOOL, LOGICAL_VALUE
+		DOUBLE, INT, BOOL, FIVE_VALUE
 	}
 
 	private GhType ghType = GhType.DOUBLE;
@@ -110,7 +110,7 @@ public class GraphData {
 	 */
 	public void setLogicalValueData(double[] dData) {
 		this.dData = dData;
-		ghType = GhType.LOGICAL_VALUE;
+		ghType = GhType.FIVE_VALUE;
 	}
 
 	public int getDataCount() {
@@ -123,7 +123,7 @@ public class GraphData {
 						return iData.length;
 					case BOOL:
 						return bData.length;
-					case LOGICAL_VALUE:
+					case FIVE_VALUE:
 						return dData.length;
 					default:
 						break;

@@ -117,7 +117,7 @@ public class SafetyConstraintValue {
 						} else {
 							return "false";
 						}
-					case LOGI_VAL:
+					case F_VAL_LOGIC:
 						return D_FORMAT.format(doubleValue);
 					default:
 						break;
@@ -149,7 +149,7 @@ public class SafetyConstraintValue {
 							}
 							setting = true;
 							break;
-						case LOGI_VAL:
+						case F_VAL_LOGIC:
 							doubleValue = Double.parseDouble(value);
 							setting = true;
 							break;
@@ -176,7 +176,7 @@ public class SafetyConstraintValue {
 						} else {
 							return 0.0;
 						}
-					case LOGI_VAL:
+					case F_VAL_LOGIC:
 						return doubleValue;
 					default:
 						break;

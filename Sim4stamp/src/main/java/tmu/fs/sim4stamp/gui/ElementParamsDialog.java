@@ -194,7 +194,7 @@ public class ElementParamsDialog implements Initializable {
 				} else if (boolParam.isSelected()) {
 					type = IOParam.ValueType.BOOL;
 				} else if (lvParam.isSelected()) {
-					type = IOParam.ValueType.LOGI_VAL;
+					type = IOParam.ValueType.F_VAL_LOGIC;
 					unit = lvUnitSelection.getValue().toString();
 				}
 				ioParam = new IOParam(AppendParams.ParamType.Element, null, id, type, unit);

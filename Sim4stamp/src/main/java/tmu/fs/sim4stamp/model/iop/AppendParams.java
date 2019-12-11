@@ -99,7 +99,7 @@ public class AppendParams {
                         p = new IOParam(this.type, parentId, id, IOParam.ValueType.BOOL, unit);
                         break;
                     case "logic":
-                        p = new IOParam(this.type, parentId, id, IOParam.ValueType.LOGI_VAL, unit);
+                        p = new IOParam(this.type, parentId, id, IOParam.ValueType.F_VAL_LOGIC, unit);
                         break;
                 }
                 ioParams.add(p);
