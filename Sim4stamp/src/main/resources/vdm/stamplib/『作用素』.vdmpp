@@ -86,117 +86,120 @@ operations
 	public toString : () ==> seq of char
 	toString() ==
 		return i要素ID;
-	
+
+functions
 	-- 5値論理演算
 	-- 対応
-	public op5Equ : real ==> real
+	public op5Equ : real -> real
 	op5Equ(value) ==
-	(dcl rValue : real := 0.0;
-		if value <= 0.0 then
-		(
-			rValue := 0.0
-		)else if value > 5.0 then
-		(
-		  rValue := 5.0;
-		)else if value < 1.0 then
-		(
-		  rValue := 1.0;
-		)else(
-			rValue := value;
-		);
-		return rValue
+	(
+		if value <= 0.0
+		then 0.0
+		else if value > 5.0
+			 then 5.0
+			 else if value < 1.0
+				  then 1.0
+				  else value
 	);
 	-- 反転
-	public op5Inv : real ==> real
+	public op5Inv : real -> real
 	op5Inv(value) ==
-	(dcl rValue : real := 0.0;
-		if value <= 0.0 then
-		(
-			rValue := 0.0
-		)else if value > 5.0 then
-		(
-		  rValue := 1.0;
-		)else if value < 1.0 then
-		(
-		  rValue := 5.0;
-		)else(
-			rValue := 6.0 - value;
-		);
-		return rValue
+	(
+		if value <= 0.0
+		then 0.0
+		else if value > 5.0
+			 then 1.0
+			 else if value < 1.0
+				  then 5.0
+				  else 6.0 - value
 	);
 	-- OR
-	public op5OR : real * real ==> real
+	public op5OR : real * real -> real
 	op5OR(valueA, valueB) ==
-	(dcl rValue : real := valueA * valueB;
-		if rValue <= 0.0 then
-		(
-			if valueA >= 4.5 or valueB >= 4.5
-			then return 5.0
-			else return 0.0;
-		);
-		if valueA > valueB
-		then rValue := valueA
-		else rValue := valueB;
-		return rValue;
+	(
+		let rValue : real = valueA * valueB
+		in(
+			if rValue <= 0.0
+			then if valueA >= 4.5 or valueB >= 4.5
+				 then 5.0
+				 else 0.0
+			else if valueA > valueB
+				 then valueA
+				 else valueB
+		)
 	);
 	-- AND
-	public op5AND : real * real ==> real
+	public op5AND : real * real -> real
 	op5AND(valueA, valueB) ==
-	(dcl rValue : real := valueA * valueB;
-		if rValue <= 0.0 then
-		(
-			if (valueA <> 0.0 and valueA < 1.5) or (valueB <> 0.0 and valueB < 1.5)
-			then return 1.0
-			else return 0.0;
-		);
-		if valueA < valueB
-		then rValue := valueA
-		else rValue := valueB;
-		return rValue;
+	(
+		let rValue : real = valueA * valueB
+		in(
+			if rValue <= 0.0
+			then if (valueA <> 0.0 and valueA < 1.5) or (valueB <> 0.0 and valueB < 1.5)
+					 then 1.0
+					 else 0.0
+			else if valueA < valueB
+					 then valueA
+					 else valueB
+		)
 	);
 	-- 差分
-	public op5Diff : real * real ==> real
+	public op5Diff : real * real -> real
 	op5Diff(valueA, valueB) ==
-	(dcl rValue : real := 1.0;
-		if (valueA * valueB) <= 0.0 then return 0.0;
-		let	diff : real = valueB - valueA
+	(
+		let rValue : real = valueA * valueB
 		in(
-			if diff < 1.0 then rValue := 1.0;
-			rValue := diff;
-		);
-		return rValue;
+			if rValue <= 0.0
+			then 0.0
+			else
+				let	diff : real = valueB - valueA
+				in(
+					if diff = 0.0
+					then 0.01
+					else diff
+				)
+		)
 	);
 	-- 正規化
-	public op5Norm : real ==> real
+	public op5Norm : real -> real
 	op5Norm(value) ==
 	(
-		if value <= 0.0 then return 0.0
-		else if value < 1.5 then return 1.0
-		else if value < 2.5 then return 2.0
-		else if value < 3.5 then return 3.0
-		else if value < 4.5 then return 4.0
-		else return 5.0;
+		if value <= 0.0 then 0.0
+		else if value < 1.5 then 1.0
+		else if value < 2.5 then 2.0
+		else if value < 3.5 then 3.0
+		else if value < 4.5 then 4.0
+		else 5.0
 	);
 	-- リミッター
-	public op5Limit : real ==> real
+	public op5Limit : real -> real
 	op5Limit(value) ==
 	(
-		if value = 0.0 then return 0.0
-		else if value > 5.0 then return 5.0
-		else if value < 1.0 then return 1.0;
-		return value;
+		if value = 0.0 then 0.0
+		else if value > 5.0 then 5.0
+		else if value < 1.0 then 1.0
+		else value
 	);
 	-- マッピング
-	public op5map : real * real * real * real * real * real ==> real
+	public op5map : real * real * real * real * real * real -> real
 	op5map(value, mp1, mp2, mp3, mp4, mp5) == 
 	(
-		if value <= 0.0 then return 0.0
-		else if value < 1.5 then return mp1
-		else if value < 2.5 then return mp2
-		else if value < 3.5 then return mp3
-		else if value < 4.5 then return mp4
-		else return mp5;
+		if value <= 0.0 then 0.0
+		else if value < 1.5 then mp1
+		else if value < 2.5 then mp2
+		else if value < 3.5 then mp3
+		else if value < 4.5 then mp4
+		else mp5
 	);
-functions
-
+	-- Bool割り付け
+	public op52bool : real * bool * bool * bool * bool * bool -> bool
+	op52bool(value, mp1, mp2, mp3, mp4, mp5) == 
+	(
+		if value <= 0.0 then false
+		else if value < 1.5 then mp1
+		else if value < 2.5 then mp2
+		else if value < 3.5 then mp3
+		else if value < 4.5 then mp4
+		else mp5
+	);
 end 『作用素』
