@@ -69,6 +69,7 @@ public class IOScene implements JSONConvert {
 	private boolean devWorkInitBoolValue = false;
 
 	private int deviationStartIndex = 0;
+	private int deviContinuous = 0;
 
 	public IOScene() {
 		// System.out.println("IOScen new :" + this);
@@ -184,6 +185,7 @@ public class IOScene implements JSONConvert {
 		ic.deviationConnParamFromId = getDeviationConnParamFromId();
 		ic.deviationConnParamToId = getDeviationConnParamToId();
 		ic.deviationStartIndex = deviationStartIndex;
+		ic.deviContinuous = deviContinuous;
 		return ic;
 	}
 
@@ -625,25 +627,27 @@ public class IOScene implements JSONConvert {
 		IOValue iv = getIOData(elementId, paramId);
 		if (iv != null) {
 			IOParam.ValueType type = iv.getType();
-			if (null != type) switch (type) {
-				case REAL:
-					gd.setDoubleData(iv.getDoubleValues());
-					break;
-				case INT:
-					gd.setIntData(iv.getIntValues());
-					break;
-				case BOOL:
-					gd.setBoolData(iv.getBoolValues());
-					break;
-				case F_VAL_LOGIC:
-					gd.setLogicalValueData(iv.getDoubleValues());
-					String unit = iv.getUnit();
-					gd.setUnit(unit);
-					LogicalValue lv = LogicalValueManager.getLogicalValue(unit);
-					gd.setUnitValues(lv.getValues());
-					break;
-				default:
-					break;
+			if (null != type) {
+				switch (type) {
+					case REAL:
+						gd.setDoubleData(iv.getDoubleValues());
+						break;
+					case INT:
+						gd.setIntData(iv.getIntValues());
+						break;
+					case BOOL:
+						gd.setBoolData(iv.getBoolValues());
+						break;
+					case F_VAL_LOGIC:
+						gd.setLogicalValueData(iv.getDoubleValues());
+						String unit = iv.getUnit();
+						gd.setUnit(unit);
+						LogicalValue lv = LogicalValueManager.getLogicalValue(unit);
+						gd.setUnitValues(lv.getValues());
+						break;
+					default:
+						break;
+				}
 			}
 			gd.setUpperValue(iv.getSafetyConstraintUpper());
 			gd.setUnderValue(iv.getSafetyConstraintUnder());
@@ -702,6 +706,7 @@ public class IOScene implements JSONConvert {
 			deviation = Deviation.NORMAL;
 		}
 		setDeviationStartIndex(obj.optInt("dStartIdx"));
+		setDeviContinuous(obj.optInt("deviContinuous"));
 
 		// System.out.println("parse deviaiton:" + deviation + ", " + this);
 	}
@@ -748,6 +753,7 @@ public class IOScene implements JSONConvert {
 		}
 		obj.accumulate("values", arr0);
 		obj.accumulate("dStartIdx", getDeviationStartIndex());
+		obj.accumulate("deviContinuous", deviContinuous);
 		JSONObject devObj = new JSONObject();
 		devObj.accumulate("kind", "connector");
 		if (deviation == null) {
@@ -785,8 +791,8 @@ public class IOScene implements JSONConvert {
 		this.deviationConnParamToId = to;
 		// System.out.println("setDeviationSetting id:" + paramId);
 	}
-	
-	public List<IOValue> getIOValues(String eleid){
+
+	public List<IOValue> getIOValues(String eleid) {
 		return nodeValues.get(eleid);
 	}
 
@@ -924,5 +930,22 @@ public class IOScene implements JSONConvert {
 	 */
 	public String getDeviationConnParamToId() {
 		return deviationConnParamToId;
+	}
+
+	/**
+	 * @return the deviContinuous
+	 */
+	public int getDeviContinuous() {
+		if (deviContinuous <= 0) {
+			return 1;
+		}
+		return deviContinuous;
+	}
+
+	/**
+	 * @param deviContinuous the deviContinuous to set
+	 */
+	public void setDeviContinuous(int deviContinuous) {
+		this.deviContinuous = deviContinuous;
 	}
 }

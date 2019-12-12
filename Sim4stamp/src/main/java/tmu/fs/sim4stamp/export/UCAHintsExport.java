@@ -57,13 +57,13 @@ public class UCAHintsExport {
 				String title = ioScene.getScene();
 				deviationStart = ioScene.getDeviationStartIndex() + 1;
 				String deviationType = ioScene.getDeviation().toString();
-
+				int continuous = ioScene.getDeviContinuous();
 				IOParamManager iom = SimService.getInstance().getIoParamManager();
 				List<String> elemIds = iom.getNodeIds();
 				for (String elemId : elemIds) {
 					List<IOValue> ioValues = ioScene.getIOValues(elemId);
 					for (IOValue ioVal : ioValues) {
-						ioVal.makeAttentions(deviationStart);
+						ioVal.makeAttentions(deviationStart, continuous);
 						String id = ioVal.getId();
 						boolean upperStatus = ioVal.isUpperWarning(); // 上限逸脱ありフラグ
 						boolean underStatus = ioVal.isUnderWarning(); // 下限逸脱ありフラグ

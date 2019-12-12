@@ -359,6 +359,9 @@ public class ResultPanel implements Initializable {
 		for (int i = 0; i < resultScenes.size(); i++) {
 			IOScene ios = resultScenes.get(i);
 			String deviationConnParamId = ios.getDeviationConnParamId();
+			if (deviationConnParamId == null) {
+				continue;
+			}
 			if (!oldDeviationConnParamId.equals(deviationConnParamId)) {
 				FlowPane dfp = new FlowPane();
 				RadioButton rbt = new RadioButton(deviationConnParamId);
@@ -386,7 +389,8 @@ public class ResultPanel implements Initializable {
 			// グラフタイトル描画
 			IOValue iov = ios.getIOData(parentId, id);
 			int deviationStart = ios.getDeviationStartIndex() + 1;
-			iov.makeAttentions(deviationStart);
+			int continuous = ios.getDeviContinuous();
+			iov.makeAttentions(deviationStart, continuous);
 			boolean isWarn = iov.isUpperWarning() | iov.isUnderWarning();
 			addGraphWarn(i, isWarn);
 			FlowPane fp = new FlowPane();

@@ -24,12 +24,14 @@ import tmu.fs.sim4stamp.SimService;
 import tmu.fs.sim4stamp.model.ConnectorManager;
 import tmu.fs.sim4stamp.model.ElementManager;
 import tmu.fs.sim4stamp.model.IOParamManager;
+import tmu.fs.sim4stamp.model.LogicalValueManager;
 import tmu.fs.sim4stamp.model.co.Connector;
 import tmu.fs.sim4stamp.model.em.Element;
 import tmu.fs.sim4stamp.model.iop.AppendParams;
 import tmu.fs.sim4stamp.model.iop.IOParam;
 import tmu.fs.sim4stamp.model.iop.IOScene;
 import tmu.fs.sim4stamp.model.iop.IOValue;
+import tmu.fs.sim4stamp.model.lv.LogicalValue;
 import tmu.fs.sim4stamp.util.ResourceFileIO;
 
 /**
@@ -122,6 +124,7 @@ public class VdmCodeMaker extends ResourceFileIO {
 		List<Connector> connectors = connMgr.getConnectors();
 		try {
 			for (Element element : elemMgr.getElements()) {
+				StringBuilder vals = new StringBuilder();
 				String elemId = element.getNodeId();
 				// System.out.println("elemId :" + elemId);
 				String ec = source.replace("$1", elemId);
@@ -175,26 +178,29 @@ public class VdmCodeMaker extends ResourceFileIO {
 				boolean f = false;
 				for (IOParam iop : importList) {
 					if (f) {
-						sbi.append(", ");
+						sbi.append(",\n\t\t\t");
 					}
 					f = true;
 					String id = iop.getId();
 					IOParam.ValueType type = iop.getType();
-					if (null != type) switch (type) {
-						case REAL:
-							sbi.append(id).append(" : real = getData(\"").append(id).append("\")");
-							break;
-						case INT:
-							sbi.append(id).append(" : int = getIntData(\"").append(id).append("\")");
-							break;
-						case BOOL:
-							sbi.append(id).append(" : bool = getBoolData(\"").append(id).append("\")");
-							break;
-						case F_VAL_LOGIC:
-							sbi.append(id).append(" : real = get5ValData(\"").append(id).append("\")");
-							break;
-						default:
-							break;
+					if (null != type) {
+						switch (type) {
+							case REAL:
+								sbi.append(id).append(" : real = getData(\"").append(id).append("\")");
+								break;
+							case INT:
+								sbi.append(id).append(" : int = getIntData(\"").append(id).append("\")");
+								break;
+							case BOOL:
+								sbi.append(id).append(" : bool = getBoolData(\"").append(id).append("\")");
+								break;
+							case F_VAL_LOGIC:
+								sbi.append(id).append(" : real = get5ValData(\"").append(id).append("\")");
+								vals.append(get5ValUnits(id, iop));
+								break;
+							default:
+								break;
+						}
 					}
 				}
 				String ec3 = ec2.replace("$3", sbi.toString());
@@ -202,31 +208,35 @@ public class VdmCodeMaker extends ResourceFileIO {
 				f = false;
 				for (IOParam iop : exportList) {
 					if (f) {
-						sbe.append("\n");
+						sbe.append("\n\t\t\t");
 					}
 					f = true;
 					IOParam.ValueType type = iop.getType();
-					if (null != type) switch (type) {
-						case REAL:
-							sbe.append("setData(\"").append(iop.getId()).append("\",0.0);");
-							break;
-						case INT:
-							sbe.append("setIntData(\"").append(iop.getId()).append("\",0);");
-							break;
-						case BOOL:
-							sbe.append("setBoolData(\"").append(iop.getId()).append("\",false);");
-							break;
-						case F_VAL_LOGIC:
-							sbe.append("set5ValData(\"").append(iop.getId()).append("\",0.0);");
-							break;
-						default:
-							break;
+					if (null != type) {
+						switch (type) {
+							case REAL:
+								sbe.append("setData(\"").append(iop.getId()).append("\",0.0);");
+								break;
+							case INT:
+								sbe.append("setIntData(\"").append(iop.getId()).append("\",0);");
+								break;
+							case BOOL:
+								sbe.append("setBoolData(\"").append(iop.getId()).append("\",false);");
+								break;
+							case F_VAL_LOGIC:
+								sbe.append("set5ValData(\"").append(iop.getId()).append("\",0.0);");
+								vals.append(get5ValUnits(iop.getId(), iop));
+								break;
+							default:
+								break;
+						}
 					}
 				}
 				String ec4 = ec3.replace("$4", sbe.toString());
 				String ec5 = ec4.replace("$5", sbe.toString());
+				String ec6 = ec5.replace("$6", vals.toString());
 				String file = dir + SP + "『" + elemId + "』.vdmpp";
-				writeElementClassFile(file, ec5.getBytes("UTF-8"));
+				writeElementClassFile(file, ec6.getBytes("UTF-8"));
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -253,6 +263,20 @@ public class VdmCodeMaker extends ResourceFileIO {
 				break;
 		}
 		return r;
+	}
+
+	private String get5ValUnits(String id, IOParam iop) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("\t");
+		String unitId = iop.getUnit();
+		LogicalValue lv = LogicalValueManager.getLogicalValue(unitId);
+		String[] units = lv.getValues();
+		for (int i = 0; i < units.length; i++) {
+			sb.append(id).append("_").append(units[i]).append("=");
+			sb.append(i).append(".0; ");
+		}
+		sb.append("\n");
+		return sb.toString();
 	}
 
 }

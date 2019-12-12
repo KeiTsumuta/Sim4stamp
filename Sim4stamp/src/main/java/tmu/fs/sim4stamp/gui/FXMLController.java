@@ -96,6 +96,9 @@ public class FXMLController implements Initializable {
 
 	@FXML
 	private TextField deviationStartIndex;
+	
+	@FXML
+	private TextField deviationConnVal;
 
 	@FXML
 	private ComboBox deviationSelectionByType;
@@ -156,7 +159,7 @@ public class FXMLController implements Initializable {
 		pm.setModelPanel(modelPanel);
 
 		Control[] conditonPanelControls = new Control[]{sceneTitle, itemParamTable, null, simInitSeqSize, null,
-			deviationStartIndex, conditionSetButton, initDataTable};
+			deviationStartIndex, deviationConnVal, conditionSetButton, initDataTable};
 		ConditionPanel conditionPanel = new ConditionPanel(conditonPanelControls);
 		conditionPanel.initialize(url, rb);
 		pm.setConditionPanel(conditionPanel);
@@ -339,24 +342,41 @@ public class FXMLController implements Initializable {
 
 	@FXML
 	public void overtureExecuteAction(ActionEvent event) {
-		try {
-			DeviationMapPanel dm = PanelManager.get().getDeviationMapPanel();
-			CommandLineExecute ce = new CommandLineExecute(dm);
-			ce.start();
-		} catch (Exception ex) {
-			ex.printStackTrace();
+		if (checkExecute()) {
+			try {
+				DeviationMapPanel dm = PanelManager.get().getDeviationMapPanel();
+				CommandLineExecute ce = new CommandLineExecute(dm);
+				ce.start();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
 		}
 	}
 
 	@FXML
 	public void overtureAllExecuteAction(ActionEvent event) {
-		try {
-			DeviationMapPanel dm = PanelManager.get().getDeviationMapPanel();
-			CommandLineExecute ce = new CommandLineExecute(dm);
-			ce.allStart();
-		} catch (Exception ex) {
-			ex.printStackTrace();
+		if (checkExecute()) {
+			try {
+				DeviationMapPanel dm = PanelManager.get().getDeviationMapPanel();
+				CommandLineExecute ce = new CommandLineExecute(dm);
+				ce.allStart();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
 		}
+	}
+
+	public static boolean checkExecute() {
+		String id = SimService.getInstance().getIoParamManager().getCurrentScene().getDeviationConnParamId();
+		if (id == null || id.length() == 0) {
+			Alert alert = new Alert(Alert.AlertType.ERROR, "", ButtonType.OK);
+			alert.setTitle("パラメータ追加");
+			alert.getDialogPane().setHeaderText("実行条件");
+			alert.getDialogPane().setContentText("偏差投入するコネクタが設定されていません。");
+			alert.showAndWait();
+			return false;
+		}
+		return true;
 	}
 
 	@FXML

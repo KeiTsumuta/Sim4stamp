@@ -330,7 +330,7 @@ public class IOValue implements JSONConvert {
 		return underValue.getValue();
 	}
 
-	public void makeAttentions(int startIndex) {
+	public void makeAttentions(int startIndex, int continuous) {
 		switch (ioParam.getType()) {
 			case REAL:
 				if (doubleValues != null) {
@@ -413,16 +413,28 @@ public class IOValue implements JSONConvert {
 				}
 				break;
 		}
+		int cu = 0;
 		for (int i = startIndex; i < size; i++) {
 			if (attentionsUpper[i]) {
-				upperWarning = true;
-				break;
+				cu++;
+				if (cu >= continuous) {
+					upperWarning = true;
+					break;
+				}
+			} else {
+				cu = 0;
 			}
 		}
+		cu = 0;
 		for (int i = startIndex; i < size; i++) {
 			if (attentionsUnder[i]) {
-				underWarning = true;
-				break;
+				cu++;
+				if (cu >= continuous) {
+					underWarning = true;
+					break;
+				}
+			} else {
+				cu = 0;
 			}
 		}
 	}

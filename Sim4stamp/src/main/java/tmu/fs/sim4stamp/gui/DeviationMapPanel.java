@@ -32,11 +32,13 @@ import javafx.event.Event;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Control;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
@@ -148,11 +150,15 @@ public class DeviationMapPanel implements Initializable, VdmRunStatus {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		executeButton.setOnAction((ActionEvent event) -> {
-			executeSim();
+			if (checkExecute()) {
+				executeSim();
+			}
 		});
 		stepExecuteSimButton.setDisable(true);
 		stepExecuteSimButton.setOnAction((ActionEvent event) -> {
-			stepExecute();
+			if (checkExecute()) {
+				stepExecute();
+			}
 		});
 
 		executeStopButton.setOnAction((ActionEvent event) -> {
@@ -211,8 +217,10 @@ public class DeviationMapPanel implements Initializable, VdmRunStatus {
 		});
 
 		executeAllDeviationButton.setOnAction((ActionEvent event) -> {
-			CommandLineExecute ce = new CommandLineExecute(this);
-			ce.allStart();
+			if (checkExecute()) {
+				CommandLineExecute ce = new CommandLineExecute(this);
+				ce.allStart();
+			}
 		});
 	}
 
@@ -223,6 +231,10 @@ public class DeviationMapPanel implements Initializable, VdmRunStatus {
 
 		}
 		return 0;
+	}
+
+	private boolean checkExecute() {
+		return FXMLController.checkExecute();
 	}
 
 	private void executeSim() {

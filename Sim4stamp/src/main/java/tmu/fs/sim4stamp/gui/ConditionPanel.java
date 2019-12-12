@@ -75,14 +75,16 @@ public class ConditionPanel implements Initializable {
 	private final TableView initDataTable; // 初期値設定テーブル
 	private final Button conditionSetButton; // 設定ボタン（条件データ初期値テーブル反映）
 	private final TextField deviationStartIndex; // 偏差投入開始インデックス
+	private final TextField deviationConnVal; // 逸脱発生判定連続数
 
 	public ConditionPanel(Control[] controls) {
 		this.sceneTitle = (TextField) controls[0];
 		this.simItemParamView = (TableView) controls[1];
 		this.simInitSeqSize = (TextField) controls[3];
 		this.deviationStartIndex = (TextField) controls[5];
-		this.conditionSetButton = (Button) controls[6];
-		this.initDataTable = (TableView) controls[7];
+		this.deviationConnVal = (TextField) controls[6];
+		this.conditionSetButton = (Button) controls[7];
+		this.initDataTable = (TableView) controls[8];
 	}
 
 	@Override
@@ -104,6 +106,14 @@ public class ConditionPanel implements Initializable {
 
 		deviationStartIndex.textProperty().set(Integer.toString(ioScene.getDeviationStartIndex()));
 		deviationStartIndex.setTextFormatter(GuiUtil.getIntTextFormater());
+		deviationStartIndex.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+			SimService.getInstance().getIoParamManager().getCurrentScene().setDeviationStartIndex(getInt(newValue));
+		});
+		deviationConnVal.textProperty().set(Integer.toString(ioScene.getDeviContinuous()));
+		deviationConnVal.setTextFormatter(GuiUtil.getIntTextFormater());
+		deviationConnVal.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+			SimService.getInstance().getIoParamManager().getCurrentScene().setDeviContinuous(getInt(newValue));
+		});
 	}
 
 	public void setItemTableView() {
@@ -290,24 +300,26 @@ public class ConditionPanel implements Initializable {
 						IOParam.ValueType type = ei.getType();
 						if (null == type) {
 							column.setCellFactory(TextFieldTableCell.<ObservableList>forTableColumn());
-						} else switch (type) {
-							case F_VAL_LOGIC:
-								String unit = ei.getUnit();
-								LogicalValue lv = LogicalValueManager.getLogicalValue(unit);
-								String[] vals = lv.getValues();
-								column.setCellFactory(
-									ComboBoxTableCell.forTableColumn(
-										vals[0] + "(0)", vals[1] + "(1)", vals[2] + "(2)", vals[3] + "(3)", vals[4] + "(4)", vals[5] + "(5)"));
-								break;
-							case BOOL:
-								column.setCellFactory(ComboBoxTableCell.forTableColumn("true", "false"));
-								break;
-							case INT:
-								column.setCellFactory(TextFieldTableCell.<ObservableList>forTableColumn());
-								break;
-							default:
-								column.setCellFactory(TextFieldTableCell.<ObservableList>forTableColumn());
-								break;
+						} else {
+							switch (type) {
+								case F_VAL_LOGIC:
+									String unit = ei.getUnit();
+									LogicalValue lv = LogicalValueManager.getLogicalValue(unit);
+									String[] vals = lv.getValues();
+									column.setCellFactory(
+										ComboBoxTableCell.forTableColumn(
+											vals[0] + "(0)", vals[1] + "(1)", vals[2] + "(2)", vals[3] + "(3)", vals[4] + "(4)", vals[5] + "(5)"));
+									break;
+								case BOOL:
+									column.setCellFactory(ComboBoxTableCell.forTableColumn("true", "false"));
+									break;
+								case INT:
+									column.setCellFactory(TextFieldTableCell.<ObservableList>forTableColumn());
+									break;
+								default:
+									column.setCellFactory(TextFieldTableCell.<ObservableList>forTableColumn());
+									break;
+							}
 						}
 						column.setOnEditCommit(new EventHandler<CellEditEvent<ObservableList, String>>() {
 							@Override
@@ -320,38 +332,40 @@ public class ConditionPanel implements Initializable {
 								ObservableList<String> list = event.getTableView().getItems().get(row);
 								IOParam.ValueType type = ioValue.getType();
 								String dispVal = "";
-								if (null != type) switch (type) {
-									case REAL:{
-										double[] d = ioScene.getData(idel[0], idel[1]);
-										d[row] = getDouble(event.getNewValue());
-										dispVal = D_FORMAT.format(d[row]);
-										break;
-									}
-									case INT:
-										int[] n = ioScene.getIntData(idel[0], idel[1]);
-										n[row] = getInt(event.getNewValue());
-										dispVal = Integer.toString(n[row]);
-										break;
-									case BOOL:
-										boolean[] b = ioScene.getBoolData(idel[0], idel[1]);
-										b[row] = getBoolean(event.getNewValue());
-										if (b[row]) {
-											dispVal = "true";
-										} else {
-											dispVal = "false";
+								if (null != type) {
+									switch (type) {
+										case REAL: {
+											double[] d = ioScene.getData(idel[0], idel[1]);
+											d[row] = getDouble(event.getNewValue());
+											dispVal = D_FORMAT.format(d[row]);
+											break;
 										}
-										break;
-									case F_VAL_LOGIC:{
-										double[] d = ioScene.getData(idel[0], idel[1]);
-										String val = event.getNewValue();
-										String unit = ioValue.getUnit();
-										d[row] = getParseLogicalValue(val, unit);
-										dispVal = val + "(" + L_FORMAT.format(d[row]) + ")";
-										//dispVal =  L_FORMAT.format(d[row]);
-										break;
+										case INT:
+											int[] n = ioScene.getIntData(idel[0], idel[1]);
+											n[row] = getInt(event.getNewValue());
+											dispVal = Integer.toString(n[row]);
+											break;
+										case BOOL:
+											boolean[] b = ioScene.getBoolData(idel[0], idel[1]);
+											b[row] = getBoolean(event.getNewValue());
+											if (b[row]) {
+												dispVal = "true";
+											} else {
+												dispVal = "false";
+											}
+											break;
+										case F_VAL_LOGIC: {
+											double[] d = ioScene.getData(idel[0], idel[1]);
+											String val = event.getNewValue();
+											String unit = ioValue.getUnit();
+											d[row] = getParseLogicalValue(val, unit);
+											dispVal = val + "(" + L_FORMAT.format(d[row]) + ")";
+											//dispVal =  L_FORMAT.format(d[row]);
+											break;
+										}
+										default:
+											break;
 									}
-									default:
-										break;
 								}
 								list.set(idx, dispVal);
 
@@ -372,6 +386,8 @@ public class ConditionPanel implements Initializable {
 				initDataTable.getColumns().setAll(columnList);
 				int startIndex = getInt(deviationStartIndex.getText());
 				ioScene.setDeviationStartIndex(startIndex);
+				int connVal = getInt(deviationConnVal.getText());
+				ioScene.setDeviContinuous(connVal);
 				int devIdx = Math.max(startIndex - 1, 0);
 				ObservableList<ObservableList> initDataVals = FXCollections.<ObservableList>observableArrayList();
 				int size = getInt(simInitSeqSize.getText());
@@ -393,31 +409,34 @@ public class ConditionPanel implements Initializable {
 							ioScene.initDataSelect(ei.getElementId(), ei.getParamId());
 						}
 						IOParam.ValueType type = ei.getType();
-						if (null != type) switch (type) {
-							case REAL:{
-								double[] d = ioScene.getData(ei.getElementId(), ei.getParamId());
-								rows.add(D_FORMAT.format(d[i]));
-								break;
+						if (null != type) {
+							switch (type) {
+								case REAL: {
+									double[] d = ioScene.getData(ei.getElementId(), ei.getParamId());
+									rows.add(D_FORMAT.format(d[i]));
+									break;
+								}
+								case INT:
+									int[] n = ioScene.getIntData(ei.getElementId(), ei.getParamId());
+									rows.add(Integer.toString(n[i]));
+									break;
+								case BOOL:
+									boolean[] b = ioScene.getBoolData(ei.getElementId(), ei.getParamId());
+									if (b[i]) {
+										rows.add("true");
+									} else {
+										rows.add("false");
+									}
+									break;
+								case F_VAL_LOGIC: {
+									double[] d = ioScene.getData(ei.getElementId(), ei.getParamId());
+									String unitValue = getLogicalValueName(ei.getUnit(), (int) d[i]);
+									rows.add(unitValue + "(" + L_FORMAT.format(d[i]) + ")");
+									break;
+								}
+								default:
+									break;
 							}
-							case INT:
-								int[] n = ioScene.getIntData(ei.getElementId(), ei.getParamId());
-								rows.add(Integer.toString(n[i]));
-								break;
-							case BOOL:
-								boolean[] b = ioScene.getBoolData(ei.getElementId(), ei.getParamId());
-								if (b[i]) {
-									rows.add("true");
-								} else {
-									rows.add("false");
-								}	break;
-							case F_VAL_LOGIC:{
-							    double[] d = ioScene.getData(ei.getElementId(), ei.getParamId());
-							    String unitValue = getLogicalValueName(ei.getUnit(), (int) d[i]);
-							    rows.add(unitValue + "(" + L_FORMAT.format(d[i]) + ")");
-								break;
-							}
-							default:
-								break;
 						}
 					}
 					initDataVals.add(rows);
