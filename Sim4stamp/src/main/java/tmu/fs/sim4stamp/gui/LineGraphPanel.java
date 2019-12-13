@@ -76,7 +76,7 @@ public class LineGraphPanel implements Initializable {
 	private String[] graphLineColors;
 
 	private String title = null;
-	
+
 	private int fillIndex = 0;
 
 	public LineGraphPanel() {
@@ -254,7 +254,7 @@ public class LineGraphPanel implements Initializable {
 
 		gc.setLineWidth(2.0);
 		gc.setLineDashes(5);
-		
+
 		if (upperValue != null && upperValue.isSetting()) {
 			gc.setStroke(UPPER_CONSTRAINT_COLOR);
 			double constraitMax = upperValue.getConstraintValue();
@@ -270,8 +270,12 @@ public class LineGraphPanel implements Initializable {
 			}
 			double y = INSET_TOP + graphHeight * (1 - (constraitMax + xm) / yConv);
 			gc.strokeLine(W_AX_LEFT, y, wMax - INSET_RIGHT, y);
+			// 凡例表示
+			y = INSET_TOP / 2.0;
+			gc.strokeLine(wMax - INSET_RIGHT - 240, y, wMax - INSET_RIGHT - 200, y);
+			gc.fillText("上限制約値", wMax - INSET_RIGHT - 198, y + fontHeight / 3.0);
 		}
-		
+
 		if (underValue != null && underValue.isSetting()) {
 			gc.setStroke(UNDER_CONSTRAINT_COLOR);
 			double constraitMin = underValue.getConstraintValue();
@@ -287,6 +291,10 @@ public class LineGraphPanel implements Initializable {
 			}
 			double y = INSET_TOP + graphHeight * (1 - (constraitMin + xm) / yConv);
 			gc.strokeLine(W_AX_LEFT, y, wMax - INSET_RIGHT, y);
+			// 凡例表示
+			y = INSET_TOP / 2.0;
+			gc.strokeLine(wMax - INSET_RIGHT - 120, y, wMax - INSET_RIGHT - 80, y);
+			gc.fillText("下限制約値", wMax - INSET_RIGHT - 78, y + fontHeight / 3.0);
 		}
 		gc.setLineDashes(0);
 
@@ -355,10 +363,10 @@ public class LineGraphPanel implements Initializable {
 					for (int i = 0; i < x_count - 1; i++) {
 						xarr.add(W_AX_LEFT + graphWidth / x_count * (i + 1));
 						double val = d[i];
-						if(val != 0.0){
-							if(val > 5.0){
+						if (val != 0.0) {
+							if (val > 5.0) {
 								val = 5.0;
-							}else if(val < 1.0){
+							} else if (val < 1.0) {
 								val = 1.0;
 							}
 						}
@@ -453,10 +461,10 @@ public class LineGraphPanel implements Initializable {
 	public List<GraphData> getGraphDataList() {
 		return graphDataList;
 	}
-	
+
 	public void selectDisplayData(int index, boolean select) {
-		if(graphDataList.size() > index){
-		    GraphData gData = graphDataList.get(index);
+		if (graphDataList.size() > index) {
+			GraphData gData = graphDataList.get(index);
 			gData.setDisabled(!select);
 		}
 	}
