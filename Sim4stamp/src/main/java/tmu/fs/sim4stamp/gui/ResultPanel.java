@@ -388,7 +388,7 @@ public class ResultPanel implements Initializable {
 			graph.addData(null, data);
 			// グラフタイトル描画
 			IOValue iov = ios.getIOData(parentId, id);
-			int deviationStart = ios.getDeviationStartIndex() + 1;
+			int deviationStart = ios.getDeviationStartIndex();
 			int continuous = ios.getDeviContinuous();
 			iov.makeAttentions(deviationStart, continuous);
 			boolean isWarn = iov.isUpperWarning() | iov.isUnderWarning();

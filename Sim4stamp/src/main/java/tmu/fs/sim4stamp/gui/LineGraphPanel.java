@@ -375,6 +375,9 @@ public class LineGraphPanel implements Initializable {
 					break;
 			}
 			int xsize = xarr.size();
+			if (xsize == 0) {
+				continue;
+			}
 			if (k == fillIndex) {
 				double[] xas0 = new double[xsize + 2];
 				double[] yas0 = new double[xsize + 2];
