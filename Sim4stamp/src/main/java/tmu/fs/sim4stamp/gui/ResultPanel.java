@@ -125,11 +125,13 @@ public class ResultPanel implements Initializable {
 
 		// グラフの割り付け
 		resultGraphGrid.getChildren().clear();
+		int count = 0;
 		for (int i = 0; i < graphSize; i++) {
 			if (displaySelects[i]) {
 				BorderPane bp = new BorderPane();
 				bp.setCenter(linePanels[i].getCanvas());
-				resultGraphGrid.add(bp, i % gridColumnSize, i / gridColumnSize);
+				resultGraphGrid.add(bp, count % gridColumnSize, count / gridColumnSize);
+				count++;
 			}
 		}
 	}
@@ -297,10 +299,10 @@ public class ResultPanel implements Initializable {
 				double chartWidth = CHART_INIT_WIDTH * SimService.getInstance().getResultGraphWidth();
 				int count = 0;
 				for (int i = 0; i < graphSize; i++) {
+					LineGraphPanel gpanel = linePanels[i];
+					gpanel.setChartSize(chartWidth, CHART_INIT_HEIGHT);
 					if (displaySelects[i]) {
 						BorderPane bp = new BorderPane();
-						LineGraphPanel gpanel = linePanels[i];
-						gpanel.setChartSize(chartWidth, CHART_INIT_HEIGHT);
 						bp.setCenter(gpanel.getCanvas());
 						resultGraphGrid.add(bp, count % gridColumnSize, count / gridColumnSize);
 						count++;

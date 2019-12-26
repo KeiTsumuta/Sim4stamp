@@ -255,7 +255,9 @@ public class LineGraphPanel implements Initializable {
 		gc.setLineWidth(2.0);
 		gc.setLineDashes(5);
 
+		boolean upFlag = false;
 		if (upperValue != null && upperValue.isSetting()) {
+			upFlag = true;
 			gc.setStroke(UPPER_CONSTRAINT_COLOR);
 			double constraitMax = upperValue.getConstraintValue();
 			if (null != ghType) {
@@ -272,8 +274,8 @@ public class LineGraphPanel implements Initializable {
 			gc.strokeLine(W_AX_LEFT, y, wMax - INSET_RIGHT, y);
 			// 凡例表示
 			y = INSET_TOP / 2.0;
-			gc.strokeLine(wMax - INSET_RIGHT - 240, y, wMax - INSET_RIGHT - 200, y);
-			gc.fillText("上限制約値", wMax - INSET_RIGHT - 198, y + fontHeight / 3.0);
+			gc.strokeLine(wMax - INSET_RIGHT - 100, y, wMax - INSET_RIGHT - 70, y);
+			gc.fillText("上限制約値", wMax - INSET_RIGHT - 68, y + fontHeight / 3.0);
 		}
 
 		if (underValue != null && underValue.isSetting()) {
@@ -293,8 +295,10 @@ public class LineGraphPanel implements Initializable {
 			gc.strokeLine(W_AX_LEFT, y, wMax - INSET_RIGHT, y);
 			// 凡例表示
 			y = INSET_TOP / 2.0;
-			gc.strokeLine(wMax - INSET_RIGHT - 120, y, wMax - INSET_RIGHT - 80, y);
-			gc.fillText("下限制約値", wMax - INSET_RIGHT - 78, y + fontHeight / 3.0);
+			int wc = 0;
+			if(upFlag) wc = 105;
+			gc.strokeLine(wMax - INSET_RIGHT - 100 - wc, y, wMax - INSET_RIGHT - 70 - wc, y);
+			gc.fillText("下限制約値", wMax - INSET_RIGHT - 68 - wc, y + fontHeight / 3.0);
 		}
 		gc.setLineDashes(0);
 
