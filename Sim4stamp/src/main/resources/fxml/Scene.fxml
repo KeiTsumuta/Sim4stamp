@@ -67,6 +67,7 @@
                                 </Menu>
                                 <Menu mnemonicParsing="false" text="ヘルプ">
                                     <items>
+                                        <MenuItem mnemonicParsing="false" onAction="#lvValuesPanelAction" text="5値論理一覧" />
                                         <MenuItem mnemonicParsing="false" onAction="#aboutAction" text="About" />
                                     </items>
                                 </Menu>

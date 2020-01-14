@@ -48,7 +48,7 @@ import tmu.fs.sim4stamp.model.iop.IOScene;
 /**
  * グラフ表示ダイアログ
  *
- * @author keiichi
+ * @author Keiichi Tsumuta
  */
 public class GraphDisplayDialog implements Initializable {
 

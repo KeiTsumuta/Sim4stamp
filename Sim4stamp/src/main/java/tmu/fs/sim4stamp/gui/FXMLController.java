@@ -96,7 +96,7 @@ public class FXMLController implements Initializable {
 
 	@FXML
 	private TextField deviationStartIndex;
-	
+
 	@FXML
 	private TextField deviationConnVal;
 
@@ -377,6 +377,16 @@ public class FXMLController implements Initializable {
 			return false;
 		}
 		return true;
+	}
+
+	@FXML
+	public void lvValuesPanelAction(ActionEvent event) {
+		LogicalValueListDialog lv = new LogicalValueListDialog();
+		try {
+			lv.show(event);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 
 	@FXML
