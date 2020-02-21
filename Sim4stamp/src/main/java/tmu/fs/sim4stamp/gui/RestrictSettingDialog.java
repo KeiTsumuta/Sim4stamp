@@ -188,7 +188,7 @@ public class RestrictSettingDialog implements Initializable {
 
 		if (type == IOParam.ValueType.F_VAL_LOGIC) {
 			String unitId = elementItem.getIOParam().getUnit();
-			LogicalValue lv = SimService.getInstance().getLogicalValueManager().getLogicalValue(unitId);
+			LogicalValue lv = LogicalValueManager.getLogicalValue(unitId);
 			IOValue ioValue = elementItem.getIOValue();
 			SafetyConstraintValue scUnder = ioValue.getSafetyConstraintUnder();
 			double dUnder = scUnder.getDoubleValue();

@@ -27,7 +27,6 @@ public class LogicalValue {
     private String unitId;
     private String[] values;
     private int logicValue;
-	private String type;
 
     public LogicalValue(String vid) {
         this.unitId = vid;
@@ -84,20 +83,6 @@ public class LogicalValue {
         }
         return Integer.toString(logicValue);
     }
-
-	/**
-	 * @return the type
-	 */
-	public String getType() {
-		return type;
-	}
-
-	/**
-	 * @param type the type to set
-	 */
-	public void setType(String type) {
-		this.type = type;
-	}
 
     @Override
     public String toString() {

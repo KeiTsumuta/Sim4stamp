@@ -133,7 +133,7 @@ public class ElementParamsDialog implements Initializable {
 
 	private void makeUnitList() {
 		unitList = FXCollections.observableArrayList();
-		List<String> units = SimService.getInstance().getLogicalValueManager().getUnitList();
+		List<String> units = LogicalValueManager.getUnitList();
 		for (String unit : units) {
 			unitList.add(unit);
 		}

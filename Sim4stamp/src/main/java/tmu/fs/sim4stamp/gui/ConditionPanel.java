@@ -304,7 +304,7 @@ public class ConditionPanel implements Initializable {
 							switch (type) {
 								case F_VAL_LOGIC:
 									String unit = ei.getUnit();
-									LogicalValue lv = SimService.getInstance().getLogicalValueManager().getLogicalValue(unit);
+									LogicalValue lv = LogicalValueManager.getLogicalValue(unit);
 									String[] vals = lv.getValues();
 									column.setCellFactory(
 										ComboBoxTableCell.forTableColumn(
@@ -526,7 +526,7 @@ public class ConditionPanel implements Initializable {
 	}
 
 	private double getParseLogicalValue(String value, String unit) {
-		LogicalValue lv = SimService.getInstance().getLogicalValueManager().getLogicalValue(unit);
+		LogicalValue lv = LogicalValueManager.getLogicalValue(unit);
 		String[] vals = lv.getValues();
 		for (int i = 0; i <= 5; i++) {
 			if (value.startsWith(vals[i])) {
@@ -537,7 +537,7 @@ public class ConditionPanel implements Initializable {
 	}
 
 	private static String getLogicalValueName(String unitId, int value) {
-		LogicalValue lv = SimService.getInstance().getLogicalValueManager().getLogicalValue(unitId);
+		LogicalValue lv = LogicalValueManager.getLogicalValue(unitId);
 		if (value >= 0 && value <= 5) {
 			return lv.getValues()[value];
 		}

@@ -90,7 +90,7 @@ public class MakeResultTable {
 							break;
 						case F_VAL_LOGIC:
 							String unitId = iop.getUnit();
-							LogicalValue lv = SimService.getInstance().getLogicalValueManager().getLogicalValue(unitId);
+							LogicalValue lv = LogicalValueManager.getLogicalValue(unitId);
 							String[] licalVals = lv.getValues();
 							double[] dlData = ioScene.getData(elemId, iop.getId());
 							for (int i = 0; i < dlData.length; i++) {

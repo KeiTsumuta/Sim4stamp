@@ -269,7 +269,7 @@ public class VdmCodeMaker extends ResourceFileIO {
 		StringBuilder sb = new StringBuilder();
 		sb.append("\t");
 		String unitId = iop.getUnit();
-		LogicalValue lv = SimService.getInstance().getLogicalValueManager().getLogicalValue(unitId);
+		LogicalValue lv = LogicalValueManager.getLogicalValue(unitId);
 		String[] units = lv.getValues();
 		for (int i = 0; i < units.length; i++) {
 			sb.append(id).append("_").append(units[i]).append("=");
