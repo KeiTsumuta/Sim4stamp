@@ -57,6 +57,8 @@
                                         <MenuItem mnemonicParsing="false" onAction="#initSecondResultAction" text="結果クリア（2回目以降）" />
                                         <SeparatorMenuItem mnemonicParsing="false" />
                                         <MenuItem mnemonicParsing="false" onAction="#vdmppCreateAction" text="VDM++生成" />
+                                        <SeparatorMenuItem mnemonicParsing="false" />
+                                        <MenuItem mnemonicParsing="false" onAction="#lvValuesPanelAction" text="5値論理一覧" />
                                     </items>
                                 </Menu>
                                 <Menu mnemonicParsing="false" text="実行">
@@ -67,7 +69,6 @@
                                 </Menu>
                                 <Menu mnemonicParsing="false" text="ヘルプ">
                                     <items>
-                                        <MenuItem mnemonicParsing="false" onAction="#lvValuesPanelAction" text="5値論理一覧" />
                                         <MenuItem mnemonicParsing="false" onAction="#aboutAction" text="About" />
                                     </items>
                                 </Menu>
@@ -146,8 +147,8 @@
                                                         <TextField fx:id="simInitSeqSize" alignment="CENTER_RIGHT" layoutX="85.0" layoutY="63.0" prefHeight="25.0" prefWidth="69.0" />
                                                         <Label layoutX="33.0" layoutY="105.0" text="投入開始位置" />
                                                         <TextField fx:id="deviationStartIndex" alignment="CENTER_RIGHT" layoutX="118.0" layoutY="101.0" prefHeight="25.0" prefWidth="58.0" />
-                                          <Label layoutX="33.0" layoutY="148.0" text="逸脱発生判定連続数" />
-                                          <TextField fx:id="deviationConnVal" alignment="CENTER_RIGHT" layoutX="156.0" layoutY="144.0" prefHeight="25.0" prefWidth="41.0" />
+                                                        <Label layoutX="33.0" layoutY="148.0" text="逸脱発生判定連続数" />
+                                                        <TextField fx:id="deviationConnVal" alignment="CENTER_RIGHT" layoutX="156.0" layoutY="144.0" prefHeight="25.0" prefWidth="41.0" />
 
                                                         <Label layoutX="26.0" layoutY="193.0" text="構成要素パラメータ" />
                                                         <TableView fx:id="itemParamTable" layoutX="28.0" layoutY="222.0" prefHeight="362.0" prefWidth="481.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="28.0" AnchorPane.topAnchor="222.0">

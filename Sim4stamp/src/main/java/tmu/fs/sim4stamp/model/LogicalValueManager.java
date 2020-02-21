@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import tmu.fs.sim4stamp.SimService;
 import tmu.fs.sim4stamp.model.lv.LogicalValue;
 import tmu.fs.sim4stamp.util.ResourceFileIO;
 
@@ -33,50 +34,97 @@ import tmu.fs.sim4stamp.util.ResourceFileIO;
  */
 public class LogicalValueManager extends ResourceFileIO implements java.io.Serializable {
 
-    private static final String LV_INI = "/lv/logicalValues.json";
+	private static final String LV_INI = SimService.LV_INI;
 
-    private static Map<String, LogicalValue> lvMap;
-    private static List<String> units;
+	private String rev = "";
+	private Map<String, LogicalValue> lvMap;
+	private List<String> units;
 
-    public LogicalValueManager() {
-        init();
-    }
+	public LogicalValueManager() {
+		init();
+	}
 
-    public void init() {
-        units = new ArrayList<>();
-        lvMap = new HashMap<>();
-    }
+	public void init() {
+		rev = "";
+		units = new ArrayList<>();
+		lvMap = new HashMap<>();
+	}
 
-    public void readInitFile() {
-        String json = getResource(LV_INI);
-        JSONObject job = new JSONObject(json);
-        JSONArray jarr = job.getJSONArray("logiacalValues");
-        for (int i = 0; i < jarr.length(); i++) {
-            JSONObject jo = jarr.getJSONObject(i);
-            String vid = jo.optString("unit");
-            JSONArray ar = jo.getJSONArray("value");
-            LogicalValue lv = new LogicalValue(vid);
-            String[] vals = new String[6];
-            for (int k = 0; k < ar.length(); k++) {
-                vals[k] = ar.getString(k);
-            }
-            lv.setValues(vals);
-            units.add(vid);
-            lvMap.put(vid, lv);
-            //System.out.println(lv.toString());
-        }
-    }
+	public void readInitFile() {
+		String json = getResource(LV_INI);
+		JSONObject job = new JSONObject(json);
+		readJson(job);
+	}
 
-    public static List<String> getUnitList() {
-        return units;
-    }
+	public void readJson(JSONObject job) {
+		rev = job.optString("lvRev");
+		JSONArray jarr = job.getJSONArray("logiacalValues");
+		for (int i = 0; i < jarr.length(); i++) {
+			JSONObject jo = jarr.getJSONObject(i);
+			String vid = jo.optString("unit");
+			String type = jo.optString("type");
+			JSONArray ar = jo.getJSONArray("value");
+			LogicalValue lv = new LogicalValue(vid);
+			lv.setType(type);
+			String[] vals = new String[6];
+			for (int k = 0; k < ar.length(); k++) {
+				vals[k] = ar.getString(k);
+			}
+			lv.setValues(vals);
+			units.add(vid);
+			lvMap.put(vid, lv);
+			//System.out.println(lv.toString());
+		}
+	}
 
-    public static LogicalValue getLogicalValue(String unitId) {
-        LogicalValue lv = lvMap.get(unitId);
-        if (lv == null && units.size() > 0) {
-            // 該当単位が未登録の場合、デフォルト単位を返す
-            lv = lvMap.get(units.get(0));
-        }
-        return lv;
-    }
+	public JSONObject getJSON() {
+		JSONObject job = new JSONObject();
+		job.accumulate("lvRev", rev);
+		for (String unit : units) {
+			JSONObject ju = new JSONObject();
+			ju.accumulate("unit", unit);
+			LogicalValue lv = lvMap.get(unit);
+			String[] values = lv.getValues();
+			for (int i = 0; i < values.length; i++) {
+				ju.accumulate("value", values[i]);
+			}
+			String type = lv.getType();
+			ju.accumulate("type", type);
+			job.accumulate("logiacalValues", ju);
+		}
+		return job;
+	}
+
+	public List<String> getUnitList() {
+		return units;
+	}
+
+	public LogicalValue getLogicalValue(String unitId) {
+		LogicalValue lv = lvMap.get(unitId);
+		if (lv == null && units.size() > 0) {
+			// 該当単位が未登録の場合、デフォルト単位を返す
+			lv = lvMap.get(units.get(0));
+		}
+		return lv;
+	}
+
+	public boolean isExsist(String unitId) {
+		LogicalValue lv = lvMap.get(unitId);
+		if (lv != null) {
+			return true;
+		}
+		return false;
+	}
+
+	public void addLogicalValue(String unitId, LogicalValue lv) {
+		LogicalValue mlv = lvMap.get(unitId);
+		if (mlv == null) { // Updateはしない！
+			units.add(unitId);
+			lvMap.put(unitId, lv);
+		}
+	}
+
+	public void setRev(String rev) {
+		this.rev = rev;
+	}
 }

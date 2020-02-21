@@ -49,7 +49,7 @@ public class MainApp extends Application {
 		simService.setStage(stage);
 		simService.readInfoFile();
 		simService.readProjectFile(simService.getCurrentProjectId());
-		simService.getLogicalValueManager().readInitFile();
+		//simService.getLogicalValueManager().readInitFile();
 
 		Parent root = FXMLLoader.load(getClass().getResource("/fxml/Scene.fxml"));
 		Scene scene = new Scene(root);

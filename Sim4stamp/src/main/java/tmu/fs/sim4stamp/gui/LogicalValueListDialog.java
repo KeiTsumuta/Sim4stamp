@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -93,15 +94,20 @@ public class LogicalValueListDialog implements Initializable {
 		v4Column.setCellValueFactory(new PropertyValueFactory<LvValue, String>("v4"));
 		v5Column.setCellValueFactory(new PropertyValueFactory<LvValue, String>("v5"));
 
-		List<String> units = LogicalValueManager.getUnitList();
+		makeList();
+	}
+
+	private void makeList() {
+		lvList.getItems().clear();
+		LogicalValueManager lm = SimService.getInstance().getLogicalValueManager();
+		List<String> units = lm.getUnitList();
 		for (int i = 0; i < units.size(); i++) {
 			String unitId = units.get(i);
-			LogicalValue lov = LogicalValueManager.getLogicalValue(unitId);
+			LogicalValue lov = lm.getLogicalValue(unitId);
 			String[] nv = lov.getValues();
 			LvValue lv = new LvValue(i + 1, unitId, nv[0], nv[1], nv[2], nv[3], nv[4], nv[5]);
 			lvList.getItems().add(lv);
 		}
-
 	}
 
 	public void show(ActionEvent event) throws IOException {
@@ -120,6 +126,32 @@ public class LogicalValueListDialog implements Initializable {
 	@FXML
 	public void hideAction(ActionEvent event) {
 		((Node) event.getSource()).getScene().getWindow().hide();
+	}
+
+	@FXML
+	public void addUnitAction(ActionEvent event) {
+		LogicalValueSettingDialog lvSet = new LogicalValueSettingDialog();
+		lvSet.setUpdatePanel(this);
+		try {
+			lvSet.show(event);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+
+	public void updateData() {
+		Platform.runLater(() -> {
+			try {
+				makeList();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		});
+	}
+
+	@FXML
+	public void deleteUnitAction(ActionEvent event) {
+
 	}
 
 	public class LvValue {
