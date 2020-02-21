@@ -49,6 +49,7 @@ public class SimService extends ResourceFileIO implements java.io.Serializable {
 	private static final int SERVER_PORT = 8001;
 
 	private static final String SIMINFO_INI = "/info/siminfo.json";
+	public static final String LV_INI = "/lv/logicalValues.json";
 	public static final String SP = System.getProperty("file.separator");
 	public static final String PAS = System.getProperty("path.separator");
 	public static final String INFO_DIR_NAME = SP + ".stamp";
@@ -66,6 +67,7 @@ public class SimService extends ResourceFileIO implements java.io.Serializable {
 	private ElementManager elementManager;
 	private ConnectorManager connectorManager;
 	private IOParamManager ioParamManager;
+	private LogicalValueManager logicalValueManagerIni;
 	private LogicalValueManager logicalValueManager;
 
 	private SimServer simServer;
@@ -76,6 +78,7 @@ public class SimService extends ResourceFileIO implements java.io.Serializable {
 		elementManager = new ElementManager();
 		connectorManager = new ConnectorManager();
 		ioParamManager = new IOParamManager(elementManager, connectorManager);
+		logicalValueManagerIni = new LogicalValueManager();
 		logicalValueManager = new LogicalValueManager();
 		try {
 			simServer = new SimServer(SERVER_PORT);
@@ -104,17 +107,18 @@ public class SimService extends ResourceFileIO implements java.io.Serializable {
 				String iop = getResource(SIMINFO_INI);
 				writeFile(System.getProperty("user.home") + INFO_FILE_NAME, iop.getBytes("UTF-8"));
 			}
-			parseSimInfo(readJsonFile(f));
+			JSONObject jObj = readJsonFile(f);
+			if (jObj != null) {
+				parseSimInfo(jObj);
+				parseLogicalValues(jObj);
+			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
 
 	private void parseSimInfo(JSONObject jObj) {
-		if (jObj == null) {
-			return;
-		}
-		// System.out.println("--- parseSimInfo");
+		//System.out.println("--- parseSimInfo:\n" + jObj.toString(3));
 		JSONObject sj = jObj.getJSONObject("siminfos");
 		JSONObject overture = sj.getJSONObject("overture");
 		paramMap.put("overture.home", overture.getString("home"));
@@ -161,6 +165,30 @@ public class SimService extends ResourceFileIO implements java.io.Serializable {
 			}
 		}
 		Collections.sort(projectList);
+	}
+
+	// ５値論理値単位の取り出し
+	private void parseLogicalValues(JSONObject jObj) {
+		logicalValueManagerIni.readInitFile();
+		JSONObject jObjIni = logicalValueManagerIni.getJSON();
+		String revIni = jObjIni.optString("lvRev");
+		JSONObject gj = jObj.optJSONObject("logicalValueUnits");
+		if (gj == null) { // ５値論理未登録(インストール後機能の初回)
+			logicalValueManager.readJson(jObjIni);
+			writeInfoFile();
+		} else {
+			logicalValueManager.readJson(jObj.optJSONObject("logicalValueUnits"));
+		}
+		JSONObject jCuObj = logicalValueManager.getJSON();
+		String rev = jCuObj.optString("lvRev");
+		if (!revIni.equals(rev)) { // ５値論理単位（基本）の単位追加あり
+			List<String> units = logicalValueManagerIni.getUnitList();
+			for (String unit : units) {
+				logicalValueManager.addLogicalValue(unit, logicalValueManagerIni.getLogicalValue(unit));
+			}
+			logicalValueManager.setRev(revIni);
+			writeInfoFile();
+		}
 	}
 
 	/**
@@ -210,6 +238,9 @@ public class SimService extends ResourceFileIO implements java.io.Serializable {
 
 		JSONObject mobj = new JSONObject();
 		mobj.accumulate("siminfos", jobj);
+
+		JSONObject lvUnits = logicalValueManager.getJSON();
+		mobj.accumulate("logicalValueUnits", lvUnits);
 		return mobj;
 	}
 
@@ -245,7 +276,7 @@ public class SimService extends ResourceFileIO implements java.io.Serializable {
 
 	private JSONObject readJsonFile(File jsonFile) {
 		JSONObject jobj = null;
-		try ( FileInputStream in = new FileInputStream(jsonFile);) {
+		try (FileInputStream in = new FileInputStream(jsonFile);) {
 			int size = (int) jsonFile.length();
 			if (size < JSON_SIZE_MAX) {
 				byte[] buf = new byte[size];
@@ -286,7 +317,7 @@ public class SimService extends ResourceFileIO implements java.io.Serializable {
 	private void writeInfos(File f, String contents) {
 		File dir = new File(System.getProperty("user.home") + INFO_DIR_NAME);
 		dir.mkdir();
-		try ( FileOutputStream fo = new FileOutputStream(f);  BufferedOutputStream out = new BufferedOutputStream(fo);) {
+		try (FileOutputStream fo = new FileOutputStream(f); BufferedOutputStream out = new BufferedOutputStream(fo);) {
 			out.write(contents.getBytes("UTF-8"));
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -441,7 +472,7 @@ public class SimService extends ResourceFileIO implements java.io.Serializable {
 	}
 
 	public void saveProjectParams(File jfile, boolean init) {
-		try ( FileOutputStream fo = new FileOutputStream(jfile);  BufferedOutputStream out = new BufferedOutputStream(fo);) {
+		try (FileOutputStream fo = new FileOutputStream(jfile); BufferedOutputStream out = new BufferedOutputStream(fo);) {
 			out.write(toObjJson(init).getBytes("UTF-8"));
 			setChanged(false);
 		} catch (Exception ex) {

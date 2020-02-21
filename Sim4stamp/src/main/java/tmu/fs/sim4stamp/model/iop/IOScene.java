@@ -642,7 +642,7 @@ public class IOScene implements JSONConvert {
 						gd.setLogicalValueData(iv.getDoubleValues());
 						String unit = iv.getUnit();
 						gd.setUnit(unit);
-						LogicalValue lv = LogicalValueManager.getLogicalValue(unit);
+						LogicalValue lv = SimService.getInstance().getLogicalValueManager().getLogicalValue(unit);
 						gd.setUnitValues(lv.getValues());
 						break;
 					default:
