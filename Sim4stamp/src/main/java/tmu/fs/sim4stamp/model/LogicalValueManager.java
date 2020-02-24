@@ -127,4 +127,14 @@ public class LogicalValueManager extends ResourceFileIO implements java.io.Seria
 	public void setRev(String rev) {
 		this.rev = rev;
 	}
+
+	public void deleteLogicalValue(String unitId) {
+		try {
+			System.out.println("delete : " + unitId);
+			lvMap.remove(unitId);
+			units.remove(unitId);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 }

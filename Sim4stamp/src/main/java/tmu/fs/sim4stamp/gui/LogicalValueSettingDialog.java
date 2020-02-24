@@ -37,7 +37,7 @@ import tmu.fs.sim4stamp.model.LogicalValueManager;
 import tmu.fs.sim4stamp.model.lv.LogicalValue;
 
 /**
- * 5値論理値新規追加ダイアログ
+ * 5値論理値新規追加/編集ダイアログ
  *
  * @author Keiichi Tsumuta
  */
@@ -66,10 +66,16 @@ public class LogicalValueSettingDialog implements Initializable {
 
 	private Stage stage;
 
+	private static LogicalValue logicalValue = null;
+
 	private static LogicalValueListDialog logicalValueListDialog;
 
 	public LogicalValueSettingDialog() {
 
+	}
+
+	public void setEdit(LogicalValue lov) {
+		logicalValue = lov;
 	}
 
 	public void setUpdatePanel(LogicalValueListDialog logicalValueListDialog) {
@@ -82,13 +88,26 @@ public class LogicalValueSettingDialog implements Initializable {
 	}
 
 	private void initFields() {
-		unitname.setText("");
-		value0.setText("");
-		value1.setText("");
-		value2.setText("");
-		value3.setText("");
-		value4.setText("");
-		value5.setText("");
+		if (logicalValue == null) {
+			unitname.setText("");
+			unitname.setEditable(true);
+			value0.setText("不明");
+			value1.setText("");
+			value2.setText("");
+			value3.setText("");
+			value4.setText("");
+			value5.setText("");
+		} else {
+			unitname.setText(logicalValue.getUnitId());
+			unitname.setEditable(false);
+			String[] vals = logicalValue.getValues();
+			value0.setText(vals[0]);
+			value1.setText(vals[1]);
+			value2.setText(vals[2]);
+			value3.setText(vals[3]);
+			value4.setText(vals[4]);
+			value5.setText(vals[5]);
+		}
 	}
 
 	public void show(ActionEvent event) throws IOException {
@@ -116,7 +135,7 @@ public class LogicalValueSettingDialog implements Initializable {
 		}
 		LogicalValueManager lm = SimService.getInstance().getLogicalValueManager();
 		LogicalValue clv = lm.getLogicalValue(unit);
-		if (lm.isExsist(unit)) { // すでに登録済み
+		if (logicalValue == null && lm.isExsist(unit)) { // 追加モード & すでに登録済み
 			showAlert("「" + unit + "」はすでに登録済みの単位です。");
 			return;
 		}
@@ -130,10 +149,15 @@ public class LogicalValueSettingDialog implements Initializable {
 			showAlert("値の入力はすべて必須です。");
 			return;
 		}
-		LogicalValue lv = new LogicalValue(unit);
-		lv.setValues(vals);
-		lv.setType("1");
-		lm.addLogicalValue(unit, lv);
+		if (logicalValue == null) { // Add
+			LogicalValue lv = new LogicalValue(unit);
+			lv.setValues(vals);
+			lv.setType("2");
+			lm.addLogicalValue(unit, lv);
+		} else { // Edit
+			LogicalValue elv = lm.getLogicalValue(unit);
+			elv.setValues(vals);
+		}
 		logicalValueListDialog.updateData();
 		SimService.getInstance().writeInfoFile();
 		((Node) event.getSource()).getScene().getWindow().hide();

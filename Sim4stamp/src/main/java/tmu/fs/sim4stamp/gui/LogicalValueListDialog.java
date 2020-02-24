@@ -20,6 +20,7 @@ package tmu.fs.sim4stamp.gui;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
@@ -33,8 +34,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -94,6 +99,20 @@ public class LogicalValueListDialog implements Initializable {
 		v4Column.setCellValueFactory(new PropertyValueFactory<LvValue, String>("v4"));
 		v5Column.setCellValueFactory(new PropertyValueFactory<LvValue, String>("v5"));
 
+		lvList.setRowFactory(tv -> new TableRow<LvValue>() {
+			@Override
+			protected void updateItem(LvValue item, boolean empty) {
+				super.updateItem(item, empty);
+				if (item == null || item.type == null) {
+					setStyle("");
+				} else if (!item.type.equals("0")) {
+					setStyle("-fx-background-color: #baffba;");
+				} else {
+					setStyle("");
+				}
+			}
+		});
+
 		makeList();
 	}
 
@@ -105,7 +124,8 @@ public class LogicalValueListDialog implements Initializable {
 			String unitId = units.get(i);
 			LogicalValue lov = lm.getLogicalValue(unitId);
 			String[] nv = lov.getValues();
-			LvValue lv = new LvValue(i + 1, unitId, nv[0], nv[1], nv[2], nv[3], nv[4], nv[5]);
+			String type = lov.getType();
+			LvValue lv = new LvValue(i + 1, unitId, type, nv[0], nv[1], nv[2], nv[3], nv[4], nv[5]);
 			lvList.getItems().add(lv);
 		}
 	}
@@ -132,8 +152,64 @@ public class LogicalValueListDialog implements Initializable {
 	public void addUnitAction(ActionEvent event) {
 		LogicalValueSettingDialog lvSet = new LogicalValueSettingDialog();
 		lvSet.setUpdatePanel(this);
+		lvSet.setEdit(null);
 		try {
 			lvSet.show(event);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+
+	@FXML
+	public void editUnitAction(ActionEvent event) {
+		TableViewSelectionModel<LvValue> sm = lvList.getSelectionModel();
+		int selectIndex = sm.getSelectedIndex();
+		if (selectIndex < 0) {
+			return;
+		}
+		try {
+			LogicalValueManager lm = SimService.getInstance().getLogicalValueManager();
+			List<String> units = lm.getUnitList();
+			String selUnit = units.get(selectIndex);
+			LogicalValue lov = lm.getLogicalValue(selUnit);
+			String type = lov.getType();
+			if (type.equals("0")) {
+				showAlert(Alert.AlertType.ERROR, "システムより供給されている単位は変更できません。");
+				return;
+			}
+			LogicalValueSettingDialog lvSet = new LogicalValueSettingDialog();
+			lvSet.setUpdatePanel(this);
+			lvSet.setEdit(lov);
+			lvSet.show(event);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+	}
+
+	@FXML
+	public void deleteUnitAction(ActionEvent event) {
+		TableViewSelectionModel<LvValue> sm = lvList.getSelectionModel();
+		int selectIndex = sm.getSelectedIndex();
+		if (selectIndex < 0) {
+			return;
+		}
+		try {
+			LogicalValueManager lm = SimService.getInstance().getLogicalValueManager();
+			List<String> units = lm.getUnitList();
+			String selUnit = units.get(selectIndex);
+			LogicalValue lov = lm.getLogicalValue(selUnit);
+			String type = lov.getType();
+			if (type.equals("0")) {
+				showAlert(Alert.AlertType.ERROR, "システムより供給されている単位は削除できません。");
+				return;
+			}
+			Optional<ButtonType> result = showAlert(Alert.AlertType.CONFIRMATION, "「" + selUnit + "」を削除しますか？");
+			if (result.get() == ButtonType.OK) {
+				lm.deleteLogicalValue(selUnit);
+				updateData();
+				SimService.getInstance().writeInfoFile();
+			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -149,9 +225,12 @@ public class LogicalValueListDialog implements Initializable {
 		});
 	}
 
-	@FXML
-	public void deleteUnitAction(ActionEvent event) {
-
+	private Optional<ButtonType> showAlert(Alert.AlertType atype, String msg) {
+		Alert alert = new Alert(atype);
+		alert.setTitle("sim4stamp");
+		alert.setHeaderText("sim4stamp : 入力エラー");
+		alert.setContentText(msg);
+		return alert.showAndWait();
 	}
 
 	public class LvValue {
@@ -164,10 +243,12 @@ public class LogicalValueListDialog implements Initializable {
 		private final StringProperty v3;
 		private final StringProperty v4;
 		private final StringProperty v5;
+		private final String type;
 
-		public LvValue(int numId, String unitName, String nv0, String nv1, String nv2, String nv3, String nv4, String nv5) {
+		public LvValue(int numId, String unitName, String type, String nv0, String nv1, String nv2, String nv3, String nv4, String nv5) {
 			number = new SimpleIntegerProperty(numId);
 			unit = new SimpleStringProperty(unitName);
+			this.type = type;
 			v0 = new SimpleStringProperty(nv0);
 			v1 = new SimpleStringProperty(nv1);
 			v2 = new SimpleStringProperty(nv2);
