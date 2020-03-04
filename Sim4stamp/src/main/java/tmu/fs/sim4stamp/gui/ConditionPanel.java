@@ -40,6 +40,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableColumn.CellEditEvent;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.ComboBoxTableCell;
@@ -440,6 +441,20 @@ public class ConditionPanel implements Initializable {
 					}
 					initDataVals.add(rows);
 				}
+				initDataTable.setRowFactory(tv -> new TableRow<ObservableList<String>>() {
+					@Override
+					protected void updateItem(ObservableList<String> item, boolean empty) {
+						super.updateItem(item, empty);
+						if(item == null || item.size() == 0){
+							setStyle("");
+						}else if (item.get(0).startsWith("#")) { // 偏差投入行の色指定
+							setStyle("-fx-background-color: #baffba;");
+						} else {
+							setStyle("");
+						}
+					}
+				});
+
 				initDataTable.getSelectionModel().setCellSelectionEnabled(true);
 				initDataTable.setItems(initDataVals);
 				initDataTable.setEditable(true);
