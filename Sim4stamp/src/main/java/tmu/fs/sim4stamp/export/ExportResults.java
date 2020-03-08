@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 import tmu.fs.sim4stamp.SimService;
 import tmu.fs.sim4stamp.gui.util.MakeResultTable;
+import tmu.fs.sim4stamp.gui.util.ResultValue;
 import tmu.fs.sim4stamp.model.iop.IOScene;
 
 /**
@@ -59,7 +60,7 @@ public class ExportResults {
 				mrt.makeResultTable(ioScene);
 				List<String> eles = mrt.getParentElementIds();
 				List<List<String>> dIds = mrt.getDataIds();
-				List<String[]> dataList = mrt.getDataList();
+				List<ResultValue[]> dataList = mrt.getDataList();
 
 				sb.append(deviationConnParamId).append(",");
 				sb.append(deviation);
@@ -67,12 +68,12 @@ public class ExportResults {
 				int dataRow = 0;
 				List<String> title1s = new ArrayList<>();
 				List<String> title2s = new ArrayList<>();
-				List<String[]> arr = new ArrayList<>();
+				List<ResultValue[]> arr = new ArrayList<>();
 				for (int i = 0; i < eles.size(); i++) {
 					for (int n = 0; n < dIds.get(i).size(); n++) {
 						title1s.add(eles.get(i));
 						title2s.add(dIds.get(i).get(n));
-						String[] list = dataList.get(dataColumn++);
+						ResultValue[] list = dataList.get(dataColumn++);
 						arr.add(list);
 					}
 				}
@@ -88,7 +89,7 @@ public class ExportResults {
 				for (int n = 0; n < arr.get(0).length; n++) {
 					sb.append(",,").append((n + 1));
 					for (int i = 0; i < arr.size(); i++) {
-						sb.append(",").append(arr.get(i)[n]);
+						sb.append(",").append(arr.get(i)[n].getValue());
 					}
 					sb.append("\n");
 				}

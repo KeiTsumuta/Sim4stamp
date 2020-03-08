@@ -22,9 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 import tmu.fs.sim4stamp.SimService;
 import tmu.fs.sim4stamp.model.IOParamManager;
-import tmu.fs.sim4stamp.model.LogicalValueManager;
 import tmu.fs.sim4stamp.model.iop.IOParam;
 import tmu.fs.sim4stamp.model.iop.IOScene;
+import tmu.fs.sim4stamp.model.iop.IOValue;
 import tmu.fs.sim4stamp.model.lv.LogicalValue;
 
 /**
@@ -42,7 +42,7 @@ public class MakeResultTable {
 	private boolean lvMode = false;
 	private List<String> parentElementIds;
 	private List<List<String>> dataIds;
-	private List<String[]> dataList;
+	private List<ResultValue[]> dataList;
 
 	public MakeResultTable(boolean mode) {
 		lvMode = mode;
@@ -63,28 +63,31 @@ public class MakeResultTable {
 			for (IOParam iop : iops) {
 				colChildren.add(iop.getId());
 				IOParam.ValueType type = iop.getType();
-				String[] arr = new String[ioScene.getSize()];
+				ResultValue[] arr = new ResultValue[ioScene.getSize()];
+				IOValue ioValue = ioScene.getIOData(elemId, iop.getId());
+				boolean[] uppers = ioValue.getAttentionsUpper();
+				boolean[] unders = ioValue.getAttentionsUnder();
 				if (null != type) {
 					switch (type) {
 						case REAL:
-							double[] dData = ioScene.getData(elemId, iop.getId());
+							double[] dData = ioValue.getDoubleValues();
 							for (int i = 0; i < dData.length; i++) {
-								arr[i] = D_FORMAT.format(dData[i]);
+								arr[i] = new ResultValue(D_FORMAT.format(dData[i]),uppers[i],unders[i]);
 							}
 							break;
 						case INT:
-							int[] iData = ioScene.getIntData(elemId, iop.getId());
+							int[] iData = ioValue.getIntValues();
 							for (int i = 0; i < iData.length; i++) {
-								arr[i] = Integer.toString(iData[i]);
+								arr[i] =  new ResultValue(Integer.toString(iData[i]),uppers[i],unders[i]);
 							}
 							break;
 						case BOOL:
-							boolean[] bData = ioScene.getBoolData(elemId, iop.getId());
+							boolean[] bData = ioValue.getBoolValues();
 							for (int i = 0; i < bData.length; i++) {
 								if (bData[i]) {
-									arr[i] = "true";
+									arr[i] = new ResultValue( "true",uppers[i],unders[i]);
 								} else {
-									arr[i] = "false";
+									arr[i] =  new ResultValue("false",uppers[i],unders[i]);
 								}
 							}
 							break;
@@ -108,9 +111,9 @@ public class MakeResultTable {
 									} else if (4.5 <= val) {
 										name = licalVals[5];
 									}
-									arr[i] = name + "(" + L_FORMAT.format(val) + ")";
+									arr[i] =  new ResultValue(name + "(" + L_FORMAT.format(val) + ")",uppers[i],unders[i]);
 								} else {
-									arr[i] = L_FORMAT.format(val);
+									arr[i] =  new ResultValue(L_FORMAT.format(val),uppers[i],unders[i]);
 								}
 							}
 							break;
@@ -141,7 +144,7 @@ public class MakeResultTable {
 	/**
 	 * @return the dataList
 	 */
-	public List<String[]> getDataList() {
+	public List<ResultValue[]> getDataList() {
 		return dataList;
 	}
 

@@ -22,3 +22,7 @@
 .chart-plot-background { 
     -fx-background-color: transparent; 
 }
+
+.tableCellClass {
+    -fx-background-color: #ffa0a0;
+}

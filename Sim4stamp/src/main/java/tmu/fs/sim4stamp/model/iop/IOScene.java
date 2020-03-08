@@ -29,7 +29,6 @@ import tmu.fs.sim4stamp.SimService;
 import tmu.fs.sim4stamp.gui.util.GraphData;
 import tmu.fs.sim4stamp.model.ConnectorManager;
 import tmu.fs.sim4stamp.model.IOParamManager;
-import tmu.fs.sim4stamp.model.LogicalValueManager;
 import tmu.fs.sim4stamp.model.co.Connector;
 import tmu.fs.sim4stamp.model.lv.LogicalValue;
 import tmu.fs.sim4stamp.util.DeviationMap;

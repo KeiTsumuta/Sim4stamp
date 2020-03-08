@@ -24,13 +24,15 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
+import tmu.fs.sim4stamp.gui.util.ResultValue;
 
 /**
  * 結果表の表示データを編集する。
- * 
+ *
  * @author Keiichi Tsumuta
  */
 public class ResultTablePanel implements Initializable {
@@ -56,7 +58,7 @@ public class ResultTablePanel implements Initializable {
 		resultTable.setItems(dataVals);
 	}
 
-	public void setData(List<String> colParents, List<List<String>> colTitles, List<String[]> data) {
+	public void setData(List<String> colParents, List<List<String>> colTitles, List<ResultValue[]> data) {
 		headers = FXCollections.observableArrayList();
 		dataVals = FXCollections.observableArrayList();
 		headers.add("No.");
@@ -71,8 +73,8 @@ public class ResultTablePanel implements Initializable {
 			columns[colIndex] = new TableColumn(header);
 			columns[colIndex].setStyle("-fx-alignment: CENTER-RIGHT;");
 			columns[colIndex]
-					.setCellValueFactory((CellDataFeatures<ObservableList, String> param) -> new SimpleStringProperty(
-							param.getValue().get(idx).toString()));
+				.setCellValueFactory((CellDataFeatures<ObservableList, String> param)
+					-> new SimpleStringProperty(param.getValue().get(idx).toString()));
 			if (colIndex > 0) {
 				List<String> subColHeaders = colTitles.get(colIndex - 1);
 				ObservableList<String> subHeaders = FXCollections.observableArrayList();
@@ -87,8 +89,25 @@ public class ResultTablePanel implements Initializable {
 					subColumns[subColIndex] = new TableColumn(subHeader);
 					subColumns[subColIndex].setStyle("-fx-alignment: CENTER-RIGHT;");
 					subColumns[subColIndex].setCellValueFactory(
-							(CellDataFeatures<ObservableList, String> param) -> new SimpleStringProperty(
-									param.getValue().get(fIndexAll).toString()));
+						(CellDataFeatures<ObservableList, String> param)
+						-> new SimpleStringProperty(param.getValue().get(fIndexAll).toString()));
+					subColumns[subColIndex].setCellFactory(tableColumn -> {
+						return new TableCell<ObservableList, String>() {
+							@Override
+							protected void updateItem(final String item, final boolean empty) {
+								super.updateItem(item, empty);
+								if (item != null) {
+									String val = item.toString();
+									setText(val);
+									if (val.startsWith("*")) {
+										getStyleClass().add("tableCellClass");
+									} else {
+										getStyleClass().remove("tableCellClass");
+									}
+								}
+							}
+						};
+					});
 					subColIndex++;
 					indexAll++;
 				}
@@ -104,7 +123,7 @@ public class ResultTablePanel implements Initializable {
 			ObservableList<String> rows = FXCollections.observableArrayList();
 			rows.add(Integer.toString(i + 1));
 			for (int k = 0; k < data.size(); k++) {
-				rows.add(data.get(k)[i]);
+				rows.add(data.get(k)[i].getResult());
 			}
 			dataVals.add(rows);
 		}
