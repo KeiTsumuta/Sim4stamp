@@ -55,19 +55,26 @@ The simulation tool for STAMP/STPA
 
 ## Mavenによるビルド方法
 
+jdk11以降の環境で以下の手順で行います。
+
 （１）コンパイル/実行ファイル（jar）生成
 
-          mvn clean package
+   mvn clean package
 
 （２）JavaVMイメージ生成
 
-          mvn javafx:jlink
+   mvn javafx:jlink
 
 （３）実行
 
-          mvn javafx:run
+  mvn javafx:run
 
-         または
+  または
 
-          mvn javafx:run
+  target\sim4stamp\bin\sim4stamp
+
+  または
+
+  java --module-path PARAM1 --add-modules=javafx.controls,javafx.fxml -jar sim4stamp-1.0.jar
+  ここで、「PARAM1」はJavaFXのライブラリのパスを与える（ex C:\javafx-sdk-14\lib）。
 
