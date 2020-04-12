@@ -53,7 +53,7 @@ public class MainApp extends Application {
 
 		Parent root = FXMLLoader.load(getClass().getResource("/fxml/Scene.fxml"));
 		Scene scene = new Scene(root);
-		scene.getStylesheets().add("/styles/Styles.css");
+        scene.getStylesheets().add(getClass().getResource("/styles/Styles.css").toExternalFo‌​rm());
 
 		stage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/icon/s4s.png")));
 		stage.setTitle("sim4stamp : The simulation tool for STAMP/STPA");

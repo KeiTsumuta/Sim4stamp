@@ -2,13 +2,15 @@
 
 The simulation tool for STAMP/STPA
 
-「Sim4stamp」はSTAMP/STPA手法を支援するシミュレーションツールです。
+「`Sim4stamp`」はSTAMP/STPA手法を支援するシミュレーションツールです。
 
 ## 履歴
 
+2020/04/12 jlinkで生成したJava実行環境で `/styles/Styles.css`が読み込めない現象を回避する修正を実施。
+
 2020/04/11 jdk9以降で導入されたモジュールシステム化を実施する。
            実行ファイルは、JavaVMを含めたものを生成し、OSにインストールされたJavaVMと関係なく動作するようにした。
-           ただし、/styles/Styles.cssが読み込めない現象が発生するため、「結果表」の逸脱しているセルの色替えが
+           ただし、`/styles/Styles.css`が読み込めない現象が発生するため、「結果表」の逸脱しているセルの色替えが
            行われない。
 
 2019/10/21 5値論理を用いる説明用の事例を追加。
@@ -59,22 +61,28 @@ jdk11以降の環境で以下の手順で行います。
 
 （１）コンパイル/実行ファイル（jar）生成
 
+```
    mvn clean package
+```
 
 （２）JavaVMイメージ生成
 
+```
    mvn javafx:jlink
 
+```
 （３）実行
 
+```
   mvn javafx:run
-
+```
   または
-
+```
   target\sim4stamp\bin\sim4stamp
-
+```
   または
-
+```
   java --module-path PARAM1 --add-modules=javafx.controls,javafx.fxml -jar sim4stamp-1.0.jar
+```
   ここで、「PARAM1」はJavaFXのライブラリのパスを与える（ex C:\javafx-sdk-14\lib）。
 
