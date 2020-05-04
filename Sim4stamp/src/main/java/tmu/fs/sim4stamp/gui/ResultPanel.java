@@ -203,11 +203,7 @@ public class ResultPanel implements Initializable {
 	}
 
 	private void selectGraphDisplay(int index, boolean select) {
-		if (select) {
-			displaySelects[index] = true;
-		} else {
-			displaySelects[index] = false;
-		}
+		displaySelects[index] = select;
 		// グラフの割り付け
 		int gridColumnSize = SimService.getInstance().getResultGraphColumSize();
 		resultGraphGrid.getChildren().clear();
@@ -233,20 +229,20 @@ public class ResultPanel implements Initializable {
 		ObservableList<String> rss = FXCollections.observableArrayList();
 		resultChoice.setItems(rss);
 		resultChoice.getSelectionModel().selectedItemProperty()
-			.addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
-				if (newValue == null) {
-					return;
-				}
-				String[] tk = newValue.split(" ");
-				if (tk.length > 1) {
-					selectResultIndex = getInt(tk[0]);
-					// System.out.println("sel index:" + selectResultIndex);
-					if (selectResultIndex > 0) {
-						List<IOScene> resultScenes = SimService.getInstance().getIoParamManager().getResultScenes();
-						displayResultTable(resultScenes.get(selectResultIndex - 1));
+				.addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+					if (newValue == null) {
+						return;
 					}
-				}
-			});
+					String[] tk = newValue.split(" ");
+					if (tk.length > 1) {
+						selectResultIndex = getInt(tk[0]);
+						// System.out.println("sel index:" + selectResultIndex);
+						if (selectResultIndex > 0) {
+							List<IOScene> resultScenes = SimService.getInstance().getIoParamManager().getResultScenes();
+							displayResultTable(resultScenes.get(selectResultIndex - 1));
+						}
+					}
+				});
 		//
 		ObservableList<String> eis = FXCollections.observableArrayList();
 		List<Element> elements = SimService.getInstance().getElementManger().getElements();
@@ -419,13 +415,13 @@ public class ResultPanel implements Initializable {
 			graphInfoPane.getChildren().add(fp);
 		}
 		group.selectedToggleProperty().addListener(
-			(ObservableValue<? extends Toggle> ov, Toggle old_toggle,
-				Toggle new_toggle) -> {
-				if (group.getSelectedToggle() != null) {
-					Integer index = (Integer) (group.getSelectedToggle().getUserData());
-					setSelectDevSetting(index);
-				}
-			});
+				(ObservableValue<? extends Toggle> ov, Toggle old_toggle,
+						Toggle new_toggle) -> {
+					if (group.getSelectedToggle() != null) {
+						Integer index = (Integer) (group.getSelectedToggle().getUserData());
+						setSelectDevSetting(index);
+					}
+				});
 	}
 
 	private void initGraphWarn() {

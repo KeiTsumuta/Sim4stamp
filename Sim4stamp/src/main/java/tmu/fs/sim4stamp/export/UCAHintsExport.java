@@ -67,7 +67,7 @@ public class UCAHintsExport {
 						String id = ioVal.getId();
 						boolean upperStatus = ioVal.isUpperWarning(); // 上限逸脱ありフラグ
 						boolean underStatus = ioVal.isUnderWarning(); // 下限逸脱ありフラグ
-						boolean[] att = ioVal.getAttentionsUpper();
+						//boolean[] att = ioVal.getAttentionsUpper();
 						if (upperStatus || underStatus) {
 							String devParamId = ioScene.getDeviationConnParamId();
 							String nf = ioScene.getDeviationConnParamFromId();

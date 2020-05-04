@@ -24,66 +24,66 @@ package tmu.fs.sim4stamp.model.lv;
  */
 public class LogicalValue {
 
-    private String unitId;
-    private String[] values;
-    private int logicValue;
+	private String unitId;
+	private String[] values;
+	private int logicValue;
 	private String type;
 
-    public LogicalValue(String vid) {
-        this.unitId = vid;
-    }
+	public LogicalValue(String vid) {
+		this.unitId = vid;
+	}
 
-    /**
-     * @return the unitId
-     */
-    public String getUnitId() {
-        return unitId;
-    }
+	/**
+	 * @return the unitId
+	 */
+	public String getUnitId() {
+		return unitId;
+	}
 
-    /**
-     * @return the values
-     */
-    public String[] getValues() {
-        return values;
-    }
+	/**
+	 * @return the values
+	 */
+	public String[] getValues() {
+		return values;
+	}
 
-    /**
-     * @param values the values to set
-     */
-    public void setValues(String[] values) {
-        if (values.length == 6) {
-            this.values = values;
-        }
-    }
+	/**
+	 * @param values the values to set
+	 */
+	public void setValues(String[] values) {
+		if (values.length == 6) {
+			this.values = values;
+		}
+	}
 
-    /**
-     * @return the logicValue
-     */
-    public int getLogicValue() {
-        return logicValue;
-    }
+	/**
+	 * @return the logicValue
+	 */
+	public int getLogicValue() {
+		return logicValue;
+	}
 
-    /**
-     * @param logicValue the logicValue to set
-     */
-    public void setLogicValue(int logicValue) {
-        if (logicValue >= 0) {
-            if (logicValue <= 5) {
-                this.logicValue = logicValue;
-            } else {
-                this.logicValue = 5;
-            }
-        } else {
-            this.logicValue = 0;
-        }
-    }
+	/**
+	 * @param logicValue the logicValue to set
+	 */
+	public void setLogicValue(int logicValue) {
+		if (logicValue >= 0) {
+			if (logicValue <= 5) {
+				this.logicValue = logicValue;
+			} else {
+				this.logicValue = 5;
+			}
+		} else {
+			this.logicValue = 0;
+		}
+	}
 
-    public String getLogicalName() {
-        if (values != null && values.length == 6) {
-            return values[logicValue];
-        }
-        return Integer.toString(logicValue);
-    }
+	public String getLogicalName() {
+		if (values != null && values.length == 6) {
+			return values[logicValue];
+		}
+		return Integer.toString(logicValue);
+	}
 
 	/**
 	 * @return the type
@@ -99,17 +99,17 @@ public class LogicalValue {
 		this.type = type;
 	}
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("unitId :").append(unitId).append(" (");
-        sb.append(getLogicalName()).append(") : ");
-        for (int i = 0; i < values.length; i++) {
-            if (i > 0) {
-                sb.append(",");
-            }
-            sb.append(values[i]);
-        }
-        return sb.toString();
-    }
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("unitId :").append(unitId).append(" (");
+		sb.append(getLogicalName()).append(") : ");
+		for (int i = 0; i < values.length; i++) {
+			if (i > 0) {
+				sb.append(",");
+			}
+			sb.append(values[i]);
+		}
+		return sb.toString();
+	}
 }

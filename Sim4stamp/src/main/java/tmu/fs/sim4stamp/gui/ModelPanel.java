@@ -193,7 +193,7 @@ public class ModelPanel implements Initializable {
 			deleteConnector();
 		});
 		popupConnectorMenu.getItems().addAll(addCParam, new SeparatorMenuItem(), addJoint, deleteJoint,
-			new SeparatorMenuItem(), cDelete);
+				new SeparatorMenuItem(), cDelete);
 
 	}
 

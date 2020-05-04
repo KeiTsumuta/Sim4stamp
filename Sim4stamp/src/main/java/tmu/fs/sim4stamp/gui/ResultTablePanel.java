@@ -73,8 +73,8 @@ public class ResultTablePanel implements Initializable {
 			columns[colIndex] = new TableColumn(header);
 			columns[colIndex].setStyle("-fx-alignment: CENTER-RIGHT;");
 			columns[colIndex]
-				.setCellValueFactory((CellDataFeatures<ObservableList, String> param)
-					-> new SimpleStringProperty(param.getValue().get(idx).toString()));
+					.setCellValueFactory((CellDataFeatures<ObservableList, String> param)
+							-> new SimpleStringProperty(param.getValue().get(idx).toString()));
 			if (colIndex > 0) {
 				List<String> subColHeaders = colTitles.get(colIndex - 1);
 				ObservableList<String> subHeaders = FXCollections.observableArrayList();
@@ -89,15 +89,15 @@ public class ResultTablePanel implements Initializable {
 					subColumns[subColIndex] = new TableColumn(subHeader);
 					subColumns[subColIndex].setStyle("-fx-alignment: CENTER-RIGHT;");
 					subColumns[subColIndex].setCellValueFactory(
-						(CellDataFeatures<ObservableList, String> param)
-						-> new SimpleStringProperty(param.getValue().get(fIndexAll).toString()));
+							(CellDataFeatures<ObservableList, String> param)
+							-> new SimpleStringProperty(param.getValue().get(fIndexAll).toString()));
 					subColumns[subColIndex].setCellFactory(tableColumn -> {
 						return new TableCell<ObservableList, String>() {
 							@Override
 							protected void updateItem(final String item, final boolean empty) {
 								super.updateItem(item, empty);
 								if (item != null) {
-									String val = item.toString();
+									String val = item;
 									setText(val);
 									if (val.startsWith("*")) {
 										getStyleClass().add("tableCellClass");

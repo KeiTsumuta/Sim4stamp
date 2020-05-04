@@ -53,7 +53,7 @@ public class MainApp extends Application {
 
 		Parent root = FXMLLoader.load(getClass().getResource("/fxml/Scene.fxml"));
 		Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("/styles/Styles.css").toExternalFo‌​rm());
+		scene.getStylesheets().add(getClass().getResource("/styles/Styles.css").toExternalFo‌​rm());
 
 		stage.getIcons().add(new Image(MainApp.class.getResourceAsStream("/icon/s4s.png")));
 		stage.setTitle("sim4stamp : The simulation tool for STAMP/STPA");
@@ -62,13 +62,13 @@ public class MainApp extends Application {
 		// System.out.println("start main");
 
 		scene.widthProperty().addListener(
-			(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) -> {
-				PanelManager.get().getModelPanel().drawCanvasPanel();
-			});
+				(ObservableValue<? extends Number> observableValue, Number oldSceneWidth, Number newSceneWidth) -> {
+					PanelManager.get().getModelPanel().drawCanvasPanel();
+				});
 		scene.heightProperty().addListener(
-			(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) -> {
-				PanelManager.get().getModelPanel().drawCanvasPanel();
-			});
+				(ObservableValue<? extends Number> observableValue, Number oldSceneHeight, Number newSceneHeight) -> {
+					PanelManager.get().getModelPanel().drawCanvasPanel();
+				});
 
 	}
 

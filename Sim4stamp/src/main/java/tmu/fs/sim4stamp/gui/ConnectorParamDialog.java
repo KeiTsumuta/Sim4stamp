@@ -44,7 +44,6 @@ import tmu.fs.sim4stamp.PanelManager;
 import tmu.fs.sim4stamp.SimService;
 import tmu.fs.sim4stamp.model.ConnectorManager;
 import tmu.fs.sim4stamp.model.IOParamManager;
-import tmu.fs.sim4stamp.model.LogicalValueManager;
 import tmu.fs.sim4stamp.model.co.Connector;
 import tmu.fs.sim4stamp.model.iop.AppendParams;
 import tmu.fs.sim4stamp.model.iop.IOParam;

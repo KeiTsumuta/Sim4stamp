@@ -27,7 +27,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.text.Font;
 import tmu.fs.sim4stamp.gui.util.GraphAxis;
@@ -296,7 +295,9 @@ public class LineGraphPanel implements Initializable {
 			// 凡例表示
 			y = INSET_TOP / 2.0;
 			int wc = 0;
-			if(upFlag) wc = 105;
+			if (upFlag) {
+				wc = 105;
+			}
 			gc.strokeLine(wMax - INSET_RIGHT - 100 - wc, y, wMax - INSET_RIGHT - 70 - wc, y);
 			gc.fillText("下限制約値", wMax - INSET_RIGHT - 68 - wc, y + fontHeight / 3.0);
 		}

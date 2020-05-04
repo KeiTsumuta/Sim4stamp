@@ -45,7 +45,7 @@ public class SimListener implements Runnable {
 
 	@Override
 	public void run() {
-		try ( InputStream fromClient = client.getInputStream();  ObjectInputStream oi = new ObjectInputStream(fromClient);  OutputStream toClient = client.getOutputStream();  ObjectOutputStream oo = new ObjectOutputStream(toClient);) {
+		try (InputStream fromClient = client.getInputStream(); ObjectInputStream oi = new ObjectInputStream(fromClient); OutputStream toClient = client.getOutputStream(); ObjectOutputStream oo = new ObjectOutputStream(toClient);) {
 			boolean loop = true;
 			while (loop) {
 				TransObject inObj = (TransObject) oi.readObject();

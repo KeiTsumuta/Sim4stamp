@@ -77,21 +77,21 @@ public class ElementManager implements JSONConvert {
 				String id = ob.optString("id");
 				Element element = null;
 				switch (type) {
-				case "equipment":
-					element = new ControllledEquipment(id);
-					break;
-				case "controller":
-					element = new Controller(id);
-					break;
-				case "actuator":
-					element = new Actuator(id);
-					break;
-				case "sensor":
-					element = new Sensor(id);
-					break;
-				case "injector":
-					element = new Injector(id);
-					break;
+					case "equipment":
+						element = new ControllledEquipment(id);
+						break;
+					case "controller":
+						element = new Controller(id);
+						break;
+					case "actuator":
+						element = new Actuator(id);
+						break;
+					case "sensor":
+						element = new Sensor(id);
+						break;
+					case "injector":
+						element = new Injector(id);
+						break;
 				}
 				element.parseJson(ob);
 				AppendParams ap = new AppendParams(AppendParams.ParamType.Element);

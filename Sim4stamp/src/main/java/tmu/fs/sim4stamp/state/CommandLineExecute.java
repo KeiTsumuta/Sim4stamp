@@ -151,7 +151,7 @@ public class CommandLineExecute implements Runnable {
 	}
 
 	public void displayInputStream(InputStream is) throws IOException {
-		try ( InputStreamReader isr = new InputStreamReader(is);  BufferedReader br = new BufferedReader(isr)) {
+		try (InputStreamReader isr = new InputStreamReader(is); BufferedReader br = new BufferedReader(isr)) {
 			for (;;) {
 				String line = br.readLine();
 				if (line == null) {

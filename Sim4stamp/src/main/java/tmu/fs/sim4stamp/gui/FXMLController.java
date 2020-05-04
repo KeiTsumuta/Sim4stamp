@@ -395,7 +395,7 @@ public class FXMLController implements Initializable {
 		alert.setTitle("sim4stamp");
 		alert.setHeaderText("sim4stamp : The simulation tool for STAMP/STPA");
 		alert.setContentText(
-			"Version : " + Sim4stampVersion.version + "\n"
+				"Version : " + Sim4stampVersion.version + "\n"
 				+ "Copyright (C) 2020  Keiichi Tsumuta\n"
 				+ "License : GNU General Public License version 3");
 		alert.showAndWait();

@@ -25,16 +25,16 @@ import java.io.FileOutputStream;
  * @author Keiichi Tsumuta
  */
 public class FileUtil {
-	
+
 	private static final String ENCODED = "MS932";
-	
-	private FileUtil(){
-		
+
+	private FileUtil() {
+
 	}
 
 	public static void writeFile(String fileName, String data) {
 		File file = new File(fileName);
-		try ( FileOutputStream fo = new FileOutputStream(file)) {
+		try (FileOutputStream fo = new FileOutputStream(file)) {
 			byte[] buf = data.getBytes(ENCODED);
 			fo.write(buf);
 			fo.flush();

@@ -150,8 +150,8 @@ public class ConditionPanel implements Initializable {
 		btnColumn.setStyle("-fx-alignment: CENTER;");
 		btnColumn.setCellValueFactory(new PropertyValueFactory<>("underRestrict"));
 		Callback<TableColumn<ElementItem, String>, TableCell<ElementItem, String>> cellFactory
-			= //
-			new Callback<TableColumn<ElementItem, String>, TableCell<ElementItem, String>>() {
+				= //
+				new Callback<TableColumn<ElementItem, String>, TableCell<ElementItem, String>>() {
 			@Override
 			public TableCell call(final TableColumn<ElementItem, String> param) {
 				final TableCell<ElementItem, String> cell = new TableCell<ElementItem, String>() {
@@ -307,8 +307,8 @@ public class ConditionPanel implements Initializable {
 									LogicalValue lv = SimService.getInstance().getLogicalValueManager().getLogicalValue(unit);
 									String[] vals = lv.getValues();
 									column.setCellFactory(
-										ComboBoxTableCell.forTableColumn(
-											vals[0] + "(0)", vals[1] + "(1)", vals[2] + "(2)", vals[3] + "(3)", vals[4] + "(4)", vals[5] + "(5)"));
+											ComboBoxTableCell.forTableColumn(
+													vals[0] + "(0)", vals[1] + "(1)", vals[2] + "(2)", vals[3] + "(3)", vals[4] + "(4)", vals[5] + "(5)"));
 									break;
 								case BOOL:
 									column.setCellFactory(ComboBoxTableCell.forTableColumn("true", "false"));
@@ -445,9 +445,9 @@ public class ConditionPanel implements Initializable {
 					@Override
 					protected void updateItem(ObservableList<String> item, boolean empty) {
 						super.updateItem(item, empty);
-						if(item == null || item.size() == 0){
+						if (item == null || item.size() == 0) {
 							setStyle("");
-						}else if (item.get(0).startsWith("#")) { // 偏差投入行の色指定
+						} else if (item.get(0).startsWith("#")) { // 偏差投入行の色指定
 							setStyle("-fx-background-color: #baffba;");
 						} else {
 							setStyle("");

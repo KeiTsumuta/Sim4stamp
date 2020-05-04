@@ -118,13 +118,13 @@ public class GraphDisplayDialog implements Initializable {
 				}
 				setSelectDevSetting(0);
 				group.selectedToggleProperty().addListener(
-					(ObservableValue<? extends Toggle> ov, Toggle old_toggle,
-						Toggle new_toggle) -> {
-						if (group.getSelectedToggle() != null) {
-							Integer index = (Integer) (group.getSelectedToggle().getUserData());
-							setSelectDevSetting(index);
-						}
-					});
+						(ObservableValue<? extends Toggle> ov, Toggle old_toggle,
+								Toggle new_toggle) -> {
+							if (group.getSelectedToggle() != null) {
+								Integer index = (Integer) (group.getSelectedToggle().getUserData());
+								setSelectDevSetting(index);
+							}
+						});
 
 			}
 			graphTitle.textProperty().set(mainTitle);

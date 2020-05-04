@@ -272,11 +272,11 @@ public class IOScene implements JSONConvert {
 						if (type == IOParam.ValueType.REAL) {
 							double sValue = 0.0;
 							if (deviation == Deviation.NORMAL || deviationConnParamId == null
-								|| index < (dsi - 1)) {
+									|| index < (dsi - 1)) {
 								sValue = ioNf.getDoubleValues()[index];
 							} else {
 								if (getDeviationConnParamFromId().equals(nfId) && getDeviationConnParamToId().equals(ntId)
-									&& deviationConnParamId.equals(paramId)) {
+										&& deviationConnParamId.equals(paramId)) {
 									sValue = getDeviationValue(ioNf, index);
 								} else {
 									sValue = ioNf.getDoubleValues()[index];
@@ -286,11 +286,11 @@ public class IOScene implements JSONConvert {
 						} else if (type == IOParam.ValueType.INT) {
 							int iValue = 0;
 							if (deviation == Deviation.NORMAL || deviationConnParamId == null
-								|| index < (dsi - 1)) {
+									|| index < (dsi - 1)) {
 								iValue = ioNf.getIntValues()[index];
 							} else {
 								if (getDeviationConnParamFromId().equals(nfId) && getDeviationConnParamToId().equals(ntId)
-									&& deviationConnParamId.equals(paramId)) {
+										&& deviationConnParamId.equals(paramId)) {
 									iValue = getDeviationIntValue(ioNf, index);
 								} else {
 									iValue = ioNf.getIntValues()[index];
@@ -300,11 +300,11 @@ public class IOScene implements JSONConvert {
 						} else if (type == IOParam.ValueType.BOOL) {
 							boolean bValue = false;
 							if (deviation == Deviation.NORMAL || deviationConnParamId == null
-								|| index < (dsi - 1)) {
+									|| index < (dsi - 1)) {
 								bValue = ioNf.getBoolValues()[index];
 							} else {
 								if (getDeviationConnParamFromId().equals(nfId) && getDeviationConnParamToId().equals(ntId)
-									&& deviationConnParamId.equals(paramId)) {
+										&& deviationConnParamId.equals(paramId)) {
 									bValue = getDeviationBoolValue(ioNf, index);
 								} else {
 									bValue = ioNf.getBoolValues()[index];
@@ -315,11 +315,11 @@ public class IOScene implements JSONConvert {
 						if (type == IOParam.ValueType.F_VAL_LOGIC) {
 							double sValue = 0.0;
 							if (deviation == Deviation.NORMAL || deviationConnParamId == null
-								|| index < (dsi - 1)) {
+									|| index < (dsi - 1)) {
 								sValue = ioNf.getDoubleValues()[index];
 							} else {
 								if (getDeviationConnParamFromId().equals(nfId) && getDeviationConnParamToId().equals(ntId)
-									&& deviationConnParamId.equals(paramId)) {
+										&& deviationConnParamId.equals(paramId)) {
 									sValue = getDeviationLogicalValue(ioNf, index);
 								} else {
 									sValue = ioNf.getDoubleValues()[index];
@@ -578,10 +578,10 @@ public class IOScene implements JSONConvert {
 		} else if (value < 2.5) {
 			return 2.0;
 		} else if (value
-			< 3.5) {
+				< 3.5) {
 			return 3.0;
 		} else if (value
-			< 4.5) {
+				< 4.5) {
 			return 4.0;
 		}
 		return 5.0;

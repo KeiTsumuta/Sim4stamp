@@ -363,7 +363,7 @@ public class Connector implements JSONConvert, DisplayLevel {
 	public void jointMove(double pointX, double pointY) {
 		if (selectedIndex != -1) {
 			if (selectedIndex == 0 || selectedIndex == (points.size()) - 1
-				|| (nodeFromId != null && nodeFromId.length() > 0) || (nodeToId != null && nodeToId.length() > 0)) {
+					|| (nodeFromId != null && nodeFromId.length() > 0) || (nodeToId != null && nodeToId.length() > 0)) {
 				// 部分移動
 				Point2D.Double point = new Point2D.Double(pointX, pointY);
 				points.set(selectedIndex, point);

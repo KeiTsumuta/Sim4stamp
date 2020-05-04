@@ -72,22 +72,22 @@ public class MakeResultTable {
 						case REAL:
 							double[] dData = ioValue.getDoubleValues();
 							for (int i = 0; i < dData.length; i++) {
-								arr[i] = new ResultValue(D_FORMAT.format(dData[i]),uppers[i],unders[i]);
+								arr[i] = new ResultValue(D_FORMAT.format(dData[i]), uppers[i], unders[i]);
 							}
 							break;
 						case INT:
 							int[] iData = ioValue.getIntValues();
 							for (int i = 0; i < iData.length; i++) {
-								arr[i] =  new ResultValue(Integer.toString(iData[i]),uppers[i],unders[i]);
+								arr[i] = new ResultValue(Integer.toString(iData[i]), uppers[i], unders[i]);
 							}
 							break;
 						case BOOL:
 							boolean[] bData = ioValue.getBoolValues();
 							for (int i = 0; i < bData.length; i++) {
 								if (bData[i]) {
-									arr[i] = new ResultValue( "true",uppers[i],unders[i]);
+									arr[i] = new ResultValue("true", uppers[i], unders[i]);
 								} else {
-									arr[i] =  new ResultValue("false",uppers[i],unders[i]);
+									arr[i] = new ResultValue("false", uppers[i], unders[i]);
 								}
 							}
 							break;
@@ -111,9 +111,9 @@ public class MakeResultTable {
 									} else if (4.5 <= val) {
 										name = licalVals[5];
 									}
-									arr[i] =  new ResultValue(name + "(" + L_FORMAT.format(val) + ")",uppers[i],unders[i]);
+									arr[i] = new ResultValue(name + "(" + L_FORMAT.format(val) + ")", uppers[i], unders[i]);
 								} else {
-									arr[i] =  new ResultValue(L_FORMAT.format(val),uppers[i],unders[i]);
+									arr[i] = new ResultValue(L_FORMAT.format(val), uppers[i], unders[i]);
 								}
 							}
 							break;

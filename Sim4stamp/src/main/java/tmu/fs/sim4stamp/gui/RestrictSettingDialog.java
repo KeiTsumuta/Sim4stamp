@@ -35,7 +35,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import tmu.fs.sim4stamp.PanelManager;
 import tmu.fs.sim4stamp.SimService;
-import tmu.fs.sim4stamp.model.LogicalValueManager;
 import tmu.fs.sim4stamp.model.iop.IOParam;
 import tmu.fs.sim4stamp.model.iop.IOValue;
 import tmu.fs.sim4stamp.model.iop.SafetyConstraintValue;

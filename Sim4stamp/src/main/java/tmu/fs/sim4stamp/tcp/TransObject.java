@@ -50,8 +50,7 @@ public class TransObject implements java.io.Serializable {
 	}
 
 	/**
-	 * @param stValues
-	 *            the stValues to set
+	 * @param stValues the stValues to set
 	 */
 	public void addStValue(String value) {
 		if (stValues == null) {
@@ -68,8 +67,7 @@ public class TransObject implements java.io.Serializable {
 	}
 
 	/**
-	 * @param dValues
-	 *            the dValues to set
+	 * @param dValues the dValues to set
 	 */
 	public void addDValue(Double value) {
 		if (dValues == null) {
@@ -86,8 +84,7 @@ public class TransObject implements java.io.Serializable {
 	}
 
 	/**
-	 * @param iValues
-	 *            the intValues to set
+	 * @param iValues the intValues to set
 	 */
 	public void addIValue(Integer value) {
 		if (intValues == null) {
@@ -104,8 +101,7 @@ public class TransObject implements java.io.Serializable {
 	}
 
 	/**
-	 * @param boolValues
-	 *            the boolValues to set
+	 * @param boolValues the boolValues to set
 	 */
 	public void addBValue(boolean value) {
 		if (boolValues == null) {

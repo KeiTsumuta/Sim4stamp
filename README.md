@@ -6,6 +6,9 @@ The simulation tool for STAMP/STPA
 
 ## 履歴
 
+2020/05/04 Windows版について、インストーラを追加する。
+           WindowsInstaller下のSim4stampSetup.exeをダウンロードして、実行することにより、Sim4stampのインストールができる。
+
 2020/04/12 jlinkで生成したJava実行環境で `/styles/Styles.css`が読み込めない現象を回避する修正を実施。
 
 2020/04/11 jdk9以降で導入されたモジュールシステム化を実施する。
@@ -47,9 +50,16 @@ The simulation tool for STAMP/STPA
 ## 起動方法
 
    bin下にある「sim4stampzip-X.X.X.zip」をダウンロードし、任意のフォルダに解凍します。
-   解凍したフォルダの「bin/sim4stamp」をクリックすると画面が表示されます。
+   解凍したフォルダの「bin/sim4stamp.bat」をクリックすると画面が表示されます。
    なお、本処理については専用のJavaVMが内蔵されていますが、Overtureについては、Overtureで指定
    するJavaをインストールしておく必要があります。
+
+   上記は、Windowsの場合です。Windows以外のOSの場合は、JavaFXのライブラリをダウンロードし、
+   クラスパスに追加し、Javaを起動する必要があります。
+```
+  java --module-path JavaFXのライブラリパス --add-modules=javafx.controls,javafx.fxml -jar sim4stamp-1.0.jar
+```
+
 
 ## ライセンス
 

@@ -94,7 +94,7 @@ public class ElementParamsDialog implements Initializable {
 	private static AppendParams appendParams;
 	private static ObservableList<String> displayList;
 	private static ObservableList<String> unitList;
-	private static ToggleGroup group = new ToggleGroup();
+	private static final ToggleGroup group = new ToggleGroup();
 	private String unit;
 
 	@Override

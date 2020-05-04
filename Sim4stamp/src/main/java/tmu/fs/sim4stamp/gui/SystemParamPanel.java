@@ -71,7 +71,7 @@ public class SystemParamPanel implements Initializable {
 		resultGraphColumSize.setText(Integer.toString(gsize));
 		resultGraphWidth.setValue(s.getResultGraphWidth());
 		resultGraphWidth.valueProperty().addListener((
-			ObservableValue<? extends Number> ov, Number old_val, Number new_val) -> {
+				ObservableValue<? extends Number> ov, Number old_val, Number new_val) -> {
 			SimService.getInstance().setResultGraphWidth(new_val.doubleValue());
 		});
 	}

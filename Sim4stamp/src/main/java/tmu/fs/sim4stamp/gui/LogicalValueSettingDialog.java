@@ -31,7 +31,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import tmu.fs.sim4stamp.Sim4stampVersion;
 import tmu.fs.sim4stamp.SimService;
 import tmu.fs.sim4stamp.model.LogicalValueManager;
 import tmu.fs.sim4stamp.model.lv.LogicalValue;
