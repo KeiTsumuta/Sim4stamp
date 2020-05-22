@@ -60,6 +60,11 @@ The simulation tool for STAMP/STPA
   java --module-path JavaFXのライブラリパス --add-modules=javafx.controls,javafx.fxml -jar sim4stamp-1.0.jar
 ```
 
+   例えば「ubuntu」では、「apt-get install openjfx」でJavaFXライブラリを導入すると「/usr/share/openjfx/lib」に
+   ライブラリができるので、以下のように指定して起動します(jdk11環境下)。
+```
+  java --module-path /usr/share/openjfx/lib --add-modules=javafx.controls,javafx.fxml -jar sim4stamp-1.0.jar
+```
 
 ## ライセンス
 
