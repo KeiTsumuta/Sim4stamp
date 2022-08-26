@@ -229,24 +229,24 @@ public class ResultPanel implements Initializable {
 		ObservableList<String> rss = FXCollections.observableArrayList();
 		resultChoice.setItems(rss);
 		resultChoice.getSelectionModel().selectedItemProperty()
-				.addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
-					if (newValue == null) {
-						return;
+			.addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+				if (newValue == null) {
+					return;
+				}
+				String[] tk = newValue.split(" ");
+				if (tk.length > 1) {
+					selectResultIndex = getInt(tk[0]);
+					// System.out.println("sel index:" + selectResultIndex);
+					if (selectResultIndex > 0) {
+						List<IOScene> resultScenes = SimService.getInstance().getIoParamManager().getResultScenes();
+						displayResultTable(resultScenes.get(selectResultIndex - 1));
 					}
-					String[] tk = newValue.split(" ");
-					if (tk.length > 1) {
-						selectResultIndex = getInt(tk[0]);
-						// System.out.println("sel index:" + selectResultIndex);
-						if (selectResultIndex > 0) {
-							List<IOScene> resultScenes = SimService.getInstance().getIoParamManager().getResultScenes();
-							displayResultTable(resultScenes.get(selectResultIndex - 1));
-						}
-					}
-				});
+				}
+			});
 		//
 		ObservableList<String> eis = FXCollections.observableArrayList();
 		List<Element> elements = SimService.getInstance().getElementManger().getElements();
-		//elements.sort((a, b) -> b.getOrder() - a.getOrder());
+		elements.sort((a, b) -> b.getOrder() - a.getOrder());
 		elements.forEach((e) -> {
 			Element.EType eType = e.getType();
 			AppendParams ap = e.getAppendParams();
@@ -258,13 +258,13 @@ public class ResultPanel implements Initializable {
 						eis.add(ip.getId());
 						for (int i = 0; i < graphSize; i++) {
 							if (initSelectIds[i] == null) {
-								if (i == 0 && eType == Element.EType.INJECTOR) {
-									initSelectParentIds[i] = nodeId;
-									initSelectIds[i] = ip.getId();
-								} else if (i > 0) {
-									initSelectParentIds[i] = nodeId;
-									initSelectIds[i] = ip.getId();
-								}
+								//if (i == 0 && eType == Element.EType.INJECTOR) {
+								initSelectParentIds[i] = nodeId;
+								initSelectIds[i] = ip.getId();
+								//} else if (i > 0) {
+								//	initSelectParentIds[i] = nodeId;
+								//	initSelectIds[i] = ip.getId();
+								//}
 								break;
 							}
 						}
@@ -415,13 +415,13 @@ public class ResultPanel implements Initializable {
 			graphInfoPane.getChildren().add(fp);
 		}
 		group.selectedToggleProperty().addListener(
-				(ObservableValue<? extends Toggle> ov, Toggle old_toggle,
-						Toggle new_toggle) -> {
-					if (group.getSelectedToggle() != null) {
-						Integer index = (Integer) (group.getSelectedToggle().getUserData());
-						setSelectDevSetting(index);
-					}
-				});
+			(ObservableValue<? extends Toggle> ov, Toggle old_toggle,
+				Toggle new_toggle) -> {
+				if (group.getSelectedToggle() != null) {
+					Integer index = (Integer) (group.getSelectedToggle().getUserData());
+					setSelectDevSetting(index);
+				}
+			});
 	}
 
 	private void initGraphWarn() {
