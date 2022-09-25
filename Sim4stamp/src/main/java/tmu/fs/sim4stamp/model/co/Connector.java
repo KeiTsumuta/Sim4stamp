@@ -42,7 +42,7 @@ import tmu.fs.sim4stamp.util.JSONConvert;
 public class Connector implements JSONConvert, DisplayLevel {
 
 	private static final double ARROW_LENGTH = 14.0;
-	private static final double DISTANCE_CLOSED = 10.0;
+	private static final double DISTANCE_CLOSED = 14.0;
 	private static final Color STROKE_COLOR = Color.BLUE;
 	private static final Color STROKE2_COLOR = Color.SEASHELL;
 	private static final Color MARKED_COLOR = Color.RED;
@@ -270,14 +270,23 @@ public class Connector implements JSONConvert, DisplayLevel {
 				String id = ioParam.getId();
 				if (displayLevel != Level.Progress) {
 					IOParam.ValueType type = ioParam.getType();
-					if (type == IOParam.ValueType.REAL) {
-						id += "<R>";
-					} else if (type == IOParam.ValueType.INT) {
-						id += "<I>";
-					} else if (type == IOParam.ValueType.BOOL) {
-						id += "<B>";
-					} else if (type == IOParam.ValueType.F_VAL_LOGIC) {
-						id += "<" + ioParam.getUnit() + ">";
+					if (null != type) {
+						switch (type) {
+							case REAL:
+								id += "<R>";
+								break;
+							case INT:
+								id += "<I>";
+								break;
+							case BOOL:
+								id += "<B>";
+								break;
+							case F_VAL_LOGIC:
+								id += "<" + ioParam.getUnit() + ">";
+								break;
+							default:
+								break;
+						}
 					}
 				}
 				if (displayLevel == Level.Progress) {
@@ -363,7 +372,7 @@ public class Connector implements JSONConvert, DisplayLevel {
 	public void jointMove(double pointX, double pointY) {
 		if (selectedIndex != -1) {
 			if (selectedIndex == 0 || selectedIndex == (points.size()) - 1
-					|| (nodeFromId != null && nodeFromId.length() > 0) || (nodeToId != null && nodeToId.length() > 0)) {
+				|| (nodeFromId != null && nodeFromId.length() > 0) || (nodeToId != null && nodeToId.length() > 0)) {
 				// 部分移動
 				Point2D.Double point = new Point2D.Double(pointX, pointY);
 				points.set(selectedIndex, point);
@@ -412,7 +421,7 @@ public class Connector implements JSONConvert, DisplayLevel {
 					setSelectedIndex(i);
 					return true;
 				}
-				if (Math.abs(x - x1) < DISTANCE_CLOSED) {
+				if (x1 == x2 && Math.abs(x - x1) < DISTANCE_CLOSED) {
 					if (y2 > y1 && y1 <= y && y <= y2) {
 						jointSelected = i;
 						return true;
@@ -421,7 +430,7 @@ public class Connector implements JSONConvert, DisplayLevel {
 						return true;
 					}
 				}
-				if (Math.abs(y - y1) < DISTANCE_CLOSED) {
+				if (y1 == y2 && Math.abs(y - y1) < DISTANCE_CLOSED) {
 					if (x2 > x1 && x1 <= x && x <= x2) {
 						jointSelected = i;
 						return true;
@@ -441,7 +450,7 @@ public class Connector implements JSONConvert, DisplayLevel {
 					double b = y1 - a * x1;
 					double z2 = (x - (y - b) / a) * (x - (y - b) / a) + (a * x + b - y) * (a * x + b - y);
 					double d = (a * x + b - y) * (a * x + b - y) / Math.sqrt(z2);
-					if (d < 2.0) {
+					if (d < DISTANCE_CLOSED) {
 						jointSelected = i;
 						return true;
 					}

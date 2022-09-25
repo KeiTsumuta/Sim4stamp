@@ -27,7 +27,7 @@ import tmu.fs.sim4stamp.model.em.Element;
  */
 public class ProjectParams {
 
-	private List<Element> elements;
+	private final List<Element> elements;
 
 	public ProjectParams() {
 		elements = new ArrayList<>();
