@@ -140,7 +140,7 @@ public class SystemParamPanel implements Initializable {
 		SimService s = SimService.getInstance();
 		String overtureHome = s.getOvertureHome();
 		if (overtureHome != null && overtureHome.length() > 0) {
-			fc.setInitialDirectory(new File(overtureHome + "/commandline"));
+			fc.setInitialDirectory(new File(overtureHome));
 		}
 		File jarFile = fc.showOpenDialog(stage);
 		if (jarFile != null) {

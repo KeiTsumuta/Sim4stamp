@@ -84,7 +84,6 @@ public class ResultTablePanel implements Initializable {
 				int subColIndex = 0;
 				TableColumn<ObservableList, String>[] subColumns = new TableColumn[subColHeaders.size()];
 				for (String subHeader : subHeaders) {
-					final int idx2 = subColIndex;
 					final int fIndexAll = indexAll;
 					subColumns[subColIndex] = new TableColumn(subHeader);
 					subColumns[subColIndex].setStyle("-fx-alignment: CENTER-RIGHT;");

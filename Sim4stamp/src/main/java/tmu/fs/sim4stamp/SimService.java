@@ -345,7 +345,7 @@ public class SimService extends ResourceFileIO implements java.io.Serializable {
 	}
 
 	public String getOvertureCommandLineJar() {
-		return paramMap.get("overture.home") + SP + "commandline" + SP + paramMap.get("overture.commandline");
+		return paramMap.get("overture.home") + SP + paramMap.get("overture.commandline");
 	}
 
 	public void setResultGraphColumSize(int colSize) {

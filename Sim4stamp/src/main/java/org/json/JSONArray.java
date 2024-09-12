@@ -895,7 +895,7 @@ public class JSONArray implements Iterable<Object> {
 	 * @return this.
 	 */
 	public JSONArray put(double value) throws JSONException {
-		Double d = new Double(value);
+		Double d = value;
 		JSONObject.testValidity(d);
 		this.put(d);
 		return this;
@@ -908,7 +908,8 @@ public class JSONArray implements Iterable<Object> {
 	 * @return this.
 	 */
 	public JSONArray put(int value) {
-		this.put(new Integer(value));
+		Integer ival = value;
+		this.put(ival);
 		return this;
 	}
 
@@ -919,7 +920,8 @@ public class JSONArray implements Iterable<Object> {
 	 * @return this.
 	 */
 	public JSONArray put(long value) {
-		this.put(new Long(value));
+		Long lval = value;
+		this.put(lval);
 		return this;
 	}
 
@@ -990,7 +992,8 @@ public class JSONArray implements Iterable<Object> {
 	 * finite.
 	 */
 	public JSONArray put(int index, double value) throws JSONException {
-		this.put(index, new Double(value));
+		Double dval = value;
+		this.put(index, dval);
 		return this;
 	}
 
@@ -1005,7 +1008,8 @@ public class JSONArray implements Iterable<Object> {
 	 * @throws JSONException If the index is negative.
 	 */
 	public JSONArray put(int index, int value) throws JSONException {
-		this.put(index, new Integer(value));
+		Integer ival = value;
+		this.put(index, ival);
 		return this;
 	}
 
@@ -1020,7 +1024,8 @@ public class JSONArray implements Iterable<Object> {
 	 * @throws JSONException If the index is negative.
 	 */
 	public JSONArray put(int index, long value) throws JSONException {
-		this.put(index, new Long(value));
+		Long lval = value;
+		this.put(index, lval);
 		return this;
 	}
 
