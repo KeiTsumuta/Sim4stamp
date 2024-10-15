@@ -98,7 +98,7 @@ public class UCAHintsExport {
 		sb.append(TITLE).append("\n");
 		for (int i = 0; i < ucaItems.size(); i++) {
 			UCAItem ucaItem = ucaItems.get(i);
-			sb.append(i).append(",******,");
+			sb.append((i + 1)).append(",******,");
 			sb.append(ucaItem.getDeviationType()).append(",");
 			sb.append(" ********** ,").append(ucaItem.getElementId()).append(" > ").append(ucaItem.getItemId());
 			if (ucaItem.isAttentionUpper()) {

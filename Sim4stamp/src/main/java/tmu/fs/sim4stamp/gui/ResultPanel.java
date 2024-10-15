@@ -475,7 +475,7 @@ public class ResultPanel implements Initializable {
 	}
 
 	public void resetData() {
-		for (int i = 0; i < graphSize; i++) {
+		for (int i = 0; i < linePanels.length; i++) {
 			linePanels[i].reset();
 		}
 		resultTable.initData();

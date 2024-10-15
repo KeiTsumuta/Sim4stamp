@@ -60,7 +60,6 @@ public class ResultTablePanel implements Initializable {
 
 	public void setData(List<String> colParents, List<List<String>> colTitles, List<ResultValue[]> data) {
 		headers = FXCollections.observableArrayList();
-		dataVals = FXCollections.observableArrayList();
 		headers.add("No.");
 		colParents.forEach((colHeader) -> {
 			headers.add(colHeader);
@@ -117,6 +116,8 @@ public class ResultTablePanel implements Initializable {
 			colIndex++;
 		}
 		resultTable.getColumns().setAll(columns);
+		
+		dataVals = FXCollections.observableArrayList();
 		int size = data.get(0).length;
 		for (int i = 0; i < size; i++) {
 			ObservableList<String> rows = FXCollections.observableArrayList();
@@ -126,7 +127,6 @@ public class ResultTablePanel implements Initializable {
 			}
 			dataVals.add(rows);
 		}
-
 		resultTable.setItems(dataVals);
 	}
 
